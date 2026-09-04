@@ -5,21 +5,82 @@ import RegistroCta from '../components/RegistroCta.astro';
 import { event } from '../data/event';
 import { tiers, communityTiles } from '../data/sponsors';
 ---
-<BaseLayout title="Sponsors" description="Paquetes de patrocinio de DevFest Guayaquil 2026." family="blue">
 
-<PageHero eyebrow="Sponsors" title="Las empresas que hacen posible el evento" lead="DevFest es gratis para 500 asistentes porque las empresas de la región lo respaldan. Así se ve ese apoyo." glyphs={['plus-blue', 'dot-red', 'half-circle-yellow']} />
+<BaseLayout
+  title="Sponsors"
+  description="Paquetes de patrocinio de DevFest Guayaquil 2026."
+  family="blue"
+>
+  <PageHero
+    eyebrow="Sponsors"
+    title="Las empresas que hacen posible el evento"
+    lead="DevFest es gratis para 500 asistentes porque las empresas de la región lo respaldan. Así se ve ese apoyo."
+    glyphs={['plus-blue', 'dot-red', 'half-circle-yellow']}
+  />
 
-{tiers.map((tier) => (
-  <section class="section" style="padding-block:var(--space-9)" data-family={tier.family}><div class="wrap" style="display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:var(--space-8);align-items:start">
-  <div class="reveal" style="display:grid;gap:var(--space-4)"><span class="chip chip--tint" style="justify-self:start">{tier.name}</span><h2 class="display display--md">{tier.title}</h2><ul style="margin:0;padding-left:20px;display:grid;gap:8px">{tier.perks.map((p) => <li>{p}</li>)}</ul></div>
-  <div class:list={['grid', tier.grid]} data-stagger>{tier.tiles.map((label) => <a class:list={['logo-tile', 'hover-lift', 'reveal', { 'logo-tile--big': tier.big }]} href="#">{label}</a>)}</div>
-  </div></section>
-))}
+  {
+    tiers.map((tier) => (
+      <section class="section" style="padding-block:var(--space-9)" data-family={tier.family}>
+        <div
+          class="wrap"
+          style="display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:var(--space-8);align-items:start"
+        >
+          <div class="reveal" style="display:grid;gap:var(--space-4)">
+            <>
+              <span class="chip chip--tint" style="justify-self:start">
+                {tier.name}
+              </span>
+              <h2 class="display display--md">{tier.title}</h2>
+              <ul style="margin:0;padding-left:20px;display:grid;gap:8px">
+                {tier.perks.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+            </>
+          </div>
+          <div class:list={['grid', tier.grid]} data-stagger>
+            {tier.tiles.map((label) => (
+              <a
+                class:list={['logo-tile', 'hover-lift', 'reveal', { 'logo-tile--big': tier.big }]}
+                href="#"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
 
-<section class="section section--tint" data-family="red"><div class="wrap">
-<div class="section__head reveal"><span class="chip chip--tint" style="justify-self:start">Community</span><h2 class="display display--md">Comunidades y universidades aliadas</h2><p class="lead">Espacio sin costo para comunidades tech, universidades y medios que difunden el evento.</p></div>
-<div class="grid grid--4" data-stagger>{communityTiles.map((label) => <a class="logo-tile hover-lift reveal" href="#">{label}</a>)}</div>
-</div></section>
+  <section class="section section--tint" data-family="red">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="chip chip--tint" style="justify-self:start">Community</span><h2
+          class="display display--md"
+        >
+          Comunidades y universidades aliadas
+        </h2><p class="lead">
+          Espacio sin costo para comunidades tech, universidades y medios que difunden el evento.
+        </p>
+      </div>
+      <div class="grid grid--4" data-stagger>
+        {
+          communityTiles.map((label) => (
+            <a class="logo-tile hover-lift reveal" href="#">
+              {label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
-<RegistroCta eyebrow="Patrocina" title="Pon tu marca frente a 500 developers" lead="Te enviamos el prospecto con precios y disponibilidad en menos de 48 horas." primary={{ label: 'Pedir el prospecto', href: '#' }} secondary={{ label: event.sponsorsEmail, href: '#' }} />
+  <RegistroCta
+    eyebrow="Patrocina"
+    title="Pon tu marca frente a 500 developers"
+    lead="Te enviamos el prospecto con precios y disponibilidad en menos de 48 horas."
+    primary={{ label: 'Pedir el prospecto', href: '#' }}
+    secondary={{ label: event.sponsorsEmail, href: '#' }}
+  />
 </BaseLayout>

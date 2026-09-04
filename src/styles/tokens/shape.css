@@ -1,18 +1,18 @@
-:root{
-/* The brand's whole shape language is: solid fill + hard black outline, no shadow. */
---border-w:3px;
---border-w-thin:2px;
---border-w-hair:1.5px;
---stroke:var(--border-w) solid var(--line-strong);
---stroke-thin:var(--border-w-thin) solid var(--line-strong);
+:root {
+  /* The brand's whole shape language is: solid fill + hard black outline, no shadow. */
+  --border-w: 3px;
+  --border-w-thin: 2px;
+  --border-w-hair: 1.5px;
+  --stroke: var(--border-w) solid var(--line-strong);
+  --stroke-thin: var(--border-w-thin) solid var(--line-strong);
 
---radius-pill:999px;
---radius-card:32px;
---radius-card-sm:20px;
---radius-tile:16px;
---radius-notch:40px;      /* radius of the inverted "notch" corner */
---scallop-size:56px;      /* diameter of one bump on a scalloped edge */
+  --radius-pill: 999px;
+  --radius-card: 32px;
+  --radius-card-sm: 20px;
+  --radius-tile: 16px;
+  --radius-notch: 40px; /* radius of the inverted "notch" corner */
+  --scallop-size: 56px; /* diameter of one bump on a scalloped edge */
 
-/* Shadows are NOT part of this brand. Kept as no-ops so consumers do not invent them. */
---shadow-none:none;
+  /* Shadows are NOT part of this brand. Kept as no-ops so consumers do not invent them. */
+  --shadow-none: none;
 }

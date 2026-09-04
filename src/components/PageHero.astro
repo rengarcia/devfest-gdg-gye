@@ -10,7 +10,28 @@ interface Props {
 const { eyebrow, title, lead, glyphs } = Astro.props;
 const delays = ['200ms', '290ms', '380ms'];
 ---
-<section class="page-hero"><div class="wrap page-hero__inner">
-<div style="display:grid;gap:var(--space-4)"><p class="eyebrow sticker">{eyebrow}</p><h1 class="display display--lg sticker" style="--d:80ms">{title}</h1><p class="lead sticker" style="--d:160ms">{lead}</p></div>
-<div class="page-hero__glyphs" aria-hidden="true">{glyphs.map((g, i) => <img class="float page-hero__glyph" style={`--d:${delays[i] ?? '380ms'}`} src={`/assets/glyphs/${g}.png`} alt="" />)}</div>
-</div></section>
+
+<section class="page-hero">
+  <div class="wrap page-hero__inner">
+    <div style="display:grid;gap:var(--space-4)">
+      <p class="eyebrow sticker">{eyebrow}</p><h1
+        class="display display--lg sticker"
+        style="--d:80ms"
+      >
+        {title}
+      </h1><p class="lead sticker" style="--d:160ms">{lead}</p>
+    </div>
+    <div class="page-hero__glyphs" aria-hidden="true">
+      {
+        glyphs.map((g, i) => (
+          <img
+            class="float page-hero__glyph"
+            style={`--d:${delays[i] ?? '380ms'}`}
+            src={`/assets/glyphs/${g}.png`}
+            alt=""
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>

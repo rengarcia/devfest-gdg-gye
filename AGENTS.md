@@ -12,7 +12,8 @@ astro dev --background
 ```
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
-Run `npm run build` and `npm run check` before calling a change done.
+Run `npm run format` (Prettier, config in `.prettierrc`), then `npm run build` and `npm run check`
+before calling a change done.
 
 ## Conventions
 

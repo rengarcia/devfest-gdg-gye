@@ -88,7 +88,9 @@ function init() {
           if (en.isIntersecting) {
             const el = en.target as HTMLElement;
             el.classList.add('reveal--in');
-            el.addEventListener('transitionend', () => el.style.removeProperty('--d'), { once: true });
+            el.addEventListener('transitionend', () => el.style.removeProperty('--d'), {
+              once: true,
+            });
             io.unobserve(el);
           }
         }),
@@ -99,9 +101,11 @@ function init() {
   }
 
   /* Stagger children marked data-stagger */
-  document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((g) =>
-    [...g.children].forEach((c, i) => (c as HTMLElement).style.setProperty('--d', `${i * 70}ms`)),
-  );
+  document
+    .querySelectorAll<HTMLElement>('[data-stagger]')
+    .forEach((g) =>
+      [...g.children].forEach((c, i) => (c as HTMLElement).style.setProperty('--d', `${i * 70}ms`)),
+    );
 
   /* Tabs (WAI-ARIA tabs pattern) */
   document.querySelectorAll<HTMLElement>('[role="tablist"]').forEach((list) => {
@@ -116,12 +120,18 @@ function init() {
         if (p) p.hidden = !on;
       });
       if (focus) tab.focus();
-      if (tab.dataset.family) list.closest<HTMLElement>('[data-family]')?.setAttribute('data-family', tab.dataset.family);
+      if (tab.dataset.family)
+        list.closest<HTMLElement>('[data-family]')?.setAttribute('data-family', tab.dataset.family);
     };
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => activate(t, false));
       t.addEventListener('keydown', (e) => {
-        const map: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1, Home: -i, End: tabs.length - 1 - i };
+        const map: Record<string, number> = {
+          ArrowRight: 1,
+          ArrowLeft: -1,
+          Home: -i,
+          End: tabs.length - 1 - i,
+        };
         if (!(e.key in map)) return;
         e.preventDefault();
         activate(tabs[(i + map[e.key] + tabs.length) % tabs.length]);

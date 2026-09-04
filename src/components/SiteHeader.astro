@@ -6,8 +6,38 @@ import { event, nav } from '../data/event';
 const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
 const current = normalize(Astro.url.pathname);
 ---
-<header class="site-header" transition:name="site-header" transition:animate="none"><div class="wrap site-header__inner">
-<Lockup href="/" label="DevFest Guayaquil, inicio" class="site-header__lockup" />
-<nav class="nav" id="nav" aria-label="Principal"><ul class="nav__list">{nav.map((l) => <li class="nav__item"><a class="nav__link" href={l.href} aria-current={normalize(l.href) === current ? 'page' : undefined}>{l.label}</a></li>)}</ul><div class="nav__extra"><a class="btn btn--fill nav__cta" href="#registro">Regístrate <Icon name="arrow_forward" class="btn__icon" /></a><p class="nav__meta"><span>{event.dateShort}</span><span>{event.venue}</span></p></div></nav>
-<div class="site-header__actions"><a class="btn btn--fill site-header__cta" href="#registro">Regístrate</a><button class="site-header__toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú"><Icon name="menu" class="site-header__toggle-icon" /></button></div>
-</div></header>
+
+<header class="site-header" transition:name="site-header" transition:animate="none">
+  <div class="wrap site-header__inner">
+    <Lockup href="/" label="DevFest Guayaquil, inicio" class="site-header__lockup" />
+    <nav class="nav" id="nav" aria-label="Principal">
+      <ul class="nav__list">
+        {
+          nav.map((l) => (
+            <li class="nav__item">
+              <a
+                class="nav__link"
+                href={l.href}
+                aria-current={normalize(l.href) === current ? 'page' : undefined}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul><div class="nav__extra">
+        <a class="btn btn--fill nav__cta" href="#registro"
+          >Regístrate <Icon name="arrow_forward" class="btn__icon" /></a
+        ><p class="nav__meta"><span>{event.dateShort}</span><span>{event.venue}</span></p>
+      </div>
+    </nav>
+    <div class="site-header__actions">
+      <a class="btn btn--fill site-header__cta" href="#registro">Regístrate</a><button
+        class="site-header__toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav"
+        aria-label="Abrir menú"><Icon name="menu" class="site-header__toggle-icon" /></button>
+    </div>
+  </div>
+</header>

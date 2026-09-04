@@ -1,18 +1,18 @@
 # DevFest Guayaquil 2026 — sitio web
 
 Sitio estático del DevFest Guayaquil 2026 (GDG Guayaquil), construido con [Astro](https://astro.build).
-Es un port fiel del proyecto de Claude Design *Devfest Guayaquil webpage design*: mismo HTML, CSS,
+Es un port fiel del proyecto de Claude Design _Devfest Guayaquil webpage design_: mismo HTML, CSS,
 tokens y comportamiento, reorganizado en layouts, componentes y datos tipados.
 
 ## Comandos
 
-| Comando | Qué hace |
-| --- | --- |
-| `npm install` | Instala dependencias |
-| `npm run dev` | Servidor de desarrollo en `localhost:4321` |
-| `npm run build` | Genera el sitio estático en `dist/` |
-| `npm run preview` | Sirve `dist/` localmente |
-| `npm run check` | Chequeo de tipos de `.astro` y `.ts` |
+| Comando           | Qué hace                                   |
+| ----------------- | ------------------------------------------ |
+| `npm install`     | Instala dependencias                       |
+| `npm run dev`     | Servidor de desarrollo en `localhost:4321` |
+| `npm run build`   | Genera el sitio estático en `dist/`        |
+| `npm run preview` | Sirve `dist/` localmente                   |
+| `npm run check`   | Chequeo de tipos de `.astro` y `.ts`       |
 
 ## Estructura
 

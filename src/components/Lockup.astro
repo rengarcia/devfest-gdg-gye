@@ -8,4 +8,11 @@ interface Props {
 }
 const { href = '/', label, class: mix } = Astro.props;
 ---
-<a class:list={['lockup', mix]} href={href} aria-label={label}><img class="lockup__brace" src="/assets/glyphs/brace-left.png" alt="" /><b class="lockup__name">DevFest</b><img class="lockup__brace" src="/assets/glyphs/brace-right.png" alt="" /><span class="lockup__city">Guayaquil</span></a>
+
+<a class:list={['lockup', mix]} href={href} aria-label={label}
+  ><img class="lockup__brace" src="/assets/glyphs/brace-left.png" alt="" /><b class="lockup__name"
+    >DevFest</b
+  ><img class="lockup__brace" src="/assets/glyphs/brace-right.png" alt="" /><span
+    class="lockup__city">Guayaquil</span
+  ></a
+>

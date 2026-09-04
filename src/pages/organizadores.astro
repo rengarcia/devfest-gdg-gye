@@ -12,17 +12,69 @@ const voluntariado = [
   { n: '1', label: 'briefing previo' },
 ];
 ---
-<BaseLayout title="Organizadores" description="El equipo organizador de GDG Guayaquil." family="red">
 
-<PageHero eyebrow="Organizadores" title="Las personas detrás de DevFest" lead="Ocho organizadores y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar." glyphs={['at', 'dot-red', 'braces']} />
+<BaseLayout
+  title="Organizadores"
+  description="El equipo organizador de GDG Guayaquil."
+  family="red"
+>
+  <PageHero
+    eyebrow="Organizadores"
+    title="Las personas detrás de DevFest"
+    lead="Ocho organizadores y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar."
+    glyphs={['at', 'dot-red', 'braces']}
+  />
 
-<section class="section" style="padding-top:0"><div class="wrap"><div class="grid grid--4">{organizers.map((o, i) => <PersonCard family={o.family} initials={o.initials} name={o.name} role={o.role} delay={(i % 3) * 80} />)}</div></div></section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="grid grid--4">
+        {
+          organizers.map((o, i) => (
+            <PersonCard
+              family={o.family}
+              initials={o.initials}
+              name={o.name}
+              role={o.role}
+              delay={(i % 3) * 80}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
-<section class="section section--tint"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center">
-<div class="reveal" style="display:grid;gap:var(--space-4)"><p class="eyebrow">Voluntariado</p><h2 class="display display--lg">Únete al equipo del 5 de diciembre</h2><p class="lead">Acreditación, salas, speakers, redes. Turnos de 4 horas, camiseta, almuerzo y acceso a todas las charlas fuera de tu turno.</p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><a class="btn btn--fill" href="#">Quiero ser voluntario</a><a class="btn" href="/faq">Preguntas frecuentes</a></div></div>
-<div class="grid" data-stagger style="grid-template-columns:1fr 1fr">
-{voluntariado.map((v) => <div class="card card--sm stat reveal"><b class="stat__value" style="font-size:var(--text-display-md)">{v.n}</b><span class="stat__label">{v.label}</span></div>)}
-</div></div></section>
+  <section class="section section--tint">
+    <div
+      class="wrap"
+      style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center"
+    >
+      <div class="reveal" style="display:grid;gap:var(--space-4)">
+        <p class="eyebrow">Voluntariado</p><h2 class="display display--lg">
+          Únete al equipo del 5 de diciembre
+        </h2><p class="lead">
+          Acreditación, salas, speakers, redes. Turnos de 4 horas, camiseta, almuerzo y acceso a
+          todas las charlas fuera de tu turno.
+        </p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <a class="btn btn--fill" href="#">Quiero ser voluntario</a><a class="btn" href="/faq"
+            >Preguntas frecuentes</a>
+        </div>
+      </div>
+      <div class="grid" data-stagger style="grid-template-columns:1fr 1fr">
+        {
+          voluntariado.map((v) => (
+            <div class="card card--sm stat reveal">
+              <>
+                <b class="stat__value" style="font-size:var(--text-display-md)">
+                  {v.n}
+                </b>
+                <span class="stat__label">{v.label}</span>
+              </>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
-<RegistroCta />
+  <RegistroCta />
 </BaseLayout>

@@ -13,8 +13,29 @@ interface Props {
 }
 const { family, initials, name, role, talk, tag, delay = 0 } = Astro.props;
 ---
-<article class="notch notch--tint person hover-lift reveal" data-family={family} style={`--d:${delay}ms`}>
-<div class="notch__media" aria-hidden="true"><span class="person__initials">{initials}</span></div>
-{tag ? <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">{tag}</span> : <img class="notch__tag" src="/assets/gdg-logo.png" alt="" style="width:56px" />}
-<div class="person__body">{talk && <p class="person__talk">{talk}</p>}<p class="person__name">{name}</p><p class="person__role">{role}</p></div>
+
+<article
+  class="notch notch--tint person hover-lift reveal"
+  data-family={family}
+  style={`--d:${delay}ms`}
+>
+  <div class="notch__media" aria-hidden="true">
+    <span class="person__initials">{initials}</span>
+  </div>
+  {
+    tag ? (
+      <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">
+        {tag}
+      </span>
+    ) : (
+      <img class="notch__tag" src="/assets/gdg-logo.png" alt="" style="width:56px" />
+    )
+  }
+  <div class="person__body">
+    {talk && <p class="person__talk">{talk}</p>}<p class="person__name">{name}</p><p
+      class="person__role"
+    >
+      {role}
+    </p>
+  </div>
 </article>
