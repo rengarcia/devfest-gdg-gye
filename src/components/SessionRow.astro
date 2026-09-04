@@ -7,7 +7,7 @@ interface Props {
 const { session } = Astro.props;
 ---
 {session.isBreak ? (
-  <li class="session break"><time>{session.time}</time><div><p class="t">{session.title}</p></div><div></div></li>
+  <li class="session session--break"><time class="session__time">{session.time}</time><div><p class="session__title">{session.title}</p></div><div></div></li>
 ) : (
-  <li class="session"><time>{session.time}</time><div><p class="t">{session.title}</p>{session.who && <p class="who">{session.who}</p>}</div><div class="chips">{session.chips?.map((c) => <span class:list={['chip', c.cls]}>{c.label}</span>)}</div></li>
+  <li class="session"><time class="session__time">{session.time}</time><div><p class="session__title">{session.title}</p>{session.who && <p class="session__who">{session.who}</p>}</div><div class="chips session__chips">{session.chips?.map((c) => <span class:list={['chip', c.cls]}>{c.label}</span>)}</div></li>
 )}

@@ -10,12 +10,12 @@ import { speakers } from '../data/speakers';
 <PageHero eyebrow="Speakers" title="Quienes suben al escenario" lead="Nueve speakers confirmados y contando. Publicamos nuevos nombres cada semana hasta el 5 de diciembre." glyphs={['braces', 'x-pink', 'comma-yellow']} />
 
 <section class="section" style="padding-top:0"><div class="wrap">
-<div class="grid g3">{speakers.map((s, i) => <PersonCard family={s.family} initials={s.initials} tag={s.track} talk={s.talk} name={s.name} role={s.role} delay={(i % 3) * 80} />)}</div>
+<div class="grid grid--3">{speakers.map((s, i) => <PersonCard family={s.family} initials={s.initials} tag={s.track} talk={s.talk} name={s.name} role={s.role} delay={(i % 3) * 80} />)}</div>
 </div></section>
 
-<section class="section section-bg"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center">
-<div data-reveal style="display:grid;gap:var(--space-4)"><p class="eyebrow">Call for papers</p><h2 class="lg">¿Tienes algo que contar?</h2><p class="lead">Buscamos charlas de 45 minutos y workshops de 90. Primera vez como speaker: te ayudamos a preparar la propuesta y a ensayar.</p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><a class="btn btn-fill" href="#">Enviar propuesta</a><a class="btn" href="/faq">Leer los criterios</a></div><p class="mono muted" style="font-size:var(--text-mono-sm)">El CFP cierra el 15 de octubre de 2026</p></div>
-<div class="notch" data-reveal style="--d:120ms"><div class="notch-media"><img src="/assets/speaker-portrait.jpg" alt="Speaker presentando en el escenario de un DevFest anterior" /></div><span class="chip notch-tag" style="font-size:var(--text-mono-xs)">CFP</span></div>
+<section class="section section--tint"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center">
+<div class="reveal" style="display:grid;gap:var(--space-4)"><p class="eyebrow">Call for papers</p><h2 class="display display--lg">¿Tienes algo que contar?</h2><p class="lead">Buscamos charlas de 45 minutos y workshops de 90. Primera vez como speaker: te ayudamos a preparar la propuesta y a ensayar.</p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><a class="btn btn--fill" href="#">Enviar propuesta</a><a class="btn" href="/faq">Leer los criterios</a></div><p class="mono mono--muted" style="font-size:var(--text-mono-sm)">El CFP cierra el 15 de octubre de 2026</p></div>
+<div class="notch reveal" style="--d:120ms"><div class="notch__media"><img class="notch__img" src="/assets/speaker-portrait.jpg" alt="Speaker presentando en el escenario de un DevFest anterior" /></div><span class="chip notch__tag" style="font-size:var(--text-mono-xs)">CFP</span></div>
 </div></section>
 
 <RegistroCta />

@@ -11,11 +11,11 @@ import { schedule } from '../data/agenda';
 <PageHero eyebrow="Agenda" title="Un día, cuatro tracks, 24 sesiones." lead="Sábado 5 de diciembre, 08:30 a 18:00. Todas las salas están en el Campus Gustavo Galindo de ESPOL. Puedes moverte entre tracks en cada bloque." glyphs={['slash-a', 'hash-green', 'dot-blue']} />
 
 <section class="section" style="padding-top:0"><div class="wrap" data-family="green" id="agenda-root">
-<div role="tablist" aria-label="Tracks" class="tabs" data-reveal>{schedule.map(({ track }, i) => <button role="tab" class="tab" id={`tab-${track.id}`} aria-controls={`panel-${track.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-family={track.family}>{track.id}</button>)}</div>
+<div role="tablist" aria-label="Tracks" class="tabs reveal">{schedule.map(({ track }, i) => <button role="tab" class="tabs__tab" id={`tab-${track.id}`} aria-controls={`panel-${track.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-family={track.family}>{track.id}</button>)}</div>
 {schedule.map(({ track, sessions }, i) => (
   <div role="tabpanel" id={`panel-${track.id}`} aria-labelledby={`tab-${track.id}`} hidden={i !== 0} style="margin-top:var(--space-6)"><div class="card" style="padding-block:var(--space-2)"><ul style="list-style:none;margin:0;padding:0">{sessions.map((s) => <SessionRow session={s} />)}</ul></div></div>
 ))}
-<p class="mono muted" data-reveal style="margin-top:var(--space-5);font-size:var(--text-mono-sm)">La agenda puede cambiar. Los horarios finales se publican una semana antes del evento.</p>
+<p class="mono mono--muted reveal" style="margin-top:var(--space-5);font-size:var(--text-mono-sm)">La agenda puede cambiar. Los horarios finales se publican una semana antes del evento.</p>
 </div></section>
 <Dots />
 <RegistroCta />

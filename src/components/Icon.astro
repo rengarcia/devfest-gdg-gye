@@ -1,8 +1,10 @@
 ---
-/** Material Symbols Rounded glyph (decorative). */
+/** Material Symbols Rounded glyph (decorative). `material-symbols-rounded` is the font's own class. */
 interface Props {
   name: string;
+  /** Extra class (BEM mix) for the context the icon sits in, e.g. `btn__icon`. */
+  class?: string;
 }
-const { name } = Astro.props;
+const { name, class: mix } = Astro.props;
 ---
-<span class="material-symbols-rounded" aria-hidden="true">{name}</span>
+<span class:list={['material-symbols-rounded', mix]} aria-hidden="true">{name}</span>

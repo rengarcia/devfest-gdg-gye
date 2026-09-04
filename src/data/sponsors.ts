@@ -7,7 +7,7 @@ export interface SponsorTier {
   perks: string[];
   /** placeholder tile labels until real logos arrive */
   tiles: string[];
-  grid: 'g2' | 'g3';
+  grid: 'grid--2' | 'grid--3';
   big?: boolean;
 }
 
@@ -18,7 +18,7 @@ export const tiers: SponsorTier[] = [
     title: 'Presencia principal en escenario y stand',
     perks: ['Logo en escenario principal, credenciales y sitio web', 'Stand de 3 × 3 m en la zona de networking', 'Charla patrocinada de 20 minutos', '15 entradas para el equipo'],
     tiles: ['Diamond 1', 'Diamond 2'],
-    grid: 'g2',
+    grid: 'grid--2',
     big: true,
   },
   {
@@ -27,7 +27,7 @@ export const tiers: SponsorTier[] = [
     title: 'Stand y marca en todas las salas',
     perks: ['Logo en salas de track y sitio web', 'Stand de 2 × 2 m', 'Mención en apertura y cierre', '8 entradas para el equipo'],
     tiles: ['Gold 1', 'Gold 2', 'Gold 3'],
-    grid: 'g3',
+    grid: 'grid--3',
   },
   {
     name: 'Silver',
@@ -35,7 +35,7 @@ export const tiers: SponsorTier[] = [
     title: 'Marca visible durante todo el día',
     perks: ['Logo en sitio web y pantallas de descanso', 'Mesa en la zona de networking', '4 entradas para el equipo'],
     tiles: ['Silver 1', 'Silver 2', 'Silver 3', 'Silver 4', 'Silver 5', 'Silver 6'],
-    grid: 'g3',
+    grid: 'grid--3',
   },
 ];
 

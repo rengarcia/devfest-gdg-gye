@@ -2,6 +2,7 @@ import { tracks, type Track, type TrackId } from './tracks';
 
 export interface Chip {
   label: string;
+  /** chip modifier class (BEM), e.g. 'chip--tint' */
   cls?: string;
 }
 
@@ -22,7 +23,7 @@ const keynote: Session = {
   time: '09:15 – 10:00',
   title: 'Keynote: lo que viene para developers en Google',
   who: 'Carla Espinoza / DevRel, Google Cloud',
-  chips: [{ label: 'Keynote', cls: 'chip-tint' }, { label: 'Auditorio A' }],
+  chips: [{ label: 'Keynote', cls: 'chip--tint' }, { label: 'Auditorio A' }],
 };
 
 const acreditacion: Session = { time: '08:30 – 09:15', title: 'Acreditación y café', isBreak: true };

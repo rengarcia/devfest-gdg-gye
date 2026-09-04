@@ -18,13 +18,25 @@ Run `npm run build` and `npm run check` before calling a change done.
 
 - Content lives in `src/data/*.ts`; pages map over it. Add a speaker, session, FAQ entry or
   sponsor tier there, not in the page markup.
-- Global CSS only (`src/styles/`). Class names and inline `style` attributes come straight from
-  the design; some responsive rules in `site.css` match on those inline styles
-  (e.g. `[style*="grid-template-columns"]`), so keep them verbatim when copying a section.
+- Global CSS only (`src/styles/`). Class names follow BEM: `block`, `block__element`,
+  `block--modifier` (e.g. `site-header__toggle`, `btn--fill`, `notch__media`). A block gets
+  context-specific styling through a mix, not a descendant selector: `class="btn btn--fill nav__cta"`,
+  with `.nav__cta` declared after `.btn` in `site.css`. `Lockup` and `Icon` take a `class` prop for
+  that. JS state is a modifier too (`nav--open`, `reveal--in`, `intro--done`, `page--loading`);
+  `data-*` attributes (`data-family`, `data-stagger`, `data-count`) stay as behaviour hooks.
+- Inline `style` attributes still come straight from the design; some responsive rules in `site.css`
+  match on them (e.g. `[style*="grid-template-columns"]`), so keep them verbatim when copying a section.
 - Brand rules (from the design-system readme): sentence case, `DevFest` spelling, one colour
   family per page, no shadows, no gradients, no emoji, glyphs are decoration only.
 - Fonts and Material Symbols are loaded via `<link>` in `src/layouts/BaseLayout.astro`.
-- Client behaviour is in `src/scripts/site.ts`, imported once by the layout.
+- Navigation goes through Astro's `<ClientRouter />` (in `BaseLayout.astro`): same-document view
+  transitions, hover prefetch, no full reloads. The header keeps its own snapshot
+  (`transition:animate="none"`). Links with `href="#"` are placeholders and are neutralised in
+  `site.ts` so the router does not re-render the current page.
+- Client behaviour is in `src/scripts/site.ts`, imported once by the layout and kept alive across
+  navigations. Anything that touches page content runs from `init()` on `astro:page-load`;
+  document-level listeners are registered once at module scope. The load intro only plays on full
+  page loads.
 
 ## Documentation
 
