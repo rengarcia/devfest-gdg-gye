@@ -1,0 +1,16 @@
+---
+/** Inner-page hero: eyebrow + display title + lead, with up to three floating sticker glyphs. */
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  /** glyph file names under /assets/glyphs, e.g. ['slash-a', 'hash-green', 'dot-blue'] */
+  glyphs: string[];
+}
+const { eyebrow, title, lead, glyphs } = Astro.props;
+const delays = ['200ms', '290ms', '380ms'];
+---
+<section class="page-hero"><div class="wrap">
+<div style="display:grid;gap:var(--space-4)"><p class="eyebrow sticker">{eyebrow}</p><h1 class="lg sticker" style="--d:80ms">{title}</h1><p class="lead sticker" style="--d:160ms">{lead}</p></div>
+<div class="glyphs" aria-hidden="true">{glyphs.map((g, i) => <img class="float" style={`--d:${delays[i] ?? '380ms'}`} src={`/assets/glyphs/${g}.png`} alt="" />)}</div>
+</div></section>

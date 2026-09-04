@@ -1,0 +1,41 @@
+---
+import '../styles/ds.css';
+import '../styles/site.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { event, type Family } from '../data/event';
+
+interface Props {
+  /** Page name shown before " · DevFest Guayaquil 2026" */
+  title: string;
+  description: string;
+  /** Colour family for this page's accent/tint (per-asset accent, per the brand guide). */
+  family?: Family;
+}
+const { title, description, family = 'yellow' } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{title} · {event.title}</title>
+<meta name="description" content={description} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+<body data-family={family}>
+<a class="skip" href="#main">Saltar al contenido</a>
+<SiteHeader />
+<main id="main" tabindex="-1">
+<slot />
+</main>
+<SiteFooter />
+<script>
+  import '../scripts/site';
+</script>
+</body>
+</html>

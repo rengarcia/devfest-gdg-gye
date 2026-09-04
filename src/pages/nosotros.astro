@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import RegistroCta from '../components/RegistroCta.astro';
+
+const principios = [
+  { glyph: 'dot-green', title: 'Gratis y abierto', text: 'Nadie se queda afuera por dinero. Las entradas son gratuitas y el código de conducta aplica para todos, speakers y sponsors incluidos.' },
+  { glyph: 'dot-blue', title: 'Hecho por voluntarios', text: 'Nadie del equipo organizador cobra. Lo hacemos porque queremos que exista la comunidad que nos hubiera gustado tener al empezar.' },
+  { glyph: 'dot-yellow', title: 'Contenido local', text: 'Priorizamos speakers que trabajan en Ecuador y problemas que resolvemos aquí: conectividad, pagos, datos públicos, equipos pequeños.' },
+];
+---
+<BaseLayout title="Nosotros" description="Qué es DevFest y quién es GDG Guayaquil." family="yellow">
+
+<PageHero eyebrow="Nosotros" title="Un capítulo de GDG, una ciudad, un DevFest" lead="GDG Guayaquil es una comunidad de developers organizada por voluntarios. DevFest es nuestro evento más grande del año, y forma parte de una red de cientos de DevFests en el mundo." glyphs={['globe', 'heart', 'asterisk']} />
+
+<section class="section" style="padding-top:0"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center">
+<div class="notch" data-reveal><div class="notch-media"><img src="/assets/speaker-stage.jpg" alt="Audiencia en un DevFest anterior de GDG Guayaquil" /></div><span class="chip notch-tag" style="font-size:var(--text-mono-xs)">2025</span></div>
+<div data-reveal style="--d:120ms;display:grid;gap:var(--space-4)"><h2 class="md">Qué es DevFest</h2><p class="lead">Es la conferencia anual que cada capítulo de Google Developer Groups organiza en su ciudad. Mismo nombre, misma marca, contenido 100% local: los speakers, los temas y el público son de aquí.</p><p>En Guayaquil lo hacemos desde 2016. Empezamos con 80 personas en un aula; en 2026 esperamos 500 en el campus de ESPOL.</p></div>
+</div></section>
+
+<section class="section section-bg"><div class="wrap">
+<div class="section-head" data-reveal><p class="eyebrow">Cómo trabajamos</p><h2 class="lg">Tres principios</h2></div>
+<div class="grid g3" data-stagger>
+{principios.map((p) => <div class="card" data-reveal style="display:grid;gap:var(--space-4);align-content:start"><img src={`/assets/glyphs/${p.glyph}.png`} alt="" style="height:40px;width:auto" /><h3 class="sm">{p.title}</h3><p>{p.text}</p></div>)}
+</div></div></section>
+
+<section class="section"><div class="wrap">
+<div class="scallop" data-reveal style="max-width:900px;margin-inline:auto;text-align:center">
+<p class="title" style="font-size:var(--text-display-md)"><b>Diez</b> ediciones, más de 3.000 asistentes acumulados y 140 speakers que dieron su primera charla con nosotros.</p>
+</div>
+<div class="grid g3" data-stagger style="margin-top:var(--space-8)">
+<div class="stat" data-reveal><b data-count="10">0</b><span>ediciones de DevFest</span></div>
+<div class="stat" data-reveal><b data-count="3000" data-suffix="+">0</b><span>asistentes acumulados</span></div>
+<div class="stat" data-reveal><b data-count="140">0</b><span>speakers que debutaron aquí</span></div>
+</div></div></section>
+
+<section class="section section-bg" style="padding-block:var(--space-9)"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center">
+<div data-reveal style="display:grid;gap:var(--space-4)"><p class="eyebrow">Sede</p><h2 class="md">ESPOL, Campus Gustavo Galindo</h2><p class="lead">Km 30.5 Vía Perimetral, Guayaquil. Auditorios A y B, aulas del bloque 15 y el laboratorio 3. Estacionamiento gratuito y parada de Metrovía a 5 minutos.</p><a class="btn" href="#">Cómo llegar <Icon name="map" /></a></div>
+<div class="card" data-reveal style="--d:120ms;aspect-ratio:4/3;display:grid;place-items:center;background:var(--gdg-white)"><p class="mono muted">Mapa del campus (por publicar)</p></div>
+</div></section>
+
+<RegistroCta />
+</BaseLayout>

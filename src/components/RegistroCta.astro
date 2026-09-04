@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+import { event } from '../data/event';
+
+interface Link {
+  label: string;
+  href: string;
+}
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  primary?: Link;
+  secondary?: Link;
+}
+const {
+  eyebrow = 'Registro',
+  title = 'Reserva tu lugar en DevFest Guayaquil 2026',
+  lead = 'Cupos limitados a 500 asistentes. La entrada es gratuita y requiere registro previo.',
+  primary = { label: 'Regístrate', href: event.registerHref },
+  secondary = { label: 'Ver agenda', href: '/agenda' },
+} = Astro.props;
+---
+<section class="section" id="registro"><div class="wrap"><div class="card card-ink" data-reveal style="display:grid;gap:var(--space-5);grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:var(--space-8)">
+<div><p class="eyebrow" style="color:var(--gdg-off-white);opacity:.8">{eyebrow}</p><h2 class="md" style="margin-top:12px">{title}</h2><p class="lead" style="margin-top:12px;opacity:.85">{lead}</p></div>
+<div style="display:flex;gap:var(--space-2);flex-wrap:wrap"><a class="btn btn-fill" href={primary.href}>{primary.label} <Icon name="arrow_forward" /></a><a class="btn" href={secondary.href}>{secondary.label}</a></div>
+</div></div></section>

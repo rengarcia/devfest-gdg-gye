@@ -1,0 +1,13 @@
+---
+import Lockup from './Lockup.astro';
+import Icon from './Icon.astro';
+import { event, nav } from '../data/event';
+
+const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
+const current = normalize(Astro.url.pathname);
+---
+<header class="site-header"><div class="wrap">
+<Lockup href="/" label="DevFest Guayaquil, inicio" />
+<nav class="nav-wrap" id="nav" aria-label="Principal"><ul class="nav">{nav.map((l) => <li><a href={l.href} aria-current={normalize(l.href) === current ? 'page' : undefined}>{l.label}</a></li>)}</ul><div class="nav-extra"><a class="btn btn-fill" href="#registro">Regístrate <Icon name="arrow_forward" /></a><p class="meta"><span>{event.dateShort}</span><span>{event.venue}</span></p></div></nav>
+<div class="header-cta"><a class="btn btn-fill" href="#registro">Regístrate</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú"><Icon name="menu" /></button></div>
+</div></header>

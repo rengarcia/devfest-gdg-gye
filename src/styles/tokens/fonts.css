@@ -1,0 +1,7 @@
+/* SUBSTITUTION NOTE (see the design-system readme > Typography):
+   The DevFest 2026 assets are set in Google Sans Display / Google Sans Text /
+   Google Sans Mono, which are not publicly licensed. DM Sans is the closest
+   open geometric-grotesque match; Roboto Mono stands in for Google Sans Mono.
+   The Google Fonts <link> tags live in src/layouts/BaseLayout.astro so the
+   browser discovers them before the CSS bundle is parsed. Swap both there if
+   you receive the licensed families. */

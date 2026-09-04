@@ -1,0 +1,13 @@
+---
+import Lockup from './Lockup.astro';
+import { event } from '../data/event';
+---
+<footer class="site-footer"><div class="wrap">
+<div class="top">
+<div><Lockup href="/" label="DevFest Guayaquil" /><p class="mono" style="margin-top:16px">{event.dateLong}<br />{event.venue}</p></div>
+<div><h4>Evento</h4><ul><li><a href="/agenda">Agenda</a></li><li><a href="/speakers">Speakers</a></li><li><a href="/sponsors">Sponsors</a></li><li><a href="/faq">FAQ</a></li></ul></div>
+<div><h4>Comunidad</h4><ul><li><a href="/nosotros">Nosotros</a></li><li><a href="/organizadores">Organizadores</a></li><li><a href="/faq#conducta">Código de conducta</a></li></ul></div>
+<div><h4>Síguenos</h4><ul><li><a href="#">{event.community}</a></li><li><a href="#">{event.handle}</a></li><li><a href="#">{event.email}</a></li></ul></div>
+</div>
+<div class="bottom"><p class="mono muted" style="font-size:var(--text-mono-sm)">Organizado por voluntarios de GDG Guayaquil. DevFest es una marca de Google.</p><div class="gdg"><img src="/assets/gdg-logo.png" alt="" /><img src="/assets/gdg-wordmark.png" alt="Google Developer Groups" /></div></div>
+</div></footer>

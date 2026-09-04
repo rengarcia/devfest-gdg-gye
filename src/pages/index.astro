@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import PersonCard from '../components/PersonCard.astro';
+import RegistroCta from '../components/RegistroCta.astro';
+import Dots from '../components/Dots.astro';
+import { event } from '../data/event';
+import { featuredSpeakers } from '../data/speakers';
+import { tracks } from '../data/tracks';
+import { homeSponsorTiles } from '../data/sponsors';
+---
+<BaseLayout title="Inicio" description="DevFest Guayaquil 2026, 5 de diciembre en ESPOL. Charlas, workshops y comunidad." family="yellow">
+
+<section class="section" style="padding-top:var(--space-9);position:relative;overflow:clip"><div class="wrap" style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--space-8);align-items:center">
+<div style="display:grid;gap:var(--space-5)">
+<div class="chips sticker"><span class="chip chip-tint">{event.dateShort}</span><span class="chip">ESPOL Campus</span><span class="chip">{event.capacity} asistentes</span></div>
+<h1 class="xl sticker" style="--d:90ms">La comunidad developer de Guayaquil, un solo día.</h1>
+<p class="lead sticker" style="--d:180ms">Charlas, workshops y networking con la gente que construye tecnología en Ecuador. Gratis, organizado por voluntarios de GDG Guayaquil.</p>
+<div class="sticker" style="--d:260ms;display:flex;gap:var(--space-3);flex-wrap:wrap"><a class="btn btn-fill" href="#registro">Regístrate <Icon name="arrow_forward" /></a><a class="btn" href="/agenda">Ver agenda</a></div>
+</div>
+<div style="position:relative;min-height:440px" aria-hidden="true">
+<div class="notch sticker" style="--d:120ms;position:absolute;left:8%;top:6%;width:62%"><div class="notch-media"><img src="/assets/speaker-stage.jpg" alt="" /></div><span class="chip notch-tag" style="font-size:var(--text-mono-xs)">{event.year}</span></div>
+<img class="float" style="--d:320ms;position:absolute;right:0;top:0;width:24%" src="/assets/glyphs/asterisk.png" alt="" />
+<img class="float" style="--d:400ms;position:absolute;right:6%;bottom:14%;width:22%" src="/assets/glyphs/plus-blue.png" alt="" />
+<img class="float" style="--d:480ms;position:absolute;left:0;bottom:0;width:20%" src="/assets/glyphs/half-circle-yellow.png" alt="" />
+</div>
+</div></section>
+
+<section class="section section-bg" style="padding-block:var(--space-9)"><div class="wrap"><div class="grid g4" data-stagger>
+<div class="stat" data-reveal><b data-count="500">0</b><span>asistentes</span></div>
+<div class="stat" data-reveal><b data-count="4">0</b><span>tracks: Web, Mobile, Cloud, AI</span></div>
+<div class="stat" data-reveal><b data-count="24" data-suffix="+">0</b><span>charlas y workshops</span></div>
+<div class="stat" data-reveal><b data-count="1">0</b><span>día, 08:30 – 18:00</span></div>
+</div></div></section>
+
+<section class="section"><div class="wrap">
+<div class="section-head" data-reveal><p class="eyebrow">Speakers</p><h2 class="lg">Quienes suben al escenario</h2><p class="lead">Ingenieras, GDEs y founders de la región. Confirmamos speakers cada semana hasta el evento.</p></div>
+<div class="grid g3">{featuredSpeakers.map((s, i) => <PersonCard family={s.family} initials={s.initials} tag={s.track} talk={s.talk} name={s.name} role={s.role} delay={i * 80} />)}</div>
+<div data-reveal style="margin-top:var(--space-6)"><a class="btn" href="/speakers">Todos los speakers <Icon name="arrow_forward" /></a></div>
+</div></section>
+
+<section class="section" style="padding-top:0"><div class="wrap">
+<div class="section-head" data-reveal><p class="eyebrow">Tracks</p><h2 class="lg">Cuatro salas, un campus</h2></div>
+<div class="grid g4" data-stagger>
+{tracks.map((t) => <a class="card card-sm hover-lift" href="/agenda" data-family={t.family} data-reveal style="display:grid;gap:var(--space-4);text-decoration:none;background:var(--tint)"><img src={`/assets/glyphs/${t.glyph}.png`} alt="" style="height:56px;width:auto" /><h3 class="sm">{t.id}</h3><p>{t.blurb}</p><span class="chip" style="justify-self:start">Ver charlas</span></a>)}
+</div></div></section>
+
+<section class="section section-bg"><div class="wrap">
+<div class="scallop" data-reveal style="text-align:center;max-width:960px;margin-inline:auto">
+<img src="/assets/glyphs/quote-open.png" alt="" style="height:44px;width:auto;margin:0 auto var(--space-5)" />
+<p class="title" style="font-size:var(--text-display-md)"><b>DevFest</b> es el día en que Guayaquil deja de ser una ciudad con developers y se convierte en una comunidad de developers.</p>
+<p class="mono muted" style="margin-top:var(--space-5)">Equipo organizador / GDG Guayaquil</p>
+</div></div></section>
+
+<section class="section"><div class="wrap">
+<div class="section-head" data-reveal><p class="eyebrow">Sponsors</p><h2 class="md">Con el apoyo de</h2></div>
+<div class="grid g4" data-stagger>{homeSponsorTiles.map((label) => <a class="logo-tile hover-lift" href="/sponsors" data-reveal>{label}</a>)}</div>
+<p data-reveal style="margin-top:var(--space-5)"><a href="/sponsors">Conoce los paquetes de patrocinio</a></p>
+</div></section>
+<Dots />
+<RegistroCta />
+</BaseLayout>

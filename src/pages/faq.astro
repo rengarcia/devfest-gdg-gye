@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import RegistroCta from '../components/RegistroCta.astro';
+import Dots from '../components/Dots.astro';
+import { event } from '../data/event';
+import { faq } from '../data/faq';
+---
+<BaseLayout title="FAQ" description="Preguntas frecuentes sobre DevFest Guayaquil 2026." family="green">
+
+<PageHero eyebrow="FAQ" title="Preguntas frecuentes" lead={`Si no encuentras la respuesta, escríbenos a ${event.email}.`} glyphs={['semicolon', 'x-pink', 'dot-green']} />
+
+<section class="section faq" style="padding-top:0"><div class="wrap" style="max-width:860px">
+{faq.map((item, i) => (
+  <details data-reveal style={`--d:${Math.min(i * 50, 250)}ms`} id={item.id}><summary><span>{item.q}</span><Icon name="add" /></summary><div class="a"><p>{item.a}</p></div></details>
+))}
+</div></section>
+<Dots />
+<RegistroCta lead="¿Ya resolviste tus dudas? Los cupos se agotan cada año antes de noviembre." />
+</BaseLayout>

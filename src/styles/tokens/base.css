@@ -1,0 +1,9 @@
+html{-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-text);font-size:var(--text-body-md);line-height:var(--leading-body)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:var(--weight-bold);letter-spacing:var(--tracking-display);line-height:var(--leading-display);margin:0}
+p{margin:0}
+a{color:var(--text-link);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;transition:opacity var(--dur-fast) var(--ease-standard)}
+a:hover{opacity:.62}
+code,kbd,pre{font-family:var(--font-mono)}
+*,*::before,*::after{box-sizing:border-box}
+button{font-family:inherit}

@@ -1,0 +1,36 @@
+:root{
+/* --- Core (Google palette, per brand guide) --- */
+--gdg-blue-500:#4285f4;--gdg-green-500:#34a853;--gdg-yellow-600:#f9ab00;--gdg-red-500:#ea4335;
+/* --- Halftones: emphasis, fills on light grounds --- */
+--gdg-halftone-blue:#57caff;--gdg-halftone-green:#5cdb6d;--gdg-halftone-yellow:#ffd427;--gdg-halftone-red:#ff7daf;
+/* --- Pastels: large area fills, backgrounds, tints --- */
+--gdg-pastel-blue:#c3ecf6;--gdg-pastel-green:#ccf6c5;--gdg-pastel-yellow:#ffe7a5;--gdg-pastel-red:#f8d8d8;
+/* --- Grayscale --- */
+--gdg-off-white:#f0f0f0;--gdg-black-02:#1e1e1e;--gdg-white:#ffffff;
+
+/* --- Semantic: surfaces --- */
+--surface-page:var(--gdg-off-white);
+--surface-card:var(--gdg-white);
+--surface-inverse:var(--gdg-black-02);
+--surface-tint-blue:var(--gdg-pastel-blue);
+--surface-tint-green:var(--gdg-pastel-green);
+--surface-tint-yellow:var(--gdg-pastel-yellow);
+--surface-tint-red:var(--gdg-pastel-red);
+
+/* --- Semantic: ink (derived, not documented in the guide) --- */
+--text-body:var(--gdg-black-02);
+--text-muted:#6f6f6f;
+--text-inverse:var(--gdg-off-white);
+--text-link:var(--gdg-black-02);
+
+/* --- Semantic: line --- */
+--line-strong:var(--gdg-black-02);
+--line-soft:#d3d3d3;
+
+/* --- Semantic: accents --- */
+--accent-primary:var(--gdg-yellow-600);
+--accent-blue:var(--gdg-blue-500);
+--accent-green:var(--gdg-green-500);
+--accent-red:var(--gdg-red-500);
+--accent-yellow:var(--gdg-yellow-600);
+}
