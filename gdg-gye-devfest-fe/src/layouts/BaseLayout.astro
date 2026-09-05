@@ -4,7 +4,8 @@ import '../styles/ds.css';
 import '../styles/site.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { event, type Family } from '../data/event';
+import type { Family } from '../data/site';
+import { getSiteSettings } from '../sanity/content';
 
 interface Props {
   /** Page name shown before " · DevFest Guayaquil 2026" */
@@ -14,6 +15,7 @@ interface Props {
   family?: Family;
 }
 const { title, description, family = 'yellow' } = Astro.props;
+const settings = await getSiteSettings();
 ---
 
 <!doctype html>
@@ -21,7 +23,7 @@ const { title, description, family = 'yellow' } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title} · {event.title}</title>
+    <title>{title} · {settings.title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

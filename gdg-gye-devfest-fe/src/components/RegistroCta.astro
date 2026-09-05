@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { event } from '../data/event';
+import { getSiteSettings } from '../sanity/content';
 
 interface Link {
   label: string;
@@ -13,11 +13,12 @@ interface Props {
   primary?: Link;
   secondary?: Link;
 }
+const settings = await getSiteSettings();
 const {
   eyebrow = 'Registro',
-  title = 'Reserva tu lugar en DevFest Guayaquil 2026',
-  lead = 'Cupos limitados a 500 asistentes. La entrada es gratuita y requiere registro previo.',
-  primary = { label: 'Regístrate', href: event.registerHref },
+  title = `Reserva tu lugar en ${settings.title}`,
+  lead = `Cupos limitados a ${settings.capacity} asistentes. La entrada es gratuita y requiere registro previo.`,
+  primary = { label: 'Regístrate', href: settings.registerHref },
   secondary = { label: 'Ver agenda', href: '/agenda' },
 } = Astro.props;
 ---

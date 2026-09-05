@@ -27,3 +27,6 @@
 
 # Dotenv and similar local-only files
 *.local
+
+# Schema extracted for TypeGen (npm run typegen)
+schema.json

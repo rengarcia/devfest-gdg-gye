@@ -3,7 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { speakers } from '../data/speakers';
+import { getSpeakers } from '../sanity/content';
+
+const speakers = await getSpeakers();
 ---
 
 <BaseLayout
@@ -51,7 +53,8 @@ import { speakers } from '../data/speakers';
           preparar la propuesta y a ensayar.
         </p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
           <a class="btn btn--fill" href="#">Enviar propuesta</a><a class="btn" href="/faq"
-            >Leer los criterios</a>
+            >Leer los criterios</a
+          >
         </div><p class="mono mono--muted" style="font-size:var(--text-mono-sm)">
           El CFP cierra el 15 de octubre de 2026
         </p>

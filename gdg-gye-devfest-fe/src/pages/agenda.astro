@@ -4,7 +4,9 @@ import PageHero from '../components/PageHero.astro';
 import SessionRow from '../components/SessionRow.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { schedule } from '../data/agenda';
+import { getSchedule } from '../sanity/content';
+
+const schedule = await getSchedule();
 ---
 
 <BaseLayout
@@ -27,13 +29,13 @@ import { schedule } from '../data/agenda';
             <button
               role="tab"
               class="tabs__tab"
-              id={`tab-${track.id}`}
-              aria-controls={`panel-${track.id}`}
+              id={`tab-${track.slug}`}
+              aria-controls={`panel-${track.slug}`}
               aria-selected={i === 0 ? 'true' : 'false'}
               tabindex={i === 0 ? 0 : -1}
               data-family={track.family}
             >
-              {track.id}
+              {track.name}
             </button>
           ))
         }
@@ -42,8 +44,8 @@ import { schedule } from '../data/agenda';
         schedule.map(({ track, sessions }, i) => (
           <div
             role="tabpanel"
-            id={`panel-${track.id}`}
-            aria-labelledby={`tab-${track.id}`}
+            id={`panel-${track.slug}`}
+            aria-labelledby={`tab-${track.slug}`}
             hidden={i !== 0}
             style="margin-top:var(--space-6)"
           >

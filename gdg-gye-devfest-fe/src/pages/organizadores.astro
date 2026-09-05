@@ -3,7 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { organizers } from '../data/organizers';
+import { getOrganizers } from '../sanity/content';
+
+const organizers = await getOrganizers();
 
 const voluntariado = [
   { n: '40', label: 'voluntarios' },
@@ -56,7 +58,8 @@ const voluntariado = [
           todas las charlas fuera de tu turno.
         </p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
           <a class="btn btn--fill" href="#">Quiero ser voluntario</a><a class="btn" href="/faq"
-            >Preguntas frecuentes</a>
+            >Preguntas frecuentes</a
+          >
         </div>
       </div>
       <div class="grid" data-stagger style="grid-template-columns:1fr 1fr">

@@ -1,6 +1,8 @@
 ---
 import Lockup from './Lockup.astro';
-import { event } from '../data/event';
+import { getSiteSettings } from '../sanity/content';
+
+const settings = await getSiteSettings();
 ---
 
 <footer class="site-footer">
@@ -8,7 +10,7 @@ import { event } from '../data/event';
     <div class="site-footer__top">
       <div>
         <Lockup href="/" label="DevFest Guayaquil" /><p class="mono" style="margin-top:16px">
-          {event.dateLong}<br />{event.venue}
+          {settings.dateLong}<br />{settings.venue}
         </p>
       </div>
       <div>
@@ -29,9 +31,13 @@ import { event } from '../data/event';
       </div>
       <div>
         <h4 class="site-footer__heading">Síguenos</h4><ul class="site-footer__list">
-          <li><a class="site-footer__link" href="#">{event.community}</a></li><li>
-            <a class="site-footer__link" href="#">{event.handle}</a>
-          </li><li><a class="site-footer__link" href="#">{event.email}</a></li>
+          <li>
+            <a class="site-footer__link" href={settings.communityUrl}>{settings.communityLabel}</a>
+          </li><li>
+            <a class="site-footer__link" href={settings.socialHref}>{settings.handle}</a>
+          </li><li>
+            <a class="site-footer__link" href={`mailto:${settings.email}`}>{settings.email}</a>
+          </li>
         </ul>
       </div>
     </div>

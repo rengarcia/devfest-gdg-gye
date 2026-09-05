@@ -1010,6 +1010,16 @@ img {
   min-height: 180px;
   font-size: var(--text-mono-md);
 }
+.logo-tile__img {
+  max-width: 100%;
+  max-height: 72px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.logo-tile--big .logo-tile__img {
+  max-height: 112px;
+}
 /* Stats */
 .stat {
   display: grid;

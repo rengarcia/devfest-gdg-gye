@@ -1,8 +1,10 @@
 ---
 import Lockup from './Lockup.astro';
 import Icon from './Icon.astro';
-import { event, nav } from '../data/event';
+import { nav } from '../data/site';
+import { getSiteSettings } from '../sanity/content';
 
+const settings = await getSiteSettings();
 const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
 const current = normalize(Astro.url.pathname);
 ---
@@ -28,7 +30,7 @@ const current = normalize(Astro.url.pathname);
       </ul><div class="nav__extra">
         <a class="btn btn--fill nav__cta" href="#registro"
           >Regístrate <Icon name="arrow_forward" class="btn__icon" /></a
-        ><p class="nav__meta"><span>{event.dateShort}</span><span>{event.venue}</span></p>
+        ><p class="nav__meta"><span>{settings.dateShort}</span><span>{settings.venue}</span></p>
       </div>
     </nav>
     <div class="site-header__actions">
@@ -37,7 +39,8 @@ const current = normalize(Astro.url.pathname);
         type="button"
         aria-expanded="false"
         aria-controls="nav"
-        aria-label="Abrir menú"><Icon name="menu" class="site-header__toggle-icon" /></button>
+        aria-label="Abrir menú"><Icon name="menu" class="site-header__toggle-icon" /></button
+      >
     </div>
   </div>
 </header>

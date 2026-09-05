@@ -2,7 +2,8 @@
 
 Sitio estático del DevFest Guayaquil 2026 (GDG Guayaquil), construido con [Astro](https://astro.build).
 Es un port fiel del proyecto de Claude Design _Devfest Guayaquil webpage design_: mismo HTML, CSS,
-tokens y comportamiento, reorganizado en layouts, componentes y datos tipados.
+tokens y comportamiento, reorganizado en layouts y componentes. El contenido vive en Sanity
+(Studio en [`../studio-gdg-gye-devfest`](../studio-gdg-gye-devfest)) y se lee al hacer el build.
 
 ## Comandos
 
@@ -14,13 +15,18 @@ tokens y comportamiento, reorganizado en layouts, componentes y datos tipados.
 | `npm run preview` | Sirve `dist/` localmente                   |
 | `npm run check`   | Chequeo de tipos de `.astro` y `.ts`       |
 
+Antes de arrancar, copia `.env.example` a `.env` (id de proyecto y dataset de Sanity; no son
+secretos).
+
 ## Estructura
 
 ```
 public/assets/            Logos, fotos y glyphs del kit DevFest 2026 (PNG con alpha)
+sanity.types.ts           Tipos generados desde el schema (`npm run typegen` en el Studio)
 src/
-  data/                   Contenido editable: evento, navegación, speakers, agenda, FAQ,
-                          organizadores, sponsors
+  data/site.ts            Constantes de código: navegación y familias de color
+  sanity/                 Cliente, consultas GROQ (`queries.ts`) y helpers que dan forma al
+                          contenido para las páginas (`content.ts`)
   styles/tokens/          Tokens del design system (color, tipografía, espacio, forma, motion)
   styles/ds.css           Punto de entrada de los tokens
   styles/site.css         Estilos del sitio sobre los tokens
@@ -32,12 +38,17 @@ src/
 
 ## Editar contenido
 
-Todo el texto que cambia de una edición a otra vive en `src/data/`:
+Todo el texto que cambia de una edición a otra se edita en el Studio de Sanity
+(`cd ../studio-gdg-gye-devfest && npm run dev`):
 
-- `event.ts`: fecha, sede, cupo, correos y enlaces de navegación. `registerHref` apunta a `#`
-  hasta que exista el formulario de registro.
-- `speakers.ts`, `agenda.ts`, `faq.ts`, `organizers.ts`, `sponsors.ts`: listas que las páginas
-  recorren para generar las tarjetas, filas de agenda y tiles.
+- **Configuración del sitio**: fecha, sede, cupo, correos, enlaces y los tres speakers de la
+  portada. El enlace de registro queda vacío (botón como marcador) hasta que exista el formulario.
+- **Tracks, sesiones, speakers, organizadores, niveles de patrocinio, sponsors y FAQ**: listas que
+  las páginas recorren para generar las tarjetas, filas de agenda y tiles.
+
+El sitio es estático: después de publicar en el Studio hay que volver a hacer el build. Si cambias
+el schema o una consulta en `src/sanity/queries.ts`, ejecuta `npm run typegen` en el Studio para
+regenerar `sanity.types.ts`.
 
 Cada página elige una familia de color (`family="yellow" | "blue" | "green" | "red"`) en su
 `BaseLayout`, siguiendo la regla del brand guide de un solo acento por pieza.

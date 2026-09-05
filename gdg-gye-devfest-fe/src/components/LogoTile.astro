@@ -1,0 +1,22 @@
+---
+import type { SponsorTile } from '../sanity/content';
+
+/** Sponsor tile: the logo once one is uploaded, the name until then. */
+interface Props {
+  sponsor: SponsorTile;
+  /** Defaults to the sponsor's own site. */
+  href?: string;
+  big?: boolean;
+}
+const { sponsor, href = sponsor.href, big = false } = Astro.props;
+---
+
+<a class:list={['logo-tile', 'hover-lift', 'reveal', { 'logo-tile--big': big }]} href={href}>
+  {
+    sponsor.logo ? (
+      <img class="logo-tile__img" src={sponsor.logo.src} alt={sponsor.logo.alt} loading="lazy" />
+    ) : (
+      sponsor.name
+    )
+  }
+</a>

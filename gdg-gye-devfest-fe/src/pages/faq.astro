@@ -4,8 +4,9 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { event } from '../data/event';
-import { faq } from '../data/faq';
+import { getFaq, getSiteSettings } from '../sanity/content';
+
+const [settings, faq] = await Promise.all([getSiteSettings(), getFaq()]);
 ---
 
 <BaseLayout
@@ -16,7 +17,7 @@ import { faq } from '../data/faq';
   <PageHero
     eyebrow="FAQ"
     title="Preguntas frecuentes"
-    lead={`Si no encuentras la respuesta, escríbenos a ${event.email}.`}
+    lead={`Si no encuentras la respuesta, escríbenos a ${settings.email}.`}
     glyphs={['semicolon', 'x-pink', 'dot-green']}
   />
 
@@ -24,16 +25,20 @@ import { faq } from '../data/faq';
     <div class="wrap" style="max-width:860px">
       {
         faq.map((item, i) => (
-          <details class="faq__item reveal" style={`--d:${Math.min(i * 50, 250)}ms`} id={item.id}>
+          <details
+            class="faq__item reveal"
+            style={`--d:${Math.min(i * 50, 250)}ms`}
+            id={item.anchor}
+          >
             <>
               <summary class="faq__summary">
                 <>
-                  <span>{item.q}</span>
+                  <span>{item.question}</span>
                   <Icon name="add" class="faq__icon" />
                 </>
               </summary>
               <div class="faq__answer">
-                <p>{item.a}</p>
+                <p>{item.answer}</p>
               </div>
             </>
           </details>

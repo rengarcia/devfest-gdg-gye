@@ -1,9 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
+import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { event } from '../data/event';
-import { tiers, communityTiles } from '../data/sponsors';
+import { getSiteSettings, getSponsorTiers } from '../sanity/content';
+
+const [settings, tiers] = await Promise.all([getSiteSettings(), getSponsorTiers()]);
+const paid = tiers.filter((t) => t.kind === 'paid');
+const community = tiers.filter((t) => t.kind === 'community');
 ---
 
 <BaseLayout
@@ -19,7 +23,8 @@ import { tiers, communityTiles } from '../data/sponsors';
   />
 
   {
-    tiers.map((tier) => (
+    /* The top tier gets bigger tiles in a two-column grid, as in the design. */
+    paid.map((tier, i) => (
       <section class="section" style="padding-block:var(--space-9)" data-family={tier.family}>
         <div
           class="wrap"
@@ -30,7 +35,7 @@ import { tiers, communityTiles } from '../data/sponsors';
               <span class="chip chip--tint" style="justify-self:start">
                 {tier.name}
               </span>
-              <h2 class="display display--md">{tier.title}</h2>
+              <h2 class="display display--md">{tier.headline}</h2>
               <ul style="margin:0;padding-left:20px;display:grid;gap:8px">
                 {tier.perks.map((p) => (
                   <li>{p}</li>
@@ -38,14 +43,9 @@ import { tiers, communityTiles } from '../data/sponsors';
               </ul>
             </>
           </div>
-          <div class:list={['grid', tier.grid]} data-stagger>
-            {tier.tiles.map((label) => (
-              <a
-                class:list={['logo-tile', 'hover-lift', 'reveal', { 'logo-tile--big': tier.big }]}
-                href="#"
-              >
-                {label}
-              </a>
+          <div class:list={['grid', i === 0 ? 'grid--2' : 'grid--3']} data-stagger>
+            {tier.sponsors.map((s) => (
+              <LogoTile sponsor={s} big={i === 0} />
             ))}
           </div>
         </div>
@@ -53,34 +53,32 @@ import { tiers, communityTiles } from '../data/sponsors';
     ))
   }
 
-  <section class="section section--tint" data-family="red">
-    <div class="wrap">
-      <div class="section__head reveal">
-        <span class="chip chip--tint" style="justify-self:start">Community</span><h2
-          class="display display--md"
-        >
-          Comunidades y universidades aliadas
-        </h2><p class="lead">
-          Espacio sin costo para comunidades tech, universidades y medios que difunden el evento.
-        </p>
-      </div>
-      <div class="grid grid--4" data-stagger>
-        {
-          communityTiles.map((label) => (
-            <a class="logo-tile hover-lift reveal" href="#">
-              {label}
-            </a>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  {
+    community.map((tier) => (
+      <section class="section section--tint" data-family={tier.family}>
+        <div class="wrap">
+          <div class="section__head reveal">
+            <span class="chip chip--tint" style="justify-self:start">
+              {tier.name}
+            </span>
+            <h2 class="display display--md">{tier.headline}</h2>
+            {tier.description && <p class="lead">{tier.description}</p>}
+          </div>
+          <div class="grid grid--4" data-stagger>
+            {tier.sponsors.map((s) => (
+              <LogoTile sponsor={s} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
 
   <RegistroCta
     eyebrow="Patrocina"
     title="Pon tu marca frente a 500 developers"
     lead="Te enviamos el prospecto con precios y disponibilidad en menos de 48 horas."
     primary={{ label: 'Pedir el prospecto', href: '#' }}
-    secondary={{ label: event.sponsorsEmail, href: '#' }}
+    secondary={{ label: settings.sponsorsEmail, href: `mailto:${settings.sponsorsEmail}` }}
   />
 </BaseLayout>

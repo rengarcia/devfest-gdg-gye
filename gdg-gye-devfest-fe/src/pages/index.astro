@@ -2,12 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import PersonCard from '../components/PersonCard.astro';
+import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { event } from '../data/event';
-import { featuredSpeakers } from '../data/speakers';
-import { tracks } from '../data/tracks';
-import { homeSponsorTiles } from '../data/sponsors';
+import { getHomeSponsors, getSiteSettings, getTracks } from '../sanity/content';
+
+const [settings, tracks, sponsors] = await Promise.all([
+  getSiteSettings(),
+  getTracks(),
+  getHomeSponsors(),
+]);
+const { featuredSpeakers } = settings;
 ---
 
 <BaseLayout
@@ -22,9 +27,9 @@ import { homeSponsorTiles } from '../data/sponsors';
     >
       <div style="display:grid;gap:var(--space-5)">
         <div class="chips sticker">
-          <span class="chip chip--tint">{event.dateShort}</span><span class="chip"
+          <span class="chip chip--tint">{settings.dateShort}</span><span class="chip"
             >ESPOL Campus</span
-          ><span class="chip">{event.capacity} asistentes</span>
+          ><span class="chip">{settings.capacity} asistentes</span>
         </div>
         <h1 class="display display--xl sticker" style="--d:90ms">
           La comunidad developer de Guayaquil, un solo día.
@@ -44,7 +49,8 @@ import { homeSponsorTiles } from '../data/sponsors';
           <div class="notch__media">
             <img class="notch__img" src="/assets/speaker-stage.jpg" alt="" />
           </div><span class="chip notch__tag" style="font-size:var(--text-mono-xs)"
-            >{event.year}</span>
+            >{settings.year}</span
+          >
         </div>
         <img
           class="float"
@@ -76,15 +82,18 @@ import { homeSponsorTiles } from '../data/sponsors';
         </div>
         <div class="stat reveal">
           <b class="stat__value" data-count="4">0</b><span class="stat__label"
-            >tracks: Web, Mobile, Cloud, AI</span>
+            >tracks: Web, Mobile, Cloud, AI</span
+          >
         </div>
         <div class="stat reveal">
           <b class="stat__value" data-count="24" data-suffix="+">0</b><span class="stat__label"
-            >charlas y workshops</span>
+            >charlas y workshops</span
+          >
         </div>
         <div class="stat reveal">
           <b class="stat__value" data-count="1">0</b><span class="stat__label"
-            >día, 08:30 – 18:00</span>
+            >día, 08:30 – 18:00</span
+          >
         </div>
       </div>
     </div>
@@ -117,7 +126,8 @@ import { homeSponsorTiles } from '../data/sponsors';
       </div>
       <div class="reveal" style="margin-top:var(--space-6)">
         <a class="btn" href="/speakers"
-          >Todos los speakers <Icon name="arrow_forward" class="btn__icon" /></a>
+          >Todos los speakers <Icon name="arrow_forward" class="btn__icon" /></a
+        >
       </div>
     </div>
   </section>
@@ -138,7 +148,7 @@ import { homeSponsorTiles } from '../data/sponsors';
             >
               <>
                 <img src={`/assets/glyphs/${t.glyph}.png`} alt="" style="height:56px;width:auto" />
-                <h3 class="display display--sm">{t.id}</h3>
+                <h3 class="display display--sm">{t.name}</h3>
                 <p>{t.blurb}</p>
                 <span class="chip" style="justify-self:start">
                   Ver charlas
@@ -176,13 +186,7 @@ import { homeSponsorTiles } from '../data/sponsors';
         <p class="eyebrow">Sponsors</p><h2 class="display display--md">Con el apoyo de</h2>
       </div>
       <div class="grid grid--4" data-stagger>
-        {
-          homeSponsorTiles.map((label) => (
-            <a class="logo-tile hover-lift reveal" href="/sponsors">
-              {label}
-            </a>
-          ))
-        }
+        {sponsors.map((s) => <LogoTile sponsor={s} href="/sponsors" />)}
       </div>
       <p class="reveal" style="margin-top:var(--space-5)">
         <a href="/sponsors">Conoce los paquetes de patrocinio</a>

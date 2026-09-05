@@ -15,10 +15,29 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 Run `npm run format` (Prettier, config in `.prettierrc`), then `npm run build` and `npm run check`
 before calling a change done.
 
+Content comes from Sanity (project `l2u3btbc`, dataset `production`) and is fetched at build time,
+so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.env.example`).
+
+## Content (Sanity)
+
+- The Studio is the sibling folder `../studio-gdg-gye-devfest`; it stays standalone, never embedded
+  here. Schema in `studio-gdg-gye-devfest/schemaTypes/`, seed script in `scripts/seed-content.ts`.
+- `src/sanity/queries.ts` holds every GROQ query (`defineQuery`, unique `*_QUERY` names).
+  `src/sanity/content.ts` fetches them and shapes the results into the view models pages consume
+  (`SpeakerCard`, `TrackSchedule`, `SponsorTierSection`, ...). Pages `await` those helpers in
+  frontmatter; components never query Sanity directly except the shared layout/header/footer/CTA,
+  which read `getSiteSettings()` (memoized per build).
+- `sanity.types.ts` (repo root, committed) is generated: after changing the schema or a query run
+  `npm run typegen` in the Studio. `astro check` depends on it.
+- Plenary sessions (keynote, panel, breaks) have no track and appear in every agenda tab; talks
+  and workshops belong to one track. Sponsor tiers with `kind: paid` render with perks, `community`
+  ones as the tinted partner grid.
+
 ## Conventions
 
-- Content lives in `src/data/*.ts`; pages map over it. Add a speaker, session, FAQ entry or
-  sponsor tier there, not in the page markup.
+- Content lives in Sanity; pages map over the helpers in `src/sanity/content.ts`. Add a speaker,
+  session, FAQ entry or sponsor in the Studio, not in the page markup. `src/data/site.ts` only keeps
+  code-level constants (navigation, the `Family` colour union).
 - Global CSS only (`src/styles/`). Class names follow BEM: `block`, `block__element`,
   `block--modifier` (e.g. `site-header__toggle`, `btn--fill`, `notch__media`). A block gets
   context-specific styling through a mix, not a descendant selector: `class="btn btn--fill nav__cta"`,
