@@ -1,31 +1,8 @@
 import {defineField, defineType} from 'sanity'
 import {TagIcon} from '@sanity/icons/Tag'
 import {familyField} from '../shared/familyField'
+import {GLYPHS} from '../shared/glyphField'
 import {orderByOrder, orderField} from '../shared/orderField'
-
-/** Art from the DevFest kit, served by the site from public/assets/glyphs. Decoration only. */
-const GLYPHS = [
-  'braces',
-  'semicolon',
-  'globe',
-  'at',
-  'asterisk',
-  'heart',
-  'hash-green',
-  'slash-a',
-  'x-pink',
-  'comma-yellow',
-  'plus-blue',
-  'half-circle-yellow',
-  'dot-blue',
-  'dot-green',
-  'dot-red',
-  'dot-yellow',
-  'brace-left',
-  'brace-right',
-  'arrow-right',
-  'quote-open',
-]
 
 export const track = defineType({
   name: 'track',

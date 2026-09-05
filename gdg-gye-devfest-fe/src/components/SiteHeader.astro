@@ -1,10 +1,10 @@
 ---
 import Lockup from './Lockup.astro';
 import Icon from './Icon.astro';
-import { nav } from '../data/site';
 import { getSiteSettings } from '../sanity/content';
 
 const settings = await getSiteSettings();
+const registerLabel = settings.registerCta.primary.label;
 const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
 const current = normalize(Astro.url.pathname);
 ---
@@ -15,7 +15,7 @@ const current = normalize(Astro.url.pathname);
     <nav class="nav" id="nav" aria-label="Principal">
       <ul class="nav__list">
         {
-          nav.map((l) => (
+          settings.navigation.map((l) => (
             <li class="nav__item">
               <a
                 class="nav__link"
@@ -29,12 +29,12 @@ const current = normalize(Astro.url.pathname);
         }
       </ul><div class="nav__extra">
         <a class="btn btn--fill nav__cta" href="#registro"
-          >Regístrate <Icon name="arrow_forward" class="btn__icon" /></a
+          >{registerLabel} <Icon name="arrow_forward" class="btn__icon" /></a
         ><p class="nav__meta"><span>{settings.dateShort}</span><span>{settings.venue}</span></p>
       </div>
     </nav>
     <div class="site-header__actions">
-      <a class="btn btn--fill site-header__cta" href="#registro">Regístrate</a><button
+      <a class="btn btn--fill site-header__cta" href="#registro">{registerLabel}</a><button
         class="site-header__toggle"
         type="button"
         aria-expanded="false"

@@ -3,29 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getOrganizers } from '../sanity/content';
+import { getOrganizers, getOrganizersPage } from '../sanity/content';
 
-const organizers = await getOrganizers();
-
-const voluntariado = [
-  { n: '40', label: 'voluntarios' },
-  { n: '4 h', label: 'por turno' },
-  { n: '6', label: 'equipos' },
-  { n: '1', label: 'briefing previo' },
-];
+const [page, organizers] = await Promise.all([getOrganizersPage(), getOrganizers()]);
+const { volunteering } = page;
 ---
 
-<BaseLayout
-  title="Organizadores"
-  description="El equipo organizador de GDG Guayaquil."
-  family="red"
->
-  <PageHero
-    eyebrow="Organizadores"
-    title="Las personas detrás de DevFest"
-    lead="Ocho organizadores y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar."
-    glyphs={['at', 'dot-red', 'braces']}
-  />
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
 
   <section class="section" style="padding-top:0">
     <div class="wrap">
@@ -51,26 +36,26 @@ const voluntariado = [
       style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center"
     >
       <div class="reveal" style="display:grid;gap:var(--space-4)">
-        <p class="eyebrow">Voluntariado</p><h2 class="display display--lg">
-          Únete al equipo del 5 de diciembre
-        </h2><p class="lead">
-          Acreditación, salas, speakers, redes. Turnos de 4 horas, camiseta, almuerzo y acceso a
-          todas las charlas fuera de tu turno.
-        </p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
-          <a class="btn btn--fill" href="#">Quiero ser voluntario</a><a class="btn" href="/faq"
-            >Preguntas frecuentes</a
-          >
+        <p class="eyebrow">{volunteering.eyebrow}</p><h2 class="display display--lg">
+          {volunteering.title}
+        </h2><p class="lead">{volunteering.lead}</p><div
+          style="display:flex;gap:var(--space-3);flex-wrap:wrap"
+        >
+          <a class="btn btn--fill" href={volunteering.primary.href}>{volunteering.primary.label}</a
+          ><a class="btn" href={volunteering.secondary.href}>{volunteering.secondary.label}</a>
         </div>
       </div>
       <div class="grid" data-stagger style="grid-template-columns:1fr 1fr">
         {
-          voluntariado.map((v) => (
+          /* These figures are shown as written, without the count-up. */
+          volunteering.stats.map((s) => (
             <div class="card card--sm stat reveal">
               <>
                 <b class="stat__value" style="font-size:var(--text-display-md)">
-                  {v.n}
+                  {s.value}
+                  {s.suffix}
                 </b>
-                <span class="stat__label">{v.label}</span>
+                <span class="stat__label">{s.label}</span>
               </>
             </div>
           ))
@@ -79,5 +64,5 @@ const voluntariado = [
     </div>
   </section>
 
-  <RegistroCta />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

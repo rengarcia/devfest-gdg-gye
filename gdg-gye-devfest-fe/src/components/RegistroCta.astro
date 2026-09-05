@@ -1,26 +1,12 @@
 ---
 import Icon from './Icon.astro';
-import { getSiteSettings } from '../sanity/content';
+import type { Cta } from '../sanity/content';
 
-interface Link {
-  label: string;
-  href: string;
-}
+/** The ink card that closes every page. Pages pass their resolved register block (`page.cta`). */
 interface Props {
-  eyebrow?: string;
-  title?: string;
-  lead?: string;
-  primary?: Link;
-  secondary?: Link;
+  cta: Cta;
 }
-const settings = await getSiteSettings();
-const {
-  eyebrow = 'Registro',
-  title = `Reserva tu lugar en ${settings.title}`,
-  lead = `Cupos limitados a ${settings.capacity} asistentes. La entrada es gratuita y requiere registro previo.`,
-  primary = { label: 'Regístrate', href: settings.registerHref },
-  secondary = { label: 'Ver agenda', href: '/agenda' },
-} = Astro.props;
+const { eyebrow, title, lead, primary, secondary } = Astro.props.cta;
 ---
 
 <section class="section" id="registro">

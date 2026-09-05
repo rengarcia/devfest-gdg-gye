@@ -5,21 +5,21 @@ import PersonCard from '../components/PersonCard.astro';
 import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { getHomeSponsors, getSiteSettings, getTracks } from '../sanity/content';
+import PullQuote from '../components/PullQuote.astro';
+import { getHomePage, getHomeSponsors, getTracks } from '../sanity/content';
 
-const [settings, tracks, sponsors] = await Promise.all([
-  getSiteSettings(),
-  getTracks(),
-  getHomeSponsors(),
-]);
-const { featuredSpeakers } = settings;
+const [page, tracks, sponsors] = await Promise.all([getHomePage(), getTracks(), getHomeSponsors()]);
+const { hero, stats, speakers } = page;
+
+/** Where the (up to three) floating glyphs sit around the photo, as in the design. */
+const glyphSpots = [
+  '--d:320ms;position:absolute;right:0;top:0;width:24%',
+  '--d:400ms;position:absolute;right:6%;bottom:14%;width:22%',
+  '--d:480ms;position:absolute;left:0;bottom:0;width:20%',
+];
 ---
 
-<BaseLayout
-  title="Inicio"
-  description="DevFest Guayaquil 2026, 5 de diciembre en ESPOL. Charlas, workshops y comunidad."
-  family="yellow"
->
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
   <section class="section" style="padding-top:var(--space-9);position:relative;overflow:clip">
     <div
       class="wrap"
@@ -27,49 +27,39 @@ const { featuredSpeakers } = settings;
     >
       <div style="display:grid;gap:var(--space-5)">
         <div class="chips sticker">
-          <span class="chip chip--tint">{settings.dateShort}</span><span class="chip"
-            >ESPOL Campus</span
-          ><span class="chip">{settings.capacity} asistentes</span>
+          {
+            hero.chips.map((chip, i) => (
+              <span class:list={['chip', { 'chip--tint': i === 0 }]}>{chip}</span>
+            ))
+          }
         </div>
-        <h1 class="display display--xl sticker" style="--d:90ms">
-          La comunidad developer de Guayaquil, un solo día.
-        </h1>
-        <p class="lead sticker" style="--d:180ms">
-          Charlas, workshops y networking con la gente que construye tecnología en Ecuador. Gratis,
-          organizado por voluntarios de GDG Guayaquil.
-        </p>
+        <h1 class="display display--xl sticker" style="--d:90ms">{hero.title}</h1>
+        <p class="lead sticker" style="--d:180ms">{hero.lead}</p>
         <div class="sticker" style="--d:260ms;display:flex;gap:var(--space-3);flex-wrap:wrap">
-          <a class="btn btn--fill" href="#registro"
-            >Regístrate <Icon name="arrow_forward" class="btn__icon" /></a
-          ><a class="btn" href="/agenda">Ver agenda</a>
+          <a class="btn btn--fill" href={hero.primary.href}
+            >{hero.primary.label} <Icon name="arrow_forward" class="btn__icon" /></a
+          ><a class="btn" href={hero.secondary.href}>{hero.secondary.label}</a>
         </div>
       </div>
       <div style="position:relative;min-height:440px" aria-hidden="true">
         <div class="notch sticker" style="--d:120ms;position:absolute;left:8%;top:6%;width:62%">
           <div class="notch__media">
-            <img class="notch__img" src="/assets/speaker-stage.jpg" alt="" />
-          </div><span class="chip notch__tag" style="font-size:var(--text-mono-xs)"
-            >{settings.year}</span
-          >
+            {hero.figure && <img class="notch__img" src={hero.figure.src} alt={hero.figure.alt} />}
+          </div>{
+            hero.figure?.tag && (
+              <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">
+                {hero.figure.tag}
+              </span>
+            )
+          }
         </div>
-        <img
-          class="float"
-          style="--d:320ms;position:absolute;right:0;top:0;width:24%"
-          src="/assets/glyphs/asterisk.png"
-          alt=""
-        />
-        <img
-          class="float"
-          style="--d:400ms;position:absolute;right:6%;bottom:14%;width:22%"
-          src="/assets/glyphs/plus-blue.png"
-          alt=""
-        />
-        <img
-          class="float"
-          style="--d:480ms;position:absolute;left:0;bottom:0;width:20%"
-          src="/assets/glyphs/half-circle-yellow.png"
-          alt=""
-        />
+        {
+          hero.glyphs
+            .slice(0, glyphSpots.length)
+            .map((g, i) => (
+              <img class="float" style={glyphSpots[i]} src={`/assets/glyphs/${g}.png`} alt="" />
+            ))
+        }
       </div>
     </div>
   </section>
@@ -77,24 +67,16 @@ const { featuredSpeakers } = settings;
   <section class="section section--tint" style="padding-block:var(--space-9)">
     <div class="wrap">
       <div class="grid grid--4" data-stagger>
-        <div class="stat reveal">
-          <b class="stat__value" data-count="500">0</b><span class="stat__label">asistentes</span>
-        </div>
-        <div class="stat reveal">
-          <b class="stat__value" data-count="4">0</b><span class="stat__label"
-            >tracks: Web, Mobile, Cloud, AI</span
-          >
-        </div>
-        <div class="stat reveal">
-          <b class="stat__value" data-count="24" data-suffix="+">0</b><span class="stat__label"
-            >charlas y workshops</span
-          >
-        </div>
-        <div class="stat reveal">
-          <b class="stat__value" data-count="1">0</b><span class="stat__label"
-            >día, 08:30 – 18:00</span
-          >
-        </div>
+        {
+          stats.map((s) => (
+            <div class="stat reveal">
+              <b class="stat__value" data-count={s.count} data-suffix={s.suffix}>
+                {s.count === undefined ? `${s.value}${s.suffix ?? ''}` : 0}
+              </b>
+              <span class="stat__label">{s.label}</span>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -102,16 +84,13 @@ const { featuredSpeakers } = settings;
   <section class="section">
     <div class="wrap">
       <div class="section__head reveal">
-        <p class="eyebrow">Speakers</p><h2 class="display display--lg">
-          Quienes suben al escenario
-        </h2><p class="lead">
-          Ingenieras, GDEs y founders de la región. Confirmamos speakers cada semana hasta el
-          evento.
-        </p>
+        <p class="eyebrow">{speakers.eyebrow}</p><h2 class="display display--lg">
+          {speakers.title}
+        </h2><p class="lead">{speakers.lead}</p>
       </div>
       <div class="grid grid--3">
         {
-          featuredSpeakers.map((s, i) => (
+          speakers.featured.map((s, i) => (
             <PersonCard
               family={s.family}
               initials={s.initials}
@@ -125,8 +104,8 @@ const { featuredSpeakers } = settings;
         }
       </div>
       <div class="reveal" style="margin-top:var(--space-6)">
-        <a class="btn" href="/speakers"
-          >Todos los speakers <Icon name="arrow_forward" class="btn__icon" /></a
+        <a class="btn" href={speakers.link.href}
+          >{speakers.link.label} <Icon name="arrow_forward" class="btn__icon" /></a
         >
       </div>
     </div>
@@ -135,7 +114,9 @@ const { featuredSpeakers } = settings;
   <section class="section" style="padding-top:0">
     <div class="wrap">
       <div class="section__head reveal">
-        <p class="eyebrow">Tracks</p><h2 class="display display--lg">Cuatro salas, un campus</h2>
+        <p class="eyebrow">{page.tracks.eyebrow}</p><h2 class="display display--lg">
+          {page.tracks.title}
+        </h2>
       </div>
       <div class="grid grid--4" data-stagger>
         {
@@ -151,7 +132,7 @@ const { featuredSpeakers } = settings;
                 <h3 class="display display--sm">{t.name}</h3>
                 <p>{t.blurb}</p>
                 <span class="chip" style="justify-self:start">
-                  Ver charlas
+                  {page.tracks.linkLabel}
                 </span>
               </>
             </a>
@@ -169,13 +150,7 @@ const { featuredSpeakers } = settings;
           alt=""
           style="height:44px;width:auto;margin:0 auto var(--space-5)"
         />
-        <p class="scallop__quote" style="font-size:var(--text-display-md)">
-          <b>DevFest</b> es el día en que Guayaquil deja de ser una ciudad con developers y se convierte
-          en una comunidad de developers.
-        </p>
-        <p class="mono mono--muted" style="margin-top:var(--space-5)">
-          Equipo organizador / GDG Guayaquil
-        </p>
+        <PullQuote quote={page.quote} />
       </div>
     </div>
   </section>
@@ -183,16 +158,18 @@ const { featuredSpeakers } = settings;
   <section class="section">
     <div class="wrap">
       <div class="section__head reveal">
-        <p class="eyebrow">Sponsors</p><h2 class="display display--md">Con el apoyo de</h2>
+        <p class="eyebrow">{page.sponsors.eyebrow}</p><h2 class="display display--md">
+          {page.sponsors.title}
+        </h2>
       </div>
       <div class="grid grid--4" data-stagger>
         {sponsors.map((s) => <LogoTile sponsor={s} href="/sponsors" />)}
       </div>
       <p class="reveal" style="margin-top:var(--space-5)">
-        <a href="/sponsors">Conoce los paquetes de patrocinio</a>
+        <a href={page.sponsors.link.href}>{page.sponsors.link.label}</a>
       </p>
     </div>
   </section>
   <Dots />
-  <RegistroCta />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

@@ -4,22 +4,13 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { getFaq, getSiteSettings } from '../sanity/content';
+import { getFaq, getFaqPage } from '../sanity/content';
 
-const [settings, faq] = await Promise.all([getSiteSettings(), getFaq()]);
+const [page, faq] = await Promise.all([getFaqPage(), getFaq()]);
 ---
 
-<BaseLayout
-  title="FAQ"
-  description="Preguntas frecuentes sobre DevFest Guayaquil 2026."
-  family="green"
->
-  <PageHero
-    eyebrow="FAQ"
-    title="Preguntas frecuentes"
-    lead={`Si no encuentras la respuesta, escríbenos a ${settings.email}.`}
-    glyphs={['semicolon', 'x-pink', 'dot-green']}
-  />
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
 
   <section class="section faq" style="padding-top:0">
     <div class="wrap" style="max-width:860px">
@@ -47,5 +38,5 @@ const [settings, faq] = await Promise.all([getSiteSettings(), getFaq()]);
     </div>
   </section>
   <Dots />
-  <RegistroCta lead="¿Ya resolviste tus dudas? Los cupos se agotan cada año antes de noviembre." />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

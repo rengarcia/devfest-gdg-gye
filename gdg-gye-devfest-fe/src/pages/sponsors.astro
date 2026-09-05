@@ -3,24 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getSiteSettings, getSponsorTiers } from '../sanity/content';
+import { getSponsorTiers, getSponsorsPage } from '../sanity/content';
 
-const [settings, tiers] = await Promise.all([getSiteSettings(), getSponsorTiers()]);
+const [page, tiers] = await Promise.all([getSponsorsPage(), getSponsorTiers()]);
 const paid = tiers.filter((t) => t.kind === 'paid');
 const community = tiers.filter((t) => t.kind === 'community');
 ---
 
-<BaseLayout
-  title="Sponsors"
-  description="Paquetes de patrocinio de DevFest Guayaquil 2026."
-  family="blue"
->
-  <PageHero
-    eyebrow="Sponsors"
-    title="Las empresas que hacen posible el evento"
-    lead="DevFest es gratis para 500 asistentes porque las empresas de la región lo respaldan. Así se ve ese apoyo."
-    glyphs={['plus-blue', 'dot-red', 'half-circle-yellow']}
-  />
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
 
   {
     /* The top tier gets bigger tiles in a two-column grid, as in the design. */
@@ -74,11 +65,5 @@ const community = tiers.filter((t) => t.kind === 'community');
     ))
   }
 
-  <RegistroCta
-    eyebrow="Patrocina"
-    title="Pon tu marca frente a 500 developers"
-    lead="Te enviamos el prospecto con precios y disponibilidad en menos de 48 horas."
-    primary={{ label: 'Pedir el prospecto', href: '#' }}
-    secondary={{ label: settings.sponsorsEmail, href: `mailto:${settings.sponsorsEmail}` }}
-  />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

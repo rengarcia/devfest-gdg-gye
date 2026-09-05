@@ -43,9 +43,68 @@ export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
     communityUrl,
     handle,
     socialUrl,
-    featuredSpeakers[]->{ ${speakerCardFields} }
+    navigation,
+    registerCta,
+    footer
   }
 `);
+
+/* Pages: one singleton per route, its id equal to its type -------------------------------------- */
+
+export const HOME_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "homePage" && _id == "homePage"][0]{
+    seo,
+    family,
+    hero,
+    stats,
+    speakers{
+      eyebrow,
+      title,
+      lead,
+      link,
+      featured[]->{ ${speakerCardFields} }
+    },
+    tracks,
+    quote,
+    sponsors,
+    cta
+  }
+`);
+
+export const AGENDA_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, cta }
+`);
+
+export const SPEAKERS_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, cta }
+`);
+
+export const SPONSORS_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, cta }
+`);
+
+export const ABOUT_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "aboutPage" && _id == "aboutPage"][0]{
+    seo,
+    family,
+    hero,
+    intro,
+    principles,
+    history,
+    venue,
+    cta
+  }
+`);
+
+export const ORGANIZERS_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "organizersPage" && _id == "organizersPage"][0]{ seo, family, hero, volunteering, cta }
+`);
+
+export const FAQ_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "faqPage" && _id == "faqPage"][0]{ seo, family, hero, cta }
+`);
+
+/* Collections ---------------------------------------------------------------------------------- */
 
 export const TRACKS_QUERY = defineQuery(/* groq */ `
   *[_type == "track"] | order(coalesce(order, 9999) asc, name asc){

@@ -1,6 +1,7 @@
 /**
  * Seeds the dataset with the DevFest Guayaquil 2026 content that used to live in
- * gdg-gye-devfest-fe/src/data/*.ts. Run it once from this folder, logged in with the CLI:
+ * gdg-gye-devfest-fe/src/data/*.ts and src/pages/*.astro. Run it once from this folder, logged in
+ * with the CLI:
  *
  *   npm run seed
  *
@@ -8,6 +9,7 @@
  * content. Sanity assigns every _id except the siteSettings singleton.
  */
 import {getCliClient} from 'sanity/cli'
+import {PAGE_TYPES, SITE_CHROME, seedPages} from './lib/pages'
 
 const client = getCliClient({apiVersion: '2026-09-05'})
 
@@ -15,7 +17,6 @@ type Family = 'yellow' | 'blue' | 'green' | 'red'
 
 const ref = (id: string) => ({_type: 'reference' as const, _ref: id})
 const slug = (current: string) => ({_type: 'slug' as const, current})
-const key = () => crypto.randomUUID().slice(0, 12)
 
 /* ---------------------------------------------------------------------------------------------- */
 
@@ -361,6 +362,7 @@ const FAQ: FaqSeed[] = [
 
 const SEEDED_TYPES = [
   'siteSettings',
+  ...PAGE_TYPES,
   'track',
   'session',
   'speaker',
@@ -474,9 +476,11 @@ async function main() {
     sponsorsEmail: 'info@gdggye.org',
     communityUrl: 'https://gdg.community.dev/gdg-guayaquil/',
     handle: '@gdgguayaquil',
-    featuredSpeakers: FEATURED_SPEAKERS.map((k) => ({_key: key(), ...ref(speakerIds.get(k)!)})),
+    ...SITE_CHROME,
   })
   console.log('  configuración del sitio')
+
+  await seedPages(client, {featuredSpeakers: FEATURED_SPEAKERS.map((k) => speakerIds.get(k)!)})
   console.log('Listo.')
 }
 

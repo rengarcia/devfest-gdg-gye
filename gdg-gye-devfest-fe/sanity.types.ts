@@ -170,6 +170,220 @@ export type Track = {
   order?: number;
 };
 
+export type FaqPage = {
+  _id: string;
+  _type: "faqPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  cta?: Cta;
+};
+
+export type Cta = {
+  _type: "cta";
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  primary?: Link;
+  secondary?: Link;
+};
+
+export type PageHero = {
+  _type: "pageHero";
+  eyebrow: string;
+  title: string;
+  lead: string;
+  glyphs?: Array<"braces" | "semicolon" | "globe" | "at" | "asterisk" | "heart" | "hash-green" | "slash-a" | "x-pink" | "comma-yellow" | "plus-blue" | "half-circle-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "brace-left" | "brace-right" | "arrow-right" | "quote-open">;
+};
+
+export type Seo = {
+  _type: "seo";
+  title: string;
+  description: string;
+};
+
+export type OrganizersPage = {
+  _id: string;
+  _type: "organizersPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  volunteering: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    stats: Array<{
+      _key: string;
+    } & Stat>;
+  };
+  cta?: Cta;
+};
+
+export type Link = {
+  _type: "link";
+  label: string;
+  href: string;
+};
+
+export type AboutPage = {
+  _id: string;
+  _type: "aboutPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  intro: {
+    figure: Figure;
+    title: string;
+    lead: string;
+    body: string;
+  };
+  principles: {
+    eyebrow: string;
+    title: string;
+    items: Array<{
+      glyph: "braces" | "semicolon" | "globe" | "at" | "asterisk" | "heart" | "hash-green" | "slash-a" | "x-pink" | "comma-yellow" | "plus-blue" | "half-circle-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "brace-left" | "brace-right" | "arrow-right" | "quote-open";
+      title: string;
+      text: string;
+      _type: "principle";
+      _key: string;
+    }>;
+  };
+  history: {
+    quote: Quote;
+    stats: Array<{
+      _key: string;
+    } & Stat>;
+  };
+  venue: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    link: Link;
+    mapNote: string;
+  };
+  cta?: Cta;
+};
+
+export type Quote = {
+  _type: "quote";
+  highlight?: string;
+  text: string;
+  attribution?: string;
+};
+
+export type Figure = {
+  _type: "figure";
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  tag?: string;
+};
+
+export type SponsorsPage = {
+  _id: string;
+  _type: "sponsorsPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  cta?: Cta;
+};
+
+export type SpeakersPage = {
+  _id: string;
+  _type: "speakersPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  cfp: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    note?: string;
+    figure: Figure;
+  };
+  cta?: Cta;
+};
+
+export type AgendaPage = {
+  _id: string;
+  _type: "agendaPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  footnote: string;
+  cta?: Cta;
+};
+
+export type HomePage = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: {
+    chips?: Array<string>;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    figure: Figure;
+    glyphs?: Array<"braces" | "semicolon" | "globe" | "at" | "asterisk" | "heart" | "hash-green" | "slash-a" | "x-pink" | "comma-yellow" | "plus-blue" | "half-circle-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "brace-left" | "brace-right" | "arrow-right" | "quote-open">;
+  };
+  stats: Array<{
+    _key: string;
+  } & Stat>;
+  speakers: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    featured?: Array<{
+      _key: string;
+    } & SpeakerReference>;
+    link: Link;
+  };
+  tracks: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
+  quote: Quote;
+  sponsors: {
+    eyebrow: string;
+    title: string;
+    link: Link;
+  };
+  cta?: Cta;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -187,9 +401,35 @@ export type SiteSettings = {
   communityUrl: string;
   handle: string;
   socialUrl?: string;
-  featuredSpeakers?: Array<{
+  navigation: Array<{
     _key: string;
-  } & SpeakerReference>;
+  } & Link>;
+  registerCta: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primaryLabel: string;
+    secondary: Link;
+  };
+  footer: {
+    columns: Array<{
+      heading: string;
+      links: Array<{
+        _key: string;
+      } & Link>;
+      _type: "footerColumn";
+      _key: string;
+    }>;
+    followHeading: string;
+    tagline: string;
+  };
+};
+
+export type Stat = {
+  _type: "stat";
+  value: string;
+  suffix?: string;
+  label: string;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -289,11 +529,11 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | SiteSettings | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | FaqPage | Cta | PageHero | Seo | OrganizersPage | Link | AboutPage | Quote | Figure | SponsorsPage | SpeakersPage | AgendaPage | HomePage | SiteSettings | Stat | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    featuredSpeakers[]->{   _id,  name,  role,  initials,  family,  track->{   name,  "slug": slug.current,  room,  family },  "talk": *[_type == "session" && speaker._ref == ^._id] | order(startTime asc)[0].title }  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    navigation,    registerCta,    footer  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   name: string;
   year: number;
@@ -306,20 +546,190 @@ export type SITE_SETTINGS_QUERY_RESULT = {
   communityUrl: string;
   handle: string;
   socialUrl: string | null;
-  featuredSpeakers: Array<{
-    _id: string;
-    name: string;
-    role: string;
-    initials: string | null;
-    family: "blue" | "green" | "red" | "yellow";
-    track: {
+  navigation: Array<{
+    _key: string;
+  } & Link>;
+  registerCta: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primaryLabel: string;
+    secondary: Link;
+  };
+  footer: {
+    columns: Array<{
+      heading: string;
+      links: Array<{
+        _key: string;
+      } & Link>;
+      _type: "footerColumn";
+      _key: string;
+    }>;
+    followHeading: string;
+    tagline: string;
+  };
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: HOME_PAGE_QUERY
+// Query: *[_type == "homePage" && _id == "homePage"][0]{    seo,    family,    hero,    stats,    speakers{      eyebrow,      title,      lead,      link,      featured[]->{   _id,  name,  role,  initials,  family,  track->{   name,  "slug": slug.current,  room,  family },  "talk": *[_type == "session" && speaker._ref == ^._id] | order(startTime asc)[0].title }    },    tracks,    quote,    sponsors,    cta  }
+export type HOME_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: {
+    chips?: Array<string>;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    figure: Figure;
+    glyphs?: Array<"arrow-right" | "asterisk" | "at" | "brace-left" | "brace-right" | "braces" | "comma-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "globe" | "half-circle-yellow" | "hash-green" | "heart" | "plus-blue" | "quote-open" | "semicolon" | "slash-a" | "x-pink">;
+  };
+  stats: Array<{
+    _key: string;
+  } & Stat>;
+  speakers: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    link: Link;
+    featured: Array<{
+      _id: string;
       name: string;
-      slug: string;
-      room: string;
+      role: string;
+      initials: string | null;
       family: "blue" | "green" | "red" | "yellow";
-    };
-    talk: string | null;
-  }> | null;
+      track: {
+        name: string;
+        slug: string;
+        room: string;
+        family: "blue" | "green" | "red" | "yellow";
+      };
+      talk: string | null;
+    }> | null;
+  };
+  tracks: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
+  quote: Quote;
+  sponsors: {
+    eyebrow: string;
+    title: string;
+    link: Link;
+  };
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: AGENDA_PAGE_QUERY
+// Query: *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, cta }
+export type AGENDA_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  footnote: string;
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: SPEAKERS_PAGE_QUERY
+// Query: *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, cta }
+export type SPEAKERS_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  cfp: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    note?: string;
+    figure: Figure;
+  };
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: SPONSORS_PAGE_QUERY
+// Query: *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, cta }
+export type SPONSORS_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: ABOUT_PAGE_QUERY
+// Query: *[_type == "aboutPage" && _id == "aboutPage"][0]{    seo,    family,    hero,    intro,    principles,    history,    venue,    cta  }
+export type ABOUT_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  intro: {
+    figure: Figure;
+    title: string;
+    lead: string;
+    body: string;
+  };
+  principles: {
+    eyebrow: string;
+    title: string;
+    items: Array<{
+      glyph: "arrow-right" | "asterisk" | "at" | "brace-left" | "brace-right" | "braces" | "comma-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "globe" | "half-circle-yellow" | "hash-green" | "heart" | "plus-blue" | "quote-open" | "semicolon" | "slash-a" | "x-pink";
+      title: string;
+      text: string;
+      _type: "principle";
+      _key: string;
+    }>;
+  };
+  history: {
+    quote: Quote;
+    stats: Array<{
+      _key: string;
+    } & Stat>;
+  };
+  venue: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    link: Link;
+    mapNote: string;
+  };
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: ORGANIZERS_PAGE_QUERY
+// Query: *[_type == "organizersPage" && _id == "organizersPage"][0]{ seo, family, hero, volunteering, cta }
+export type ORGANIZERS_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  volunteering: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
+    stats: Array<{
+      _key: string;
+    } & Stat>;
+  };
+  cta: Cta | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: FAQ_PAGE_QUERY
+// Query: *[_type == "faqPage" && _id == "faqPage"][0]{ seo, family, hero, cta }
+export type FAQ_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  cta: Cta | null;
 } | null;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
@@ -442,7 +852,14 @@ export type FAQ_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    featuredSpeakers[]->{ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n  }\n": SITE_SETTINGS_QUERY_RESULT;
+    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
+    "\n  *[_type == \"homePage\" && _id == \"homePage\"][0]{\n    seo,\n    family,\n    hero,\n    stats,\n    speakers{\n      eyebrow,\n      title,\n      lead,\n      link,\n      featured[]->{ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n    },\n    tracks,\n    quote,\n    sponsors,\n    cta\n  }\n": HOME_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"agendaPage\" && _id == \"agendaPage\"][0]{ seo, family, hero, footnote, cta }\n": AGENDA_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"speakersPage\" && _id == \"speakersPage\"][0]{ seo, family, hero, cfp, cta }\n": SPEAKERS_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"sponsorsPage\" && _id == \"sponsorsPage\"][0]{ seo, family, hero, cta }\n": SPONSORS_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"aboutPage\" && _id == \"aboutPage\"][0]{\n    seo,\n    family,\n    hero,\n    intro,\n    principles,\n    history,\n    venue,\n    cta\n  }\n": ABOUT_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"organizersPage\" && _id == \"organizersPage\"][0]{ seo, family, hero, volunteering, cta }\n": ORGANIZERS_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"faqPage\" && _id == \"faqPage\"][0]{ seo, family, hero, cta }\n": FAQ_PAGE_QUERY_RESULT;
     "\n  *[_type == \"track\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n,\n    glyph,\n    blurb\n  }\n": TRACKS_QUERY_RESULT;
     "\n  *[_type == \"speaker\"] | order(coalesce(order, 9999) asc, name asc){ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n": SPEAKERS_QUERY_RESULT;
     "\n  *[_type == \"session\"] | order(startTime asc, coalesce(order, 9999) asc, title asc){\n    _id,\n    title,\n    kind,\n    startTime,\n    endTime,\n    room,\n    track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n    speaker->{ name, role }\n  }\n": SESSIONS_QUERY_RESULT;

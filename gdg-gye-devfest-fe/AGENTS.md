@@ -24,9 +24,23 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
   here. Schema in `studio-gdg-gye-devfest/schemaTypes/`, seed script in `scripts/seed-content.ts`.
 - `src/sanity/queries.ts` holds every GROQ query (`defineQuery`, unique `*_QUERY` names).
   `src/sanity/content.ts` fetches them and shapes the results into the view models pages consume
-  (`SpeakerCard`, `TrackSchedule`, `SponsorTierSection`, ...). Pages `await` those helpers in
-  frontmatter; components never query Sanity directly except the shared layout/header/footer/CTA,
-  which read `getSiteSettings()` (memoized per build).
+  (`HomePage`, `AboutPage`, `SpeakerCard`, `TrackSchedule`, `SponsorTierSection`, ...). Pages
+  `await` those helpers in frontmatter; components never query Sanity directly except the shared
+  layout/header/footer, which read `getSiteSettings()` (memoized per build).
+- Every route has a page singleton (`homePage`, `agendaPage`, `speakersPage`, `sponsorsPage`,
+  `aboutPage`, `organizersPage`, `faqPage`; document id = type) with its SEO, colour family, hero,
+  section copy, photos and an optional override of the register block (`cta`). `getXxxPage()`
+  returns it fully resolved: `page.cta` already merges the override with the site default, photos
+  come as `Figure` (Sanity CDN URL, square crop honouring the hotspot), stats as `Stat` (with
+  `count` when the value is a whole number, for `data-count`). A missing page document fails the
+  build with a message pointing at `npm run seed:pages`.
+- Site chrome lives in `siteSettings`: `navigation` (header menu), `registerCta` (default register
+  block, whose primary label is also the header button) and `footer` (link columns, contact heading,
+  tagline). Nothing editorial is left in the components.
+- Placeholders: any text from a page document or the site chrome may contain `{{capacity}}`,
+  `{{dateShort}}`, `{{dateLong}}`, `{{year}}`, `{{venue}}`, `{{email}}`, `{{sponsorsEmail}}`,
+  `{{handle}}`, `{{name}}` or `{{title}}`; `content.ts` replaces them (`fillDeep`) before pages
+  see the data. Add a new one in `varsOf` and in the Studio's `PLACEHOLDERS` list.
 - `sanity.types.ts` (repo root, committed) is generated: after changing the schema or a query run
   `npm run typegen` in the Studio. `astro check` depends on it.
 - Plenary sessions (keynote, panel, breaks) have no track and appear in every agenda tab; talks
@@ -36,8 +50,11 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
 ## Conventions
 
 - Content lives in Sanity; pages map over the helpers in `src/sanity/content.ts`. Add a speaker,
-  session, FAQ entry or sponsor in the Studio, not in the page markup. `src/data/site.ts` only keeps
-  code-level constants (navigation, the `Family` colour union).
+  session, FAQ entry or sponsor in the Studio, not in the page markup, and do not hardcode copy in
+  a page: add a field to its page schema, seed it in `scripts/lib/pages.ts`, run `npm run typegen`
+  and read it from the page's helper. `src/data/site.ts` only keeps the `Family` colour union.
+  UI strings that are not content (skip link, menu button labels, "Speaker por confirmar", the
+  "Keynote" chip) stay in code.
 - Global CSS only (`src/styles/`). Class names follow BEM: `block`, `block__element`,
   `block--modifier` (e.g. `site-header__toggle`, `btn--fill`, `notch__media`). A block gets
   context-specific styling through a mix, not a descendant selector: `class="btn btn--fill nav__cta"`,

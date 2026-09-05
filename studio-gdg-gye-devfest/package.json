@@ -12,6 +12,7 @@
     "start": "sanity start",
     "schema:deploy": "sanity schemas deploy",
     "seed": "sanity exec scripts/seed-content.ts --with-user-token",
+    "seed:pages": "sanity exec scripts/seed-pages.ts --with-user-token",
     "typegen": "sanity schemas extract --force --enforce-required-fields && sanity typegen generate"
   },
   "keywords": [
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@sanity/eslint-config-studio": "^7",
+    "@types/node": "^26.4.1",
     "@types/react": "^19.2.14",
     "eslint": "^10.8.1",
     "prettier": "^3.5",

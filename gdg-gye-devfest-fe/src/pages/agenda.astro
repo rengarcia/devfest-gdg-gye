@@ -4,25 +4,16 @@ import PageHero from '../components/PageHero.astro';
 import SessionRow from '../components/SessionRow.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { getSchedule } from '../sanity/content';
+import { getAgendaPage, getSchedule } from '../sanity/content';
 
-const schedule = await getSchedule();
+const [page, schedule] = await Promise.all([getAgendaPage(), getSchedule()]);
 ---
 
-<BaseLayout
-  title="Agenda"
-  description="Agenda de DevFest Guayaquil 2026: tracks Web, Mobile, Cloud y AI."
-  family="green"
->
-  <PageHero
-    eyebrow="Agenda"
-    title="Un día, cuatro tracks, 24 sesiones."
-    lead="Sábado 5 de diciembre, 08:30 a 18:00. Todas las salas están en el Campus Gustavo Galindo de ESPOL. Puedes moverte entre tracks en cada bloque."
-    glyphs={['slash-a', 'hash-green', 'dot-blue']}
-  />
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
 
   <section class="section" style="padding-top:0">
-    <div class="wrap" data-family="green" id="agenda-root">
+    <div class="wrap" data-family={page.family} id="agenda-root">
       <div role="tablist" aria-label="Tracks" class="tabs reveal">
         {
           schedule.map(({ track }, i) => (
@@ -63,10 +54,10 @@ const schedule = await getSchedule();
         class="mono mono--muted reveal"
         style="margin-top:var(--space-5);font-size:var(--text-mono-sm)"
       >
-        La agenda puede cambiar. Los horarios finales se publican una semana antes del evento.
+        {page.footnote}
       </p>
     </div>
   </section>
   <Dots />
-  <RegistroCta />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

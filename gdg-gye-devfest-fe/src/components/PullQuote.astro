@@ -1,0 +1,20 @@
+---
+import type { Quote } from '../sanity/content';
+
+/** Scalloped pull quote with its opening word in bold, as in the design. Pages own the wrapper. */
+interface Props {
+  quote: Quote;
+}
+const { highlight, text, attribution } = Astro.props.quote;
+---
+
+<p class="scallop__quote" style="font-size:var(--text-display-md)">
+  {highlight && <b>{highlight}</b>}{highlight && ' '}{text}
+</p>
+{
+  attribution && (
+    <p class="mono mono--muted" style="margin-top:var(--space-5)">
+      {attribution}
+    </p>
+  )
+}

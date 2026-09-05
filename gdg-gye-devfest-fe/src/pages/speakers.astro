@@ -3,22 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getSpeakers } from '../sanity/content';
+import { getSpeakers, getSpeakersPage } from '../sanity/content';
 
-const speakers = await getSpeakers();
+const [page, speakers] = await Promise.all([getSpeakersPage(), getSpeakers()]);
+const { cfp } = page;
 ---
 
-<BaseLayout
-  title="Speakers"
-  description="Speakers confirmados de DevFest Guayaquil 2026."
-  family="blue"
->
-  <PageHero
-    eyebrow="Speakers"
-    title="Quienes suben al escenario"
-    lead="Nueve speakers confirmados y contando. Publicamos nuevos nombres cada semana hasta el 5 de diciembre."
-    glyphs={['braces', 'x-pink', 'comma-yellow']}
-  />
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
 
   <section class="section" style="padding-top:0">
     <div class="wrap">
@@ -46,30 +38,36 @@ const speakers = await getSpeakers();
       style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center"
     >
       <div class="reveal" style="display:grid;gap:var(--space-4)">
-        <p class="eyebrow">Call for papers</p><h2 class="display display--lg">
-          ¿Tienes algo que contar?
-        </h2><p class="lead">
-          Buscamos charlas de 45 minutos y workshops de 90. Primera vez como speaker: te ayudamos a
-          preparar la propuesta y a ensayar.
+        <p class="eyebrow">{cfp.eyebrow}</p><h2 class="display display--lg">{cfp.title}</h2><p
+          class="lead"
+        >
+          {cfp.lead}
         </p><div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
-          <a class="btn btn--fill" href="#">Enviar propuesta</a><a class="btn" href="/faq"
-            >Leer los criterios</a
+          <a class="btn btn--fill" href={cfp.primary.href}>{cfp.primary.label}</a><a
+            class="btn"
+            href={cfp.secondary.href}>{cfp.secondary.label}</a
           >
-        </div><p class="mono mono--muted" style="font-size:var(--text-mono-sm)">
-          El CFP cierra el 15 de octubre de 2026
-        </p>
+        </div>{
+          cfp.note && (
+            <p class="mono mono--muted" style="font-size:var(--text-mono-sm)">
+              {cfp.note}
+            </p>
+          )
+        }
       </div>
       <div class="notch reveal" style="--d:120ms">
         <div class="notch__media">
-          <img
-            class="notch__img"
-            src="/assets/speaker-portrait.jpg"
-            alt="Speaker presentando en el escenario de un DevFest anterior"
-          />
-        </div><span class="chip notch__tag" style="font-size:var(--text-mono-xs)">CFP</span>
+          {cfp.figure && <img class="notch__img" src={cfp.figure.src} alt={cfp.figure.alt} />}
+        </div>{
+          cfp.figure?.tag && (
+            <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">
+              {cfp.figure.tag}
+            </span>
+          )
+        }
       </div>
     </div>
   </section>
 
-  <RegistroCta />
+  <RegistroCta cta={page.cta} />
 </BaseLayout>

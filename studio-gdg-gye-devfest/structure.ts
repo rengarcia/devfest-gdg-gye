@@ -1,8 +1,10 @@
 import type {StructureResolver} from 'sanity/structure'
 import {CogIcon} from '@sanity/icons/Cog'
+import {DocumentsIcon} from '@sanity/icons/Documents'
+import {PAGES} from './schemaTypes/pages'
 
 /** Document types with a single, fixed-id document. Kept out of generic lists and the "new" menu. */
-export const SINGLETONS = ['siteSettings']
+export const SINGLETONS = ['siteSettings', ...PAGES.map((p) => p.name)]
 
 const LISTED = [
   ...SINGLETONS,
@@ -28,6 +30,25 @@ export const structure: StructureResolver = (S) =>
             .schemaType('siteSettings')
             .documentId('siteSettings')
             .title('Configuración del sitio'),
+        ),
+      S.listItem()
+        .title('Páginas')
+        .id('pages')
+        .icon(DocumentsIcon)
+        .child(
+          S.list()
+            .title('Páginas')
+            .items(
+              PAGES.map((page) =>
+                S.listItem()
+                  .title(page.title)
+                  .id(page.name)
+                  .icon(page.icon)
+                  .child(
+                    S.document().schemaType(page.name).documentId(page.name).title(page.title),
+                  ),
+              ),
+            ),
         ),
       S.divider(),
       S.documentTypeListItem('track').title('Tracks'),

@@ -24,7 +24,7 @@ secretos).
 public/assets/            Logos, fotos y glyphs del kit DevFest 2026 (PNG con alpha)
 sanity.types.ts           Tipos generados desde el schema (`npm run typegen` en el Studio)
 src/
-  data/site.ts            Constantes de código: navegación y familias de color
+  data/site.ts            Constantes de código: familias de color
   sanity/                 Cliente, consultas GROQ (`queries.ts`) y helpers que dan forma al
                           contenido para las páginas (`content.ts`)
   styles/tokens/          Tokens del design system (color, tipografía, espacio, forma, motion)
@@ -41,8 +41,13 @@ src/
 Todo el texto que cambia de una edición a otra se edita en el Studio de Sanity
 (`cd ../studio-gdg-gye-devfest && npm run dev`):
 
-- **Configuración del sitio**: fecha, sede, cupo, correos, enlaces y los tres speakers de la
-  portada. El enlace de registro queda vacío (botón como marcador) hasta que exista el formulario.
+- **Configuración del sitio**: fecha, sede, cupo, correos, enlaces, menú principal, bloque de
+  registro y pie de página. El enlace de registro queda vacío (botón como marcador) hasta que
+  exista el formulario.
+- **Páginas** (Portada, Agenda, Speakers, Sponsors, Nosotros, Organizadores, FAQ): SEO, familia de
+  color, cabecera, textos y fotos de cada sección y, si hace falta, un bloque de registro propio.
+  Los textos admiten marcadores como `{{capacity}}`, `{{dateShort}}` o `{{email}}`, que se
+  rellenan con la configuración del sitio.
 - **Tracks, sesiones, speakers, organizadores, niveles de patrocinio, sponsors y FAQ**: listas que
   las páginas recorren para generar las tarjetas, filas de agenda y tiles.
 
@@ -50,8 +55,8 @@ El sitio es estático: después de publicar en el Studio hay que volver a hacer 
 el schema o una consulta en `src/sanity/queries.ts`, ejecuta `npm run typegen` en el Studio para
 regenerar `sanity.types.ts`.
 
-Cada página elige una familia de color (`family="yellow" | "blue" | "green" | "red"`) en su
-`BaseLayout`, siguiendo la regla del brand guide de un solo acento por pieza.
+Cada página elige una familia de color (`yellow`, `blue`, `green` o `red`) en su documento del
+Studio, siguiendo la regla del brand guide de un solo acento por pieza.
 
 ## Notas de marca
 
