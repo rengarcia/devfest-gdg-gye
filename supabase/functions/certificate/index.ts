@@ -6,7 +6,14 @@
 // Every value printed (name, event, date, code) comes from the database, never from the request.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { corsHeaders } from 'jsr:@supabase/supabase-js@2/cors';
-import { PDFDocument, type PDFFont, rgb, StandardFonts } from 'npm:pdf-lib@1.17.1';
+import {
+  PDFDocument,
+  type PDFFont,
+  type PDFImage,
+  type PDFPage,
+  rgb,
+  StandardFonts,
+} from 'npm:pdf-lib@1.17.1';
 
 /** Public site (SITE_URL secret). Without it the PDF uses a text heading and the caller's origin for the link. */
 const SITE_URL = Deno.env.get('SITE_URL')?.replace(/\/$/, '');
@@ -58,15 +65,63 @@ const longDate = (iso: string) =>
   }).format(new Date(`${iso.slice(0, 10)}T12:00:00Z`));
 
 // Only fetched from the configured site, never from a URL the caller controls.
-async function lockup(pdf: PDFDocument) {
+async function glyph(pdf: PDFDocument, name: string) {
   if (!SITE_URL) return null;
   try {
-    const res = await fetch(`${SITE_URL}/assets/devfest-lockup-location.png`);
+    const res = await fetch(`${SITE_URL}/assets/glyphs/${name}.png`);
     if (!res.ok) return null;
     return await pdf.embedPng(new Uint8Array(await res.arrayBuffer()));
   } catch {
     return null;
   }
+}
+
+/**
+ * The { DevFest } Guayaquil lockup, built like the site's Lockup component: the kit's brace glyphs,
+ * the name in bold and the city in an outlined pill. Falls back to plain braces without SITE_URL.
+ */
+async function drawLockup(pdf: PDFDocument, page: PDFPage, x: number, top: number) {
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdf.embedFont(StandardFonts.Helvetica);
+  const [left, right] = await Promise.all([glyph(pdf, 'brace-left'), glyph(pdf, 'brace-right')]);
+  const h = 44;
+  const nameSize = 30;
+  const baseline = top - h / 2 - nameSize * 0.35;
+  let cursor = x;
+  const brace = (img: PDFImage | null, char: string) => {
+    if (img) {
+      const w = (img.width / img.height) * h;
+      page.drawImage(img, { x: cursor, y: top - h, width: w, height: h });
+      cursor += w + 4;
+    } else {
+      page.drawText(char, { x: cursor, y: baseline, size: nameSize, font: bold, color: INK });
+      cursor += bold.widthOfTextAtSize(char, nameSize) + 4;
+    }
+  };
+  brace(left, '{');
+  page.drawText('DevFest', { x: cursor, y: baseline, size: nameSize, font: bold, color: INK });
+  cursor += bold.widthOfTextAtSize('DevFest', nameSize) + 4;
+  brace(right, '}');
+
+  const city = 'Guayaquil';
+  const citySize = 12;
+  const pillH = 22;
+  const pillW = regular.widthOfTextAtSize(city, citySize) + 24;
+  const pillX = cursor + 8;
+  const pillY = top - h / 2 - pillH / 2;
+  const r = pillH / 2;
+  // pdf-lib's SVG paths use a y-down origin at (x, y): draw the pill from its top-left corner.
+  page.drawSvgPath(
+    `M ${r} 0 H ${pillW - r} A ${r} ${r} 0 0 1 ${pillW - r} ${pillH} H ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`,
+    { x: pillX, y: pillY + pillH, borderColor: INK, borderWidth: 1.5 },
+  );
+  page.drawText(city, {
+    x: pillX + 12,
+    y: pillY + pillH / 2 - citySize * 0.35,
+    size: citySize,
+    font: regular,
+    color: INK,
+  });
 }
 
 interface Certificate {
@@ -99,24 +154,7 @@ async function render(cert: Certificate, site: string) {
     page.drawCircle({ x: width - margin - 10 - i * 26, y: height - margin - 10, size: 9, color }),
   );
 
-  const logo = await lockup(pdf);
-  if (logo) {
-    const h = 44;
-    page.drawImage(logo, {
-      x: margin,
-      y: height - margin - h,
-      width: (logo.width / logo.height) * h,
-      height: h,
-    });
-  } else {
-    page.drawText(encodable(bold, cert.event.name), {
-      x: margin,
-      y: height - margin - 20,
-      size: 20,
-      font: bold,
-      color: INK,
-    });
-  }
+  await drawLockup(pdf, page, margin, height - margin + 6);
 
   const text = (value: string, y: number, size: number, font: PDFFont, color = INK) =>
     page.drawText(encodable(font, value), {
