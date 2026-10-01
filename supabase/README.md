@@ -66,6 +66,16 @@ de Auth se hacen a mano (o con `supabase link` + `supabase config push` desde un
    select id from auth.users where email in ('persona@ejemplo.com');
    ```
 
+7. **Vercel → Settings → Environment Variables**: `PUBLIC_SUPABASE_URL` y
+   `PUBLIC_SUPABASE_PUBLISHABLE_KEY` (los valores de `.env.example`) antes del primer deploy con
+   estas páginas. Sin ellas el resto del sitio funciona, pero `/cuenta` no.
+8. **Plan del proyecto**: los proyectos gratuitos se pausan tras un periodo sin actividad y, en
+   pausa, no hay registro, check-in ni certificados. Pasa el proyecto a un plan de pago (o asegura
+   uso continuo) antes de abrir el registro y hasta que se hayan descargado los certificados.
+9. **Abrir el registro** (después de desplegar estas rutas): en el Studio,
+   `npm run seed:pages` pone el _Enlace de registro_ en `/cuenta` y añade "Aviso de privacidad" al
+   pie de página si faltan. También puede hacerse a mano en Configuración del sitio.
+
 ## Operación del evento
 
 - Día del evento: organizadores entran a `/cuenta/checkin` y escanean el QR de cada asistente

@@ -14,9 +14,16 @@ export type Supabase = SupabaseClient<Database>;
 let client: Supabase | undefined;
 
 export function supabase(): Supabase {
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const key = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    throw new Error(
+      'Faltan PUBLIC_SUPABASE_URL y/o PUBLIC_SUPABASE_PUBLISHABLE_KEY. Copia .env.example a .env (y añádelas en Vercel).',
+    );
+  }
   client ??= createClient<Database>(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    url,
+    key,
     // Sign-in is a 6-digit code typed on the page, so there is never a session in the URL.
     { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } },
   );
