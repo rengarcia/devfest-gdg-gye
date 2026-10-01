@@ -33,6 +33,10 @@ img {
   display: block;
   max-width: 100%;
 }
+/* `hidden` wins over block display rules (btn, form, card…): the account pages toggle views with it. */
+[hidden] {
+  display: none !important;
+}
 :focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
@@ -1078,7 +1082,7 @@ img {
   font-family: var(--font-mono);
   font-size: var(--text-display-sm);
   letter-spacing: 0.3em;
-  max-width: 280px;
+  max-width: 380px;
 }
 .form__input--area {
   min-height: 160px;

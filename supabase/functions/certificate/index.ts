@@ -156,8 +156,12 @@ Deno.serve(async (req) => {
   if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id))
     return json({ error: 'invalid_id' }, 400);
 
+  // The gateway also lets through calls that only carry the publishable key; those have no user.
+  const authorization = req.headers.get('Authorization') ?? '';
+  if (!/^Bearer \S+$/.test(authorization)) return json({ error: 'not_authenticated' }, 401);
+
   const supabase = createClient(Deno.env.get('SUPABASE_URL')!, publishableKey(), {
-    global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
+    global: { headers: { Authorization: authorization } },
     auth: { persistSession: false },
   });
 
