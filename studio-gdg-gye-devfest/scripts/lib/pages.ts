@@ -358,7 +358,7 @@ const PRIVACY_SECTIONS: [heading: string, body: string][] = [
   ],
   [
     'Con quién los compartimos y transferencias internacionales',
-    'Tus datos se guardan con Supabase Inc. (Estados Unidos), que aloja nuestra base de datos en servidores de Amazon Web Services en São Paulo, Brasil, y envía los correos con tu código de acceso. Esto es una transferencia internacional de datos: Supabase actúa como encargado del tratamiento bajo un acuerdo de protección de datos que la obliga a tratarlos solo por nuestra cuenta y con medidas de seguridad.\n\nEl sitio web se publica en Vercel Inc. (Estados Unidos), que recibe datos técnicos de navegación como tu dirección IP, pero no los datos de tu cuenta. Las personas del equipo organizador solo ven tu nombre al registrar tu asistencia.',
+    'Tus datos se guardan con Supabase Inc. (Estados Unidos), que aloja nuestra base de datos en servidores de Amazon Web Services en São Paulo, Brasil. Los correos con tu código de acceso los envía Resend Inc. (Estados Unidos) desde São Paulo; para hacerlo recibe tu dirección de correo y guarda registros de cada envío en Estados Unidos durante un periodo limitado. Son transferencias internacionales de datos: Supabase y Resend actúan como encargados del tratamiento bajo acuerdos de protección de datos que los obligan a tratarlos solo por nuestra cuenta y con medidas de seguridad.\n\nEl sitio web se publica en Vercel Inc. (Estados Unidos), que recibe datos técnicos de navegación como tu dirección IP, pero no los datos de tu cuenta. Las personas del equipo organizador solo ven tu nombre al registrar tu asistencia.',
   ],
   [
     'Tus derechos',
@@ -424,7 +424,7 @@ function accountDocuments(): PageDocument[] {
         'Responsable: {{controller}}. Contacto para tus datos: {{privacyEmail}}.',
         'Usamos tu correo, nombre y apellido para tu cuenta, para registrar tu asistencia y para emitir tu certificado. Base legal: tu consentimiento, que puedes retirar cuando quieras.',
         'Guardamos tus datos mientras tengas la cuenta; si no la usas en 3 años, la eliminamos.',
-        'Se alojan con Supabase en servidores de São Paulo, Brasil: es una transferencia internacional de datos.',
+        'Se alojan con Supabase en São Paulo (Brasil) y los correos con tu código los envía Resend (Estados Unidos): son transferencias internacionales de datos.',
         'Desde tu cuenta puedes descargar, corregir o eliminar tus datos. También puedes reclamar ante la Superintendencia de Protección de Datos Personales.',
       ],
       purposes: [

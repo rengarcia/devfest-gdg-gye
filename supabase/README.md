@@ -43,22 +43,30 @@ registraron en 7 días y las cuentas sin uso en 3 años, tal como dice el aviso 
 3. Crea las tablas del módulo con RLS y filtra a quienes tengan la finalidad concedida en
    `current_consents`. Nunca uses los datos de alguien sin ese consentimiento.
 
-## Configuración pendiente en el dashboard
+## Configuración de Auth y correo
 
-La CLI con la que se creó el proyecto no tiene acceso a esta organización, así que estos ajustes
-de Auth se hacen a mano (o con `supabase link` + `supabase config push` desde una sesión con acceso):
+Los ajustes de Auth (código de 6 dígitos con vencimiento de 10 minutos, plantillas en español,
+URLs, SMTP de Resend, límite de correos) están en `config.toml` y se aplican con la CLI, desde una
+terminal propia y con la cuenta dueña del proyecto (`supabase login`, `supabase link`):
 
-1. **Authentication → Sign In / Providers → Email**: Email activado y _Allow new users to sign up_
-   activado; _Email OTP expiration_: `600` segundos. El resto queda por defecto.
-2. **Authentication → Emails → Templates**: en **Magic link** y en **Confirm signup**, asunto
-   `Tu código para DevFest Guayaquil` y el HTML de `templates/otp.html` (usa `{{ .Token }}`).
-3. **Authentication → URL Configuration**: _Site URL_ = dominio de producción; añade
-   `http://localhost:4321` a las Redirect URLs.
-4. **SMTP propio antes de abrir el registro** (Authentication → Emails → SMTP): el servidor de
-   correo de Supabase solo envía unos pocos correos por hora y solo a miembros del equipo. Usa
-   Resend, SES o similar, y añade ese proveedor a la sección de transferencias del aviso.
-5. **Edge Functions → Secrets**: `SITE_URL` = dominio de producción (para el enlace de verificación
-   y el logo del PDF).
+1. **Resend → Domains**: añade `gdggye.org` con región **São Paulo (sa-east-1)** y crea en
+   Namecheap los registros que muestra (DKIM `resend._domainkey`, MX y TXT en `send`). No tocan el
+   correo de Google Workspace. Espera a que el dominio quede _Verified_.
+2. **Resend → API Keys**: crea una clave con permiso _Sending access_ limitada a `gdggye.org`.
+   Nunca la pegues en un chat, issue o commit.
+3. Aplica la configuración (la clave se pide sin mostrarse y no queda en el historial):
+
+   ```
+   read -rs RESEND_API_KEY && export RESEND_API_KEY
+   supabase config diff     # revisa los cambios
+   supabase config push     # confirma cada bloque
+   unset RESEND_API_KEY
+   ```
+
+4. **Edge Functions → Secrets**: `SITE_URL` = dominio de producción (para el enlace de
+   verificación y el logo del PDF). Ya está puesto a `https://devfest-gdg-gye.vercel.app`.
+5. El plan gratuito de Resend envía 100 correos al día. Si el registro va a superar eso (cada
+   inicio de sesión es un correo), sube de plan en Resend y el límite `auth.rate_limit.email_sent`.
 6. Marca a los organizadores como staff (SQL Editor), después de que creen su cuenta:
 
    ```sql
