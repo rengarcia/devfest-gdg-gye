@@ -45,28 +45,23 @@ registraron en 7 días y las cuentas sin uso en 3 años, tal como dice el aviso 
 
 ## Configuración de Auth y correo
 
-Los ajustes de Auth (código de 6 dígitos con vencimiento de 10 minutos, plantillas en español,
-URLs, SMTP de Resend, límite de correos) están en `config.toml` y se aplican con la CLI, desde una
-terminal propia y con la cuenta dueña del proyecto (`supabase login`, `supabase link`):
+- **SMTP (Resend)** se configura solo en el dashboard
+  ([Authentication → Emails → SMTP](https://supabase.com/dashboard/project/leizlplvmnqkenmwijfx/auth/smtp)):
+  `smtp.resend.com`, puerto `465`, usuario `resend`, contraseña = API key de Resend con permiso
+  _Sending access_ para `gdggye.org`, remitente `DevFest Guayaquil <devfest@gdggye.org>`. La clave
+  no va en `config.toml`, y por eso ese archivo no declara `[auth.email.smtp]`.
+- **Dominio en Resend**: `gdggye.org`, región São Paulo. Registros en Namecheap: TXT
+  `resend._domainkey` (DKIM), CNAME `rsend` y `send` (envío), TXT `_dmarc` (`v=DMARC1; p=none;`).
+- **El resto de Auth** (código de 6 dígitos, vencimiento de 10 minutos, plantillas en español, site
+  URL y redirects) está en `config.toml`. Para cambiarlo: `supabase config diff` y luego
+  `supabase config push`, con la cuenta dueña del proyecto.
+- Dos ajustes que `config push` no aplica y van en el dashboard:
+  [Rate limits](https://supabase.com/dashboard/project/leizlplvmnqkenmwijfx/auth/rate-limits)
+  (correos por hora; el plan gratuito de Resend da 100 al día) y desactivar el proveedor de SMS en
+  [Providers → Phone](https://supabase.com/dashboard/project/leizlplvmnqkenmwijfx/auth/providers)
+  (no se usa).
+- **Edge Functions → Secrets**: `SITE_URL` = `https://devfest-gdg-gye.vercel.app` (ya está puesto).
 
-1. **Resend → Domains**: añade `gdggye.org` con región **São Paulo (sa-east-1)** y crea en
-   Namecheap los registros que muestra (DKIM `resend._domainkey`, MX y TXT en `send`). No tocan el
-   correo de Google Workspace. Espera a que el dominio quede _Verified_.
-2. **Resend → API Keys**: crea una clave con permiso _Sending access_ limitada a `gdggye.org`.
-   Nunca la pegues en un chat, issue o commit.
-3. Aplica la configuración (la clave se pide sin mostrarse y no queda en el historial):
-
-   ```
-   read -rs RESEND_API_KEY && export RESEND_API_KEY
-   supabase config diff     # revisa los cambios
-   supabase config push     # confirma cada bloque
-   unset RESEND_API_KEY
-   ```
-
-4. **Edge Functions → Secrets**: `SITE_URL` = dominio de producción (para el enlace de
-   verificación y el logo del PDF). Ya está puesto a `https://devfest-gdg-gye.vercel.app`.
-5. El plan gratuito de Resend envía 100 correos al día. Si el registro va a superar eso (cada
-   inicio de sesión es un correo), sube de plan en Resend y el límite `auth.rate_limit.email_sent`.
 6. Marca a los organizadores como staff (SQL Editor), después de que creen su cuenta:
 
    ```sql

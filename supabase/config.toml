@@ -227,22 +227,15 @@ enable_confirmations = true
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
-max_frequency = "1m0s"
+max_frequency = "57s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 600
 
-# Codes are sent through Resend (domain gdggye.org, sending region sa-east-1). The password is a
-# Resend API key read from the environment, never committed: see ../supabase/README.md.
-[auth.email.smtp]
-enabled = true
-host = "smtp.resend.com"
-port = 465
-user = "resend"
-pass = "env(RESEND_API_KEY)"
-admin_email = "devfest@gdggye.org"
-sender_name = "DevFest Guayaquil"
+# Custom SMTP (Resend, smtp.resend.com:465, user "resend", sender DevFest Guayaquil
+# <devfest@gdggye.org>) is configured in the dashboard only: its password is a Resend API key and
+# must not live in this file. Declaring [auth.email.smtp] here would make `config push` overwrite it.
 
 # Sign-in is a 6-digit code (supabase.auth.signInWithOtp + verifyOtp); both templates send
 # {{ .Token }} instead of a link. New users get "confirmation", returning users "magic_link".
