@@ -11,6 +11,7 @@ export const siteSettings = defineType({
   fieldsets: [
     {name: 'event', title: 'Evento', options: {collapsible: true, collapsed: false}},
     {name: 'contact', title: 'Contacto y enlaces', options: {collapsible: true, collapsed: false}},
+    {name: 'privacy', title: 'Datos personales', options: {collapsible: true, collapsed: false}},
   ],
   fields: [
     defineField({
@@ -54,8 +55,9 @@ export const siteSettings = defineType({
       title: 'Enlace de registro',
       type: 'url',
       fieldset: 'contact',
-      description: 'Déjalo vacío mientras no exista el formulario: el botón queda como marcador.',
-      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      description:
+        'Normalmente /cuenta, donde la gente crea su cuenta. Déjalo vacío para que el botón quede como marcador.',
+      validation: (rule) => rule.uri({scheme: ['http', 'https'], allowRelative: true}),
     }),
     defineField({
       name: 'email',
@@ -93,6 +95,33 @@ export const siteSettings = defineType({
       type: 'url',
       fieldset: 'contact',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+    }),
+    defineField({
+      name: 'controllerName',
+      title: 'Responsable del tratamiento',
+      type: 'string',
+      fieldset: 'privacy',
+      description:
+        'Quien decide sobre los datos de las cuentas (LOPDP). Aparece en el aviso de privacidad como {{controller}}.',
+      initialValue: 'GDG Guayaquil',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'controllerId',
+      title: 'Identificación del responsable',
+      type: 'string',
+      fieldset: 'privacy',
+      description:
+        'RUC o cédula del responsable o de su representante, si existe. Se muestra junto al nombre.',
+    }),
+    defineField({
+      name: 'privacyEmail',
+      title: 'Correo para datos personales',
+      type: 'string',
+      fieldset: 'privacy',
+      description:
+        'Donde se piden acceso, rectificación, eliminación u oposición. Vacío: se usa el correo de contacto. Marcador {{privacyEmail}}.',
+      validation: (rule) => rule.email(),
     }),
     defineField({
       name: 'navigation',
@@ -137,6 +166,14 @@ export const siteSettings = defineType({
           title: 'Texto del botón de registro',
           type: 'string',
           description: 'También es el botón de la cabecera.',
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: 'accountLabel',
+          title: 'Texto del botón con sesión iniciada',
+          type: 'string',
+          description:
+            'Sustituye al botón de registro de la cabecera cuando la persona ya entró a su cuenta, p. ej. "Mi cuenta".',
           validation: (rule) => rule.required(),
         }),
         defineField({

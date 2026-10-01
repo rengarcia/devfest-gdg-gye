@@ -170,6 +170,161 @@ export type Track = {
   order?: number;
 };
 
+export type PrivacyPage = {
+  _id: string;
+  _type: "privacyPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  version: string;
+  updatedAt: string;
+  sections: Array<{
+    heading: string;
+    body: string;
+    _type: "privacySection";
+    _key: string;
+  }>;
+};
+
+export type PageHero = {
+  _type: "pageHero";
+  eyebrow: string;
+  title: string;
+  lead: string;
+  glyphs?: Array<"braces" | "semicolon" | "globe" | "at" | "asterisk" | "heart" | "hash-green" | "slash-a" | "x-pink" | "comma-yellow" | "plus-blue" | "half-circle-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "brace-left" | "brace-right" | "arrow-right" | "quote-open">;
+};
+
+export type Seo = {
+  _type: "seo";
+  title: string;
+  description: string;
+};
+
+export type VerifyPage = {
+  _id: string;
+  _type: "verifyPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  form: {
+    codeLabel: string;
+    submitLabel: string;
+  };
+  result: {
+    validTitle: string;
+    holderLabel: string;
+    hiddenHolderText: string;
+    eventLabel: string;
+    issuedLabel: string;
+    invalidTitle: string;
+    invalidText: string;
+  };
+};
+
+export type AccountPage = {
+  _id: string;
+  _type: "accountPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo: Seo;
+  family: "yellow" | "blue" | "green" | "red";
+  hero: PageHero;
+  signIn: {
+    title: string;
+    lead: string;
+    emailLabel: string;
+    submitLabel: string;
+    note: string;
+  };
+  code: {
+    title: string;
+    lead: string;
+    codeLabel: string;
+    submitLabel: string;
+    resendLabel: string;
+    changeEmailLabel: string;
+  };
+  register: {
+    title: string;
+    lead: string;
+    firstNameLabel: string;
+    lastNameLabel: string;
+    noticeTitle: string;
+    ageLabel: string;
+    submitLabel: string;
+  };
+  notice: Array<string>;
+  purposes: Array<{
+    key: "account" | "public_verification" | "giveaways" | "game";
+    label: string;
+    description: string;
+    _type: "purposeCopy";
+    _key: string;
+  }>;
+  dashboard: {
+    greeting: string;
+    signOutLabel: string;
+    qrTitle: string;
+    qrLead: string;
+    certificatesTitle: string;
+    certificatesLead: string;
+    certificatesEmptyText: string;
+    downloadLabel: string;
+    verifyLabel: string;
+    profileTitle: string;
+    saveLabel: string;
+    savedText: string;
+  };
+  privacy: {
+    title: string;
+    lead: string;
+    purposesTitle: string;
+    exportLabel: string;
+    exportNote: string;
+    deleteLabel: string;
+    deleteConfirm: string;
+    deletedText: string;
+    otherRequestsNote: string;
+  };
+  reconsent: {
+    title: string;
+    lead: string;
+    acceptLabel: string;
+  };
+  errors: {
+    genericText: string;
+    invalidEmail: string;
+    invalidCode: string;
+    rateLimitedText: string;
+    requiredText: string;
+  };
+  staff: {
+    title: string;
+    lead: string;
+    forbiddenText: string;
+    scanLabel: string;
+    stopLabel: string;
+    emailLabel: string;
+    emailSubmitLabel: string;
+    checkedInText: string;
+    alreadyText: string;
+    notFoundText: string;
+    importTitle: string;
+    importLead: string;
+    importLabel: string;
+    importSubmitLabel: string;
+    importResultText: string;
+    unmatchedTitle: string;
+  };
+};
+
 export type FaqPage = {
   _id: string;
   _type: "faqPage";
@@ -189,20 +344,6 @@ export type Cta = {
   lead?: string;
   primary?: Link;
   secondary?: Link;
-};
-
-export type PageHero = {
-  _type: "pageHero";
-  eyebrow: string;
-  title: string;
-  lead: string;
-  glyphs?: Array<"braces" | "semicolon" | "globe" | "at" | "asterisk" | "heart" | "hash-green" | "slash-a" | "x-pink" | "comma-yellow" | "plus-blue" | "half-circle-yellow" | "dot-blue" | "dot-green" | "dot-red" | "dot-yellow" | "brace-left" | "brace-right" | "arrow-right" | "quote-open">;
-};
-
-export type Seo = {
-  _type: "seo";
-  title: string;
-  description: string;
 };
 
 export type OrganizersPage = {
@@ -401,6 +542,9 @@ export type SiteSettings = {
   communityUrl: string;
   handle: string;
   socialUrl?: string;
+  controllerName: string;
+  controllerId?: string;
+  privacyEmail?: string;
   navigation: Array<{
     _key: string;
   } & Link>;
@@ -409,6 +553,7 @@ export type SiteSettings = {
     title: string;
     lead: string;
     primaryLabel: string;
+    accountLabel: string;
     secondary: Link;
   };
   footer: {
@@ -529,11 +674,11 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | FaqPage | Cta | PageHero | Seo | OrganizersPage | Link | AboutPage | Quote | Figure | SponsorsPage | SpeakersPage | AgendaPage | HomePage | SiteSettings | Stat | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | PrivacyPage | PageHero | Seo | VerifyPage | AccountPage | FaqPage | Cta | OrganizersPage | Link | AboutPage | Quote | Figure | SponsorsPage | SpeakersPage | AgendaPage | HomePage | SiteSettings | Stat | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    navigation,    registerCta,    footer  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    controllerName,    controllerId,    privacyEmail,    navigation,    registerCta,    footer  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   name: string;
   year: number;
@@ -546,6 +691,9 @@ export type SITE_SETTINGS_QUERY_RESULT = {
   communityUrl: string;
   handle: string;
   socialUrl: string | null;
+  controllerName: string;
+  controllerId: string | null;
+  privacyEmail: string | null;
   navigation: Array<{
     _key: string;
   } & Link>;
@@ -554,6 +702,7 @@ export type SITE_SETTINGS_QUERY_RESULT = {
     title: string;
     lead: string;
     primaryLabel: string;
+    accountLabel: string;
     secondary: Link;
   };
   footer: {
@@ -733,6 +882,138 @@ export type FAQ_PAGE_QUERY_RESULT = {
 } | null;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: ACCOUNT_PAGE_QUERY
+// Query: *[_type == "accountPage" && _id == "accountPage"][0]{    seo,    family,    hero,    signIn,    code,    register,    notice,    purposes[]{ key, label, description },    dashboard,    privacy,    reconsent,    errors,    staff,    "policyVersion": *[_type == "privacyPage" && _id == "privacyPage"][0].version  }
+export type ACCOUNT_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  signIn: {
+    title: string;
+    lead: string;
+    emailLabel: string;
+    submitLabel: string;
+    note: string;
+  };
+  code: {
+    title: string;
+    lead: string;
+    codeLabel: string;
+    submitLabel: string;
+    resendLabel: string;
+    changeEmailLabel: string;
+  };
+  register: {
+    title: string;
+    lead: string;
+    firstNameLabel: string;
+    lastNameLabel: string;
+    noticeTitle: string;
+    ageLabel: string;
+    submitLabel: string;
+  };
+  notice: Array<string>;
+  purposes: Array<{
+    key: "account" | "game" | "giveaways" | "public_verification";
+    label: string;
+    description: string;
+  }>;
+  dashboard: {
+    greeting: string;
+    signOutLabel: string;
+    qrTitle: string;
+    qrLead: string;
+    certificatesTitle: string;
+    certificatesLead: string;
+    certificatesEmptyText: string;
+    downloadLabel: string;
+    verifyLabel: string;
+    profileTitle: string;
+    saveLabel: string;
+    savedText: string;
+  };
+  privacy: {
+    title: string;
+    lead: string;
+    purposesTitle: string;
+    exportLabel: string;
+    exportNote: string;
+    deleteLabel: string;
+    deleteConfirm: string;
+    deletedText: string;
+    otherRequestsNote: string;
+  };
+  reconsent: {
+    title: string;
+    lead: string;
+    acceptLabel: string;
+  };
+  errors: {
+    genericText: string;
+    invalidEmail: string;
+    invalidCode: string;
+    rateLimitedText: string;
+    requiredText: string;
+  };
+  staff: {
+    title: string;
+    lead: string;
+    forbiddenText: string;
+    scanLabel: string;
+    stopLabel: string;
+    emailLabel: string;
+    emailSubmitLabel: string;
+    checkedInText: string;
+    alreadyText: string;
+    notFoundText: string;
+    importTitle: string;
+    importLead: string;
+    importLabel: string;
+    importSubmitLabel: string;
+    importResultText: string;
+    unmatchedTitle: string;
+  };
+  policyVersion: string | null;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: VERIFY_PAGE_QUERY
+// Query: *[_type == "verifyPage" && _id == "verifyPage"][0]{ seo, family, hero, form, result }
+export type VERIFY_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  form: {
+    codeLabel: string;
+    submitLabel: string;
+  };
+  result: {
+    validTitle: string;
+    holderLabel: string;
+    hiddenHolderText: string;
+    eventLabel: string;
+    issuedLabel: string;
+    invalidTitle: string;
+    invalidText: string;
+  };
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
+// Variable: PRIVACY_PAGE_QUERY
+// Query: *[_type == "privacyPage" && _id == "privacyPage"][0]{    seo,    family,    hero,    version,    updatedAt,    sections[]{ heading, body }  }
+export type PRIVACY_PAGE_QUERY_RESULT = {
+  seo: Seo;
+  family: "blue" | "green" | "red" | "yellow";
+  hero: PageHero;
+  version: string;
+  updatedAt: string;
+  sections: Array<{
+    heading: string;
+    body: string;
+  }>;
+} | null;
+
+// Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: TRACKS_QUERY
 // Query: *[_type == "track"] | order(coalesce(order, 9999) asc, name asc){    _id,      name,  "slug": slug.current,  room,  family,    glyph,    blurb  }
 export type TRACKS_QUERY_RESULT = Array<{
@@ -852,7 +1133,7 @@ export type FAQ_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
+    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    controllerName,\n    controllerId,\n    privacyEmail,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
     "\n  *[_type == \"homePage\" && _id == \"homePage\"][0]{\n    seo,\n    family,\n    hero,\n    stats,\n    speakers{\n      eyebrow,\n      title,\n      lead,\n      link,\n      featured[]->{ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n    },\n    tracks,\n    quote,\n    sponsors,\n    cta\n  }\n": HOME_PAGE_QUERY_RESULT;
     "\n  *[_type == \"agendaPage\" && _id == \"agendaPage\"][0]{ seo, family, hero, footnote, cta }\n": AGENDA_PAGE_QUERY_RESULT;
     "\n  *[_type == \"speakersPage\" && _id == \"speakersPage\"][0]{ seo, family, hero, cfp, cta }\n": SPEAKERS_PAGE_QUERY_RESULT;
@@ -860,6 +1141,9 @@ declare global {
     "\n  *[_type == \"aboutPage\" && _id == \"aboutPage\"][0]{\n    seo,\n    family,\n    hero,\n    intro,\n    principles,\n    history,\n    venue,\n    cta\n  }\n": ABOUT_PAGE_QUERY_RESULT;
     "\n  *[_type == \"organizersPage\" && _id == \"organizersPage\"][0]{ seo, family, hero, volunteering, cta }\n": ORGANIZERS_PAGE_QUERY_RESULT;
     "\n  *[_type == \"faqPage\" && _id == \"faqPage\"][0]{ seo, family, hero, cta }\n": FAQ_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"accountPage\" && _id == \"accountPage\"][0]{\n    seo,\n    family,\n    hero,\n    signIn,\n    code,\n    register,\n    notice,\n    purposes[]{ key, label, description },\n    dashboard,\n    privacy,\n    reconsent,\n    errors,\n    staff,\n    \"policyVersion\": *[_type == \"privacyPage\" && _id == \"privacyPage\"][0].version\n  }\n": ACCOUNT_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"verifyPage\" && _id == \"verifyPage\"][0]{ seo, family, hero, form, result }\n": VERIFY_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"privacyPage\" && _id == \"privacyPage\"][0]{\n    seo,\n    family,\n    hero,\n    version,\n    updatedAt,\n    sections[]{ heading, body }\n  }\n": PRIVACY_PAGE_QUERY_RESULT;
     "\n  *[_type == \"track\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n,\n    glyph,\n    blurb\n  }\n": TRACKS_QUERY_RESULT;
     "\n  *[_type == \"speaker\"] | order(coalesce(order, 9999) asc, name asc){ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n": SPEAKERS_QUERY_RESULT;
     "\n  *[_type == \"session\"] | order(startTime asc, coalesce(order, 9999) asc, title asc){\n    _id,\n    title,\n    kind,\n    startTime,\n    endTime,\n    room,\n    track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n    speaker->{ name, role }\n  }\n": SESSIONS_QUERY_RESULT;

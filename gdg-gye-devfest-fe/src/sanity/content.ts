@@ -15,6 +15,8 @@ import type {
   Quote as RawQuote,
   Seo as RawSeo,
   Stat as RawStat,
+  ACCOUNT_PAGE_QUERY_RESULT,
+  VERIFY_PAGE_QUERY_RESULT,
   HOME_SPONSORS_QUERY_RESULT,
   SESSIONS_QUERY_RESULT,
   SPEAKERS_QUERY_RESULT,
@@ -23,6 +25,7 @@ import { sanityClient } from './client';
 import { urlFor } from './image';
 import {
   ABOUT_PAGE_QUERY,
+  ACCOUNT_PAGE_QUERY,
   AGENDA_PAGE_QUERY,
   FAQ_PAGE_QUERY,
   FAQ_QUERY,
@@ -30,6 +33,7 @@ import {
   HOME_SPONSORS_QUERY,
   ORGANIZERS_PAGE_QUERY,
   ORGANIZERS_QUERY,
+  PRIVACY_PAGE_QUERY,
   SESSIONS_QUERY,
   SITE_SETTINGS_QUERY,
   SPEAKERS_PAGE_QUERY,
@@ -37,6 +41,7 @@ import {
   SPONSOR_TIERS_QUERY,
   SPONSORS_PAGE_QUERY,
   TRACKS_QUERY,
+  VERIFY_PAGE_QUERY,
 } from './queries';
 
 const TBC = 'Speaker por confirmar';
@@ -200,10 +205,16 @@ export interface SiteSettings {
   handle: string;
   /** Social profile, or '#' when not set. */
   socialHref: string;
+  /** Data controller under the LOPDP, e.g. "GDG Guayaquil" or "GDG Guayaquil (RUC …)". */
+  controller: string;
+  /** Where data-subject requests go; the contact email unless the Studio sets another. */
+  privacyEmail: string;
   /** Header menu, in order. */
   navigation: Link[];
   /** Default register block; a page can override parts of it. */
   registerCta: Cta;
+  /** Replaces the header's register button once the visitor has signed in, e.g. "Mi cuenta". */
+  accountLabel: string;
   footer: {
     columns: FooterColumn[];
     /** Heading of the column built from the community, social and email links. */
@@ -234,6 +245,8 @@ type SiteVarsSource = Pick<
   | 'email'
   | 'sponsorsEmail'
   | 'handle'
+  | 'controller'
+  | 'privacyEmail'
 >;
 
 /** The values `{{...}}` placeholders in page copy resolve to. */
@@ -248,6 +261,8 @@ const varsOf = (s: SiteVarsSource): Vars => ({
   email: s.email,
   sponsorsEmail: s.sponsorsEmail,
   handle: s.handle,
+  controller: s.controller,
+  privacyEmail: s.privacyEmail,
 });
 
 async function loadSiteSettings(): Promise<SiteSettings> {
@@ -280,6 +295,8 @@ async function loadSiteSettings(): Promise<SiteSettings> {
     communityLabel: s.communityUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     handle: s.handle,
     socialHref: s.socialUrl ?? '#',
+    controller: s.controllerId ? `${s.controllerName} (${s.controllerId})` : s.controllerName,
+    privacyEmail: s.privacyEmail ?? s.email,
   };
   const chrome = fillDeep(
     { navigation: s.navigation, registerCta: s.registerCta, footer: s.footer },
@@ -295,6 +312,7 @@ async function loadSiteSettings(): Promise<SiteSettings> {
       primary: { label: chrome.registerCta.primaryLabel, href: registerHref },
       secondary: toLink(chrome.registerCta.secondary),
     },
+    accountLabel: chrome.registerCta.accountLabel,
     footer: {
       columns: chrome.footer.columns.map((c) => ({
         heading: c.heading,
@@ -323,14 +341,17 @@ interface PageBase {
   cta: Cta;
 }
 
-interface RawPageBase {
+interface RawPageHead {
   seo: RawSeo;
   family: Family;
+}
+
+interface RawPageBase extends RawPageHead {
   cta: RawCta | null;
 }
 
 /** Fetches a page singleton, fails loudly when it is missing, and fills in the placeholders. */
-async function loadPage<T extends RawPageBase>(
+async function loadPage<T extends RawPageHead>(
   id: string,
   fetchPage: () => Promise<T | null>,
 ): Promise<{ page: T; settings: SiteSettings }> {
@@ -547,6 +568,115 @@ export interface FaqPage extends PageBase {
 export async function getFaqPage(): Promise<FaqPage> {
   const { page: p, settings } = await loadPage('faqPage', () => sanityClient.fetch(FAQ_PAGE_QUERY));
   return { ...pageBase(p, settings), hero: toPageHero(p.hero) };
+}
+
+/* Account, verification and privacy ---------------------------------------------------------- */
+
+type AccountCopy = NonNullable<ACCOUNT_PAGE_QUERY_RESULT>;
+
+export interface AccountPage {
+  seo: Seo;
+  family: Family;
+  hero: PageHero;
+  signIn: AccountCopy['signIn'];
+  code: AccountCopy['code'];
+  register: AccountCopy['register'];
+  /** Short privacy notice shown before the registration form is sent. */
+  notice: string[];
+  /** One checkbox per purpose; the client hides those the database does not have active. */
+  purposes: { key: string; label: string; description: string; required: boolean }[];
+  dashboard: AccountCopy['dashboard'];
+  privacy: AccountCopy['privacy'];
+  reconsent: AccountCopy['reconsent'];
+  errors: AccountCopy['errors'];
+  staff: AccountCopy['staff'];
+  /** Privacy notice version consents are recorded against (privacyPage.version). */
+  policyVersion: string;
+  /** This edition in the accounts database (public.events.slug): the site settings' year. */
+  eventSlug: string;
+}
+
+/** Purposes an attendee cannot opt out of without deleting the account (public.purposes.required). */
+const REQUIRED_PURPOSES = new Set(['account']);
+
+export async function getAccountPage(): Promise<AccountPage> {
+  const { page: p, settings } = await loadPage('accountPage', () =>
+    sanityClient.fetch(ACCOUNT_PAGE_QUERY),
+  );
+  if (!p.policyVersion) {
+    throw new Error(
+      'No existe el documento "privacyPage" (Aviso de privacidad) o no tiene versión. Ejecuta `npm run seed:pages` en studio-gdg-gye-devfest o complétalo desde el Studio.',
+    );
+  }
+  return {
+    seo: toSeo(p.seo),
+    family: p.family,
+    hero: toPageHero(p.hero),
+    signIn: p.signIn,
+    code: p.code,
+    register: p.register,
+    notice: p.notice,
+    purposes: p.purposes.map((purpose) => ({
+      ...purpose,
+      required: REQUIRED_PURPOSES.has(purpose.key),
+    })),
+    dashboard: p.dashboard,
+    privacy: p.privacy,
+    reconsent: p.reconsent,
+    errors: p.errors,
+    staff: p.staff,
+    policyVersion: p.policyVersion,
+    eventSlug: String(settings.year),
+  };
+}
+
+type VerifyCopy = NonNullable<VERIFY_PAGE_QUERY_RESULT>;
+
+export interface VerifyPage {
+  seo: Seo;
+  family: Family;
+  hero: PageHero;
+  form: VerifyCopy['form'];
+  result: VerifyCopy['result'];
+}
+
+export async function getVerifyPage(): Promise<VerifyPage> {
+  const { page: p } = await loadPage('verifyPage', () => sanityClient.fetch(VERIFY_PAGE_QUERY));
+  return {
+    seo: toSeo(p.seo),
+    family: p.family,
+    hero: toPageHero(p.hero),
+    form: p.form,
+    result: p.result,
+  };
+}
+
+export interface PrivacyPage {
+  seo: Seo;
+  family: Family;
+  hero: PageHero;
+  version: string;
+  /** "1 de octubre de 2026" */
+  updatedAt: string;
+  sections: { heading: string; paragraphs: string[] }[];
+}
+
+export async function getPrivacyPage(): Promise<PrivacyPage> {
+  const { page: p } = await loadPage('privacyPage', () => sanityClient.fetch(PRIVACY_PAGE_QUERY));
+  return {
+    seo: toSeo(p.seo),
+    family: p.family,
+    hero: toPageHero(p.hero),
+    version: p.version,
+    updatedAt: formatEventDate(p.updatedAt).long,
+    sections: p.sections.map((s) => ({
+      heading: s.heading,
+      paragraphs: s.body
+        .split(/\n\s*\n/)
+        .map((para) => para.trim())
+        .filter(Boolean),
+    })),
+  };
 }
 
 /* Tracks ------------------------------------------------------------------------------------- */

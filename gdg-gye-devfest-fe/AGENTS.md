@@ -28,8 +28,9 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
   `await` those helpers in frontmatter; components never query Sanity directly except the shared
   layout/header/footer, which read `getSiteSettings()` (memoized per build).
 - Every route has a page singleton (`homePage`, `agendaPage`, `speakersPage`, `sponsorsPage`,
-  `aboutPage`, `organizersPage`, `faqPage`; document id = type) with its SEO, colour family, hero,
-  section copy, photos and an optional override of the register block (`cta`). `getXxxPage()`
+  `aboutPage`, `organizersPage`, `faqPage`, `accountPage`, `verifyPage`, `privacyPage`; document
+  id = type) with its SEO, colour family, hero, section copy, photos and an optional override of
+  the register block (`cta`; the account and legal pages have none). `getXxxPage()`
   returns it fully resolved: `page.cta` already merges the override with the site default, photos
   come as `Figure` (Sanity CDN URL, square crop honouring the hotspot), stats as `Stat` (with
   `count` when the value is a whole number, for `data-count`). A missing page document fails the
@@ -39,13 +40,30 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
   tagline). Nothing editorial is left in the components.
 - Placeholders: any text from a page document or the site chrome may contain `{{capacity}}`,
   `{{dateShort}}`, `{{dateLong}}`, `{{year}}`, `{{venue}}`, `{{email}}`, `{{sponsorsEmail}}`,
-  `{{handle}}`, `{{name}}` or `{{title}}`; `content.ts` replaces them (`fillDeep`) before pages
-  see the data. Add a new one in `varsOf` and in the Studio's `PLACEHOLDERS` list.
+  `{{handle}}`, `{{name}}`, `{{title}}`, `{{controller}}` or `{{privacyEmail}}`; `content.ts`
+  replaces them (`fillDeep`) before pages see the data. Add a new one in `varsOf` and in the Studio's `PLACEHOLDERS` list.
 - `sanity.types.ts` (repo root, committed) is generated: after changing the schema or a query run
   `npm run typegen` in the Studio. `astro check` depends on it.
 - Plenary sessions (keynote, panel, breaks) have no track and appear in every agenda tab; talks
   and workshops belong to one track. Sponsor tiers with `kind: paid` render with perks, `community`
   ones as the tinted partner grid.
+
+## Accounts (Supabase)
+
+- Attendee accounts live in Supabase (`../supabase`, project `leizlplvmnqkenmwijfx`, sa-east-1); see
+  its README. The site stays static: `/cuenta`, `/cuenta/checkin` and `/verificar` render every state
+  at build time from Sanity copy (`accountPage`, `verifyPage`, `privacyPage`) and a page script
+  (`src/scripts/account.ts`, `checkin.ts`, `verify.ts`) shows the right one in the browser.
+- Only those scripts import `src/supabase/client.ts` (supabase-js). `site.ts` switches the header CTA
+  to `siteSettings.registerCta.accountLabel` via `hasStoredSession()` (localStorage only) and the
+  `account:change` event, so other pages never load supabase-js.
+- All writes go through SQL functions that check `auth.uid()`/staff; RLS limits reads to the
+  caller's rows. Schema changes are new files in `../supabase/migrations`, then regenerate
+  `src/supabase/database.types.ts` (prettier-ignored).
+- Data protection (LOPDP, Ecuador) is part of the design: notice before collection, one unchecked
+  consent per purpose (`public.purposes`), append-only `consents` with `privacyPage.version`,
+  in-account access/rectification/deletion. Never use personal data for a purpose the person has
+  not granted, and never send it through Sanity or the build.
 
 ## Conventions
 
