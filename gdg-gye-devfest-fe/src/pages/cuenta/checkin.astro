@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { jsonForScript } from '../../data/json';
+import { getAccountPage } from '../../sanity/content';
+
+const page = await getAccountPage();
+const { staff } = page;
+
+/** Messages the script composes from check-in results. */
+const clientCopy = {
+  checkedInText: staff.checkedInText,
+  alreadyText: staff.alreadyText,
+  notFoundText: staff.notFoundText,
+  importResultText: staff.importResultText,
+  genericText: page.errors.genericText,
+};
+---
+
+<BaseLayout title={staff.title} description={staff.lead} family={page.family} noindex>
+  <section class="section">
+    <div class="wrap checkin" data-checkin data-event={page.eventSlug}>
+      <script
+        is:inline
+        type="application/json"
+        data-checkin-copy
+        set:html={jsonForScript(clientCopy)}
+      />
+      <div class="section__head">
+        <p class="eyebrow">{page.hero.eyebrow}</p>
+        <h1 class="display display--lg">{staff.title}</h1>
+        <p class="lead">{staff.lead}</p>
+      </div>
+
+      <p class="mono mono--muted" data-view="loading" role="status">Cargando…</p>
+
+      <div class="card" data-view="forbidden" hidden>
+        <p class="form__lead">{staff.forbiddenText}</p>
+        <div class="form__actions">
+          <a class="btn btn--fill" href="/cuenta">{page.signIn.title}</a>
+        </div>
+      </div>
+
+      <div data-view="tools" hidden>
+        <p class="checkin__result" data-result role="status" aria-live="assertive"></p>
+        <div class="account__grid">
+          <article class="card form">
+            <video class="checkin__video" data-video muted playsinline hidden></video>
+            <div class="form__actions">
+              <button class="btn btn--fill" type="button" data-action="scan"
+                ><Icon name="qr_code_scanner" class="btn__icon" /> {staff.scanLabel}</button
+              >
+              <button class="btn" type="button" data-action="stop" hidden>{staff.stopLabel}</button>
+            </div>
+
+            <form class="form" data-form="email" novalidate>
+              <label class="form__field">
+                <span class="form__label">{staff.emailLabel}</span>
+                <input class="form__input" type="email" name="email" autocomplete="off" required />
+              </label>
+              <div class="form__actions">
+                <button class="btn" type="submit">{staff.emailSubmitLabel}</button>
+              </div>
+            </form>
+          </article>
+
+          <form class="card form" data-form="import" novalidate>
+            <h2 class="display display--sm">{staff.importTitle}</h2>
+            <p>{staff.importLead}</p>
+            <label class="form__field">
+              <span class="form__label">{staff.importLabel}</span>
+              <textarea class="form__input form__input--area" name="emails" rows="8" required
+              ></textarea>
+            </label>
+            <div class="form__actions">
+              <button class="btn btn--fill" type="submit">{staff.importSubmitLabel}</button>
+            </div>
+            <p class="form__status" data-import-result role="status"></p>
+            <div data-unmatched hidden>
+              <h3 class="form__label">{staff.unmatchedTitle}</h3>
+              <ul class="checkin__unmatched mono" data-unmatched-list></ul>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '../../scripts/checkin';
+</script>

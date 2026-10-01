@@ -13,8 +13,10 @@ interface Props {
   description: string;
   /** Colour family for this page's accent/tint (per-asset accent, per the brand guide). */
   family?: Family;
+  /** Keeps the page out of search results (organizer-only screens). */
+  noindex?: boolean;
 }
-const { title, description, family = 'yellow' } = Astro.props;
+const { title, description, family = 'yellow', noindex = false } = Astro.props;
 const settings = await getSiteSettings();
 ---
 
@@ -25,6 +27,7 @@ const settings = await getSiteSettings();
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title} · {settings.title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

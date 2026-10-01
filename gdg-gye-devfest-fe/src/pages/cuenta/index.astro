@@ -1,0 +1,310 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { jsonForScript } from '../../data/json';
+import { getAccountPage, getPrivacyPage } from '../../sanity/content';
+
+const [page, privacyPage] = await Promise.all([getAccountPage(), getPrivacyPage()]);
+const { signIn, code, register, dashboard, privacy, reconsent, errors, staff } = page;
+const optionalPurposes = page.purposes.filter((p) => !p.required);
+const privacyLink = { label: privacyPage.seo.title, href: '/privacidad' };
+
+/** Strings the script needs at run time (messages that only exist after a request). */
+const clientCopy = {
+  errors,
+  savedText: dashboard.savedText,
+  deletedText: privacy.deletedText,
+};
+---
+
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
+
+  <section class="section" style="padding-top:0">
+    <div
+      class="wrap account"
+      data-account
+      data-policy-version={page.policyVersion}
+      data-event={page.eventSlug}
+    >
+      <script
+        is:inline
+        type="application/json"
+        data-account-copy
+        set:html={jsonForScript(clientCopy)}
+      />
+
+      <p class="account__view mono mono--muted" data-view="loading" role="status">Cargando…</p>
+
+      <!-- Step 1: email -->
+      <form class="account__view card form" data-view="email" hidden novalidate>
+        <h2 class="display display--sm">{signIn.title}</h2>
+        <p class="form__lead">{signIn.lead}</p>
+        <label class="form__field">
+          <span class="form__label">{signIn.emailLabel}</span>
+          <input class="form__input" type="email" name="email" autocomplete="email" required />
+        </label>
+        <p class="form__error" role="alert" hidden></p>
+        <div class="form__actions">
+          <button class="btn btn--fill" type="submit"
+            >{signIn.submitLabel} <Icon name="arrow_forward" class="btn__icon" /></button
+          >
+        </div>
+        <p class="form__note">
+          {signIn.note}
+          <a href={privacyLink.href}>{privacyLink.label}</a>
+        </p>
+      </form>
+
+      <!-- Step 2: code -->
+      <form class="account__view card form" data-view="code" hidden novalidate>
+        <h2 class="display display--sm">{code.title}</h2>
+        <p class="form__lead">{code.lead} <strong data-field="email"></strong></p>
+        <label class="form__field">
+          <span class="form__label">{code.codeLabel}</span>
+          <input
+            class="form__input form__input--code"
+            type="text"
+            name="code"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            required
+          />
+        </label>
+        <p class="form__error" role="alert" hidden></p>
+        <div class="form__actions">
+          <button class="btn btn--fill" type="submit">{code.submitLabel}</button>
+          <button class="btn" type="button" data-action="resend">{code.resendLabel}</button>
+          <button class="btn" type="button" data-action="change-email"
+            >{code.changeEmailLabel}</button
+          >
+        </div>
+      </form>
+
+      <!-- Step 3: registration, with the privacy notice before anything is sent -->
+      <form class="account__view card form" data-view="register" hidden novalidate>
+        <h2 class="display display--sm">{register.title}</h2>
+        <p class="form__lead">{register.lead}</p>
+        <div class="form__row">
+          <label class="form__field">
+            <span class="form__label">{register.firstNameLabel}</span>
+            <input
+              class="form__input"
+              type="text"
+              name="firstName"
+              autocomplete="given-name"
+              maxlength="80"
+              required
+            />
+          </label>
+          <label class="form__field">
+            <span class="form__label">{register.lastNameLabel}</span>
+            <input
+              class="form__input"
+              type="text"
+              name="lastName"
+              autocomplete="family-name"
+              maxlength="80"
+              required
+            />
+          </label>
+        </div>
+        <div class="notice">
+          <h3 class="notice__title">{register.noticeTitle}</h3>
+          <ul class="notice__list">
+            {page.notice.map((item) => <li>{item}</li>)}
+          </ul>
+          <a class="notice__link" href={privacyLink.href}>{privacyLink.label}</a>
+        </div>
+        <fieldset class="form__group">
+          {
+            page.purposes.map((p) => (
+              <label class="check" data-purpose-row={p.key}>
+                <input
+                  class="check__input"
+                  type="checkbox"
+                  name="purpose"
+                  value={p.key}
+                  required={p.required}
+                />
+                <span class="check__text">
+                  <span class="check__label">{p.label}</span>
+                  <span class="check__detail">{p.description}</span>
+                </span>
+              </label>
+            ))
+          }
+          <label class="check">
+            <input class="check__input" type="checkbox" name="age" required />
+            <span class="check__text">
+              <span class="check__label">{register.ageLabel}</span>
+            </span>
+          </label>
+        </fieldset>
+        <p class="form__error" role="alert" hidden></p>
+        <div class="form__actions">
+          <button class="btn btn--fill" type="submit">{register.submitLabel}</button>
+        </div>
+      </form>
+
+      <!-- New privacy notice version since the last acceptance -->
+      <div class="account__view card form" data-view="reconsent" hidden>
+        <h2 class="display display--sm">{reconsent.title}</h2>
+        <p class="form__lead">{reconsent.lead}</p>
+        <a href={privacyLink.href}>{privacyLink.label}</a>
+        <p class="form__error" role="alert" hidden></p>
+        <div class="form__actions">
+          <button class="btn btn--fill" type="button" data-action="reconsent"
+            >{reconsent.acceptLabel}</button
+          >
+          <button class="btn" type="button" data-action="sign-out">{dashboard.signOutLabel}</button>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="account__view account__dashboard" data-view="dashboard" hidden>
+        <div class="account__head">
+          <h2 class="display display--md">
+            {`${dashboard.greeting} `}<span data-field="firstName"></span>
+          </h2>
+          <div class="account__head-actions">
+            <a class="btn" href="/cuenta/checkin" data-staff-only hidden
+              ><Icon name="qr_code_scanner" class="btn__icon" /> {staff.title}</a
+            >
+            <button class="btn" type="button" data-action="sign-out"
+              ><Icon name="logout" class="btn__icon" /> {dashboard.signOutLabel}</button
+            >
+          </div>
+        </div>
+
+        <div class="account__grid">
+          <article class="card card--tint account__qr">
+            <h3 class="display display--sm">{dashboard.qrTitle}</h3>
+            <p>{dashboard.qrLead}</p>
+            <img class="account__qr-img" data-field="qr" alt="" width="240" height="240" />
+            <p class="mono" data-field="checkinCode"></p>
+          </article>
+
+          <article class="card">
+            <h3 class="display display--sm">{dashboard.certificatesTitle}</h3>
+            <p>{dashboard.certificatesLead}</p>
+            <p class="mono mono--muted" data-certificates-empty hidden>
+              {dashboard.certificatesEmptyText}
+            </p>
+            <ul class="certificates" data-certificates></ul>
+            <p class="form__error" role="alert" data-certificates-error hidden></p>
+            <template data-template="certificate">
+              <li class="certificate">
+                <span class="certificate__event" data-field="event"></span>
+                <span class="certificate__meta mono mono--muted"
+                  ><span data-field="date"></span> · <span data-field="code"></span></span
+                >
+                <span class="certificate__actions">
+                  <button class="btn btn--fill" type="button" data-action="download"
+                    ><Icon name="download" class="btn__icon" /> {dashboard.downloadLabel}</button
+                  >
+                  <a class="certificate__verify" data-field="verify">{dashboard.verifyLabel}</a>
+                </span>
+              </li>
+            </template>
+          </article>
+
+          <form class="card form" data-form="profile" novalidate>
+            <h3 class="display display--sm">{dashboard.profileTitle}</h3>
+            <label class="form__field">
+              <span class="form__label">{register.firstNameLabel}</span>
+              <input
+                class="form__input"
+                type="text"
+                name="firstName"
+                autocomplete="given-name"
+                maxlength="80"
+                required
+              />
+            </label>
+            <label class="form__field">
+              <span class="form__label">{register.lastNameLabel}</span>
+              <input
+                class="form__input"
+                type="text"
+                name="lastName"
+                autocomplete="family-name"
+                maxlength="80"
+                required
+              />
+            </label>
+            <p class="mono mono--muted" data-field="email"></p>
+            <p class="form__error" role="alert" hidden></p>
+            <div class="form__actions">
+              <button class="btn btn--fill" type="submit">{dashboard.saveLabel}</button>
+              <span class="form__status" role="status"></span>
+            </div>
+          </form>
+
+          <section class="card form" aria-labelledby="privacy-title">
+            <h3 class="display display--sm" id="privacy-title">{privacy.title}</h3>
+            <p>{privacy.lead}</p>
+            {
+              optionalPurposes.length > 0 && (
+                <fieldset class="form__group">
+                  <legend class="form__label">{privacy.purposesTitle}</legend>
+                  {optionalPurposes.map((p) => (
+                    <label class="check" data-purpose-row={p.key}>
+                      <input
+                        class="check__input"
+                        type="checkbox"
+                        data-consent={p.key}
+                        role="switch"
+                      />
+                      <span class="check__text">
+                        <span class="check__label">{p.label}</span>
+                        <span class="check__detail">{p.description}</span>
+                      </span>
+                    </label>
+                  ))}
+                </fieldset>
+              )
+            }
+            <div class="form__actions">
+              <button class="btn" type="button" data-action="export"
+                ><Icon name="download" class="btn__icon" /> {privacy.exportLabel}</button
+              >
+            </div>
+            <p class="form__note">{privacy.exportNote}</p>
+            <div class="form__actions">
+              <button
+                class="btn"
+                type="button"
+                data-action="delete"
+                aria-expanded="false"
+                aria-controls="delete-confirm">{privacy.deleteLabel}</button
+              >
+            </div>
+            <div class="account__danger" id="delete-confirm" hidden>
+              <p>{privacy.deleteConfirm}</p>
+              <button class="btn btn--ink" type="button" data-action="delete-confirm"
+                >{privacy.deleteLabel}</button
+              >
+            </div>
+            <p class="form__error" role="alert" hidden></p>
+            <p class="form__note">
+              {privacy.otherRequestsNote}
+              <a href={privacyLink.href}>{privacyLink.label}</a>
+            </p>
+          </section>
+        </div>
+      </div>
+
+      <div class="account__view card" data-view="deleted" hidden>
+        <p class="form__lead" data-field="deleted" role="status"></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '../../scripts/account';
+</script>

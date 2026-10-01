@@ -33,6 +33,10 @@ img {
   display: block;
   max-width: 100%;
 }
+/* `hidden` wins over block display rules (btn, form, card…): the account pages toggle views with it. */
+[hidden] {
+  display: none !important;
+}
 :focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
@@ -1036,8 +1040,253 @@ img {
   font-size: var(--text-mono-sm);
   color: var(--text-muted);
 }
+/* Forms (account, check-in, verification) */
+.form {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+.form__lead {
+  font-size: var(--text-body-lg);
+  max-width: var(--measure-prose);
+}
+.form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.form__field {
+  display: grid;
+  gap: var(--space-2);
+}
+.form__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-sm);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--text-muted);
+}
+.form__input {
+  min-height: 52px;
+  padding: 0 18px;
+  border: var(--stroke);
+  border-radius: var(--radius-tile);
+  background: var(--gdg-white);
+  color: var(--text-body);
+  font: inherit;
+  font-size: var(--text-body-md);
+}
+.form__input:focus-visible {
+  outline-offset: 1px;
+}
+.form__input--code {
+  font-family: var(--font-mono);
+  font-size: var(--text-display-sm);
+  letter-spacing: 0.3em;
+  max-width: 380px;
+}
+.form__input--area {
+  min-height: 160px;
+  padding-block: 14px;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-md);
+  resize: vertical;
+}
+.form__group {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.form__note {
+  font-size: var(--text-body-sm);
+  color: var(--text-muted);
+  max-width: var(--measure-prose);
+}
+.form__error {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-tile);
+  background: var(--gdg-pastel-red);
+  font-size: var(--text-body-sm);
+}
+.form__status {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-sm);
+}
+/* Checkbox with label and detail (consents) */
+.check {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  cursor: pointer;
+}
+.check__input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--gdg-black-02);
+}
+.check__text {
+  display: grid;
+  gap: 2px;
+}
+.check__detail {
+  font-size: var(--text-body-sm);
+  color: var(--text-muted);
+}
+/* Short privacy notice before registering */
+.notice {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-card-sm);
+  background: var(--tint);
+}
+.notice__title {
+  font-size: var(--text-body-lg);
+}
+.notice__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: var(--text-body-sm);
+}
+/* Account */
+.account {
+  display: grid;
+  gap: var(--space-5);
+}
+.account > .card {
+  max-width: 720px;
+}
+.account__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.account__head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.account__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+.account__qr {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+.account__qr-img {
+  width: 240px;
+  height: 240px;
+  border-radius: var(--radius-tile);
+  background: var(--gdg-white);
+  image-rendering: pixelated;
+}
+.account__danger {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  padding: var(--space-4);
+  border: var(--stroke);
+  border-radius: var(--radius-card-sm);
+}
+/* Certificates */
+.certificates {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.certificate {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--stroke-thin);
+  border-radius: var(--radius-card-sm);
+}
+.certificate__event {
+  font-size: var(--text-body-lg);
+  font-weight: 500;
+}
+.certificate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+/* Check-in */
+.checkin__result {
+  min-height: 1.5em;
+  margin-bottom: var(--space-5);
+  font-size: var(--text-display-sm);
+  font-weight: 500;
+}
+.checkin__result[data-status='checked_in'] {
+  color: var(--gdg-green-500);
+}
+.checkin__result[data-status='not_found'],
+.checkin__result[data-status='error'] {
+  color: var(--gdg-red-500);
+}
+.checkin__video {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-card-sm);
+  background: var(--gdg-black-02);
+}
+.checkin__unmatched {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.2em;
+  font-size: var(--text-mono-sm);
+}
+/* Certificate verification */
+.verify__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+}
+.verify__list dd {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-body-lg);
+}
+/* Privacy notice */
+.legal {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 860px;
+}
+.legal__section {
+  display: grid;
+  gap: var(--space-4);
+}
+.legal__text {
+  max-width: var(--measure-prose);
+}
 /* Responsive layout (the inline grid/padding styles come straight from the design, so these match on them) */
 @media (max-width: 860px) {
+  .account__grid,
+  .form__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
   main .wrap[style*='grid-template-columns'],
   main .card--ink[style*='grid-template-columns'] {
     grid-template-columns: 1fr !important;

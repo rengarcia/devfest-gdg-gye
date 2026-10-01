@@ -5,6 +5,10 @@ import { getSiteSettings } from '../sanity/content';
 
 const settings = await getSiteSettings();
 const registerLabel = settings.registerCta.primary.label;
+// Straight to the account page once it exists; until then, to the register block of the page.
+const registerHref = settings.registerHref === '#' ? '#registro' : settings.registerHref;
+// site.ts swaps label and destination to the account when the visitor is signed in.
+const accountCta = { 'data-account-label': settings.accountLabel, 'data-account-href': '/cuenta' };
 const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
 const current = normalize(Astro.url.pathname);
 ---
@@ -28,13 +32,16 @@ const current = normalize(Astro.url.pathname);
           ))
         }
       </ul><div class="nav__extra">
-        <a class="btn btn--fill nav__cta" href="#registro"
-          >{registerLabel} <Icon name="arrow_forward" class="btn__icon" /></a
+        <a class="btn btn--fill nav__cta" href={registerHref} {...accountCta}
+          ><span data-account-text>{registerLabel}</span>
+          <Icon name="arrow_forward" class="btn__icon" /></a
         ><p class="nav__meta"><span>{settings.dateShort}</span><span>{settings.venue}</span></p>
       </div>
     </nav>
     <div class="site-header__actions">
-      <a class="btn btn--fill site-header__cta" href="#registro">{registerLabel}</a><button
+      <a class="btn btn--fill site-header__cta" href={registerHref} {...accountCta}
+        ><span data-account-text>{registerLabel}</span></a
+      ><button
         class="site-header__toggle"
         type="button"
         aria-expanded="false"

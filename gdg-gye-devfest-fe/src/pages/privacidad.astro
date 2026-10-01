@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getPrivacyPage } from '../sanity/content';
+
+const page = await getPrivacyPage();
+---
+
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap legal">
+      <p class="mono mono--muted">Versión {page.version} · Actualizado el {page.updatedAt}</p>
+      {
+        page.sections.map((s) => (
+          <section class="legal__section reveal">
+            <h2 class="display display--sm">{s.heading}</h2>
+            {s.paragraphs.map((p) => (
+              <p class="legal__text">{p}</p>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

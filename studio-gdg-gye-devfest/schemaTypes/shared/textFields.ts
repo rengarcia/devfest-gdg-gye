@@ -16,6 +16,8 @@ export const PLACEHOLDERS = [
   'email',
   'sponsorsEmail',
   'handle',
+  'controller',
+  'privacyEmail',
 ] as const
 
 export const PLACEHOLDER_HINT =

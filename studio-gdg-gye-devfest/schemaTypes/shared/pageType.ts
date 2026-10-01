@@ -9,13 +9,15 @@ interface PageOptions {
   icon: ComponentType
   /** The page's own sections, between the SEO/colour fields and the closing register block. */
   fields: FieldDefinition[]
+  /** Pages that do not close with the register block (account, privacy) leave it out. */
+  withCta?: boolean
 }
 
 /**
  * A page singleton: SEO + colour family, the page's sections, and an optional override of the
  * register block that closes every page. Opened from the "Páginas" group in the Studio structure.
  */
-export function definePage({name, title, icon, fields}: PageOptions) {
+export function definePage({name, title, icon, fields, withCta = true}: PageOptions) {
   return defineType({
     name,
     title,
@@ -34,13 +36,17 @@ export function definePage({name, title, icon, fields}: PageOptions) {
           'Acento de toda la página: una sola familia de color por página, según el brand guide.',
       }),
       ...fields,
-      defineField({
-        name: 'cta',
-        title: 'Bloque de registro',
-        type: 'cta',
-        description:
-          'Cierra la página. Deja vacío lo que no cambie: se usa el bloque de registro de la Configuración del sitio.',
-      }),
+      ...(withCta
+        ? [
+            defineField({
+              name: 'cta',
+              title: 'Bloque de registro',
+              type: 'cta',
+              description:
+                'Cierra la página. Deja vacío lo que no cambie: se usa el bloque de registro de la Configuración del sitio.',
+            }),
+          ]
+        : []),
     ],
     preview: {
       prepare: () => ({title}),

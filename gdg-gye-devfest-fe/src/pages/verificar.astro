@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getVerifyPage } from '../sanity/content';
+
+const page = await getVerifyPage();
+const { form, result } = page;
+---
+
+<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+  <PageHero {...page.hero} />
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap account" data-verify>
+      <form class="card form" novalidate>
+        <label class="form__field">
+          <span class="form__label">{form.codeLabel}</span>
+          <input
+            class="form__input form__input--code"
+            type="text"
+            name="code"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            maxlength="20"
+            required
+          />
+        </label>
+        <div class="form__actions">
+          <button class="btn btn--fill" type="submit">{form.submitLabel}</button>
+        </div>
+      </form>
+
+      <div class="card card--tint verify" data-result="valid" role="status" hidden>
+        <h2 class="display display--sm">{result.validTitle}</h2>
+        <dl class="verify__list">
+          <dt class="form__label">{result.holderLabel}</dt>
+          <dd data-field="holder"></dd>
+          <dd class="mono mono--muted" data-field="hidden-holder">{result.hiddenHolderText}</dd>
+          <dt class="form__label">{result.eventLabel}</dt>
+          <dd data-field="event"></dd>
+          <dt class="form__label">{result.issuedLabel}</dt>
+          <dd data-field="issued"></dd>
+        </dl>
+      </div>
+
+      <div class="card verify" data-result="invalid" role="status" hidden>
+        <h2 class="display display--sm">{result.invalidTitle}</h2>
+        <p>{result.invalidText}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '../scripts/verify';
+</script>

@@ -15,8 +15,8 @@ tokens y comportamiento, reorganizado en layouts y componentes. El contenido viv
 | `npm run preview` | Sirve `dist/` localmente                   |
 | `npm run check`   | Chequeo de tipos de `.astro` y `.ts`       |
 
-Antes de arrancar, copia `.env.example` a `.env` (id de proyecto y dataset de Sanity; no son
-secretos).
+Antes de arrancar, copia `.env.example` a `.env` (id de proyecto y dataset de Sanity, URL y clave
+publicable de Supabase; ninguno es secreto).
 
 ## Estructura
 
@@ -30,10 +30,15 @@ src/
   styles/tokens/          Tokens del design system (color, tipografía, espacio, forma, motion)
   styles/ds.css           Punto de entrada de los tokens
   styles/site.css         Estilos del sitio sobre los tokens
-  scripts/site.ts         Intro de carga, menú móvil, reveals, tabs, contadores
+  scripts/site.ts         Intro de carga, menú móvil, reveals, tabs, contadores, botón "Mi cuenta"
+  scripts/account.ts      /cuenta: código por correo, registro, panel, privacidad
+  scripts/checkin.ts      /cuenta/checkin: QR, correo e importación de asistencia (staff)
+  scripts/verify.ts       /verificar: comprobación pública de certificados
+  supabase/               Cliente de Supabase, tipos generados y chequeo de sesión sin supabase-js
   layouts/BaseLayout.astro  <head>, header, footer y script compartidos
   components/             Lockup, header, footer, hero de página, tarjetas, CTA de registro
-  pages/                  /, /agenda, /speakers, /sponsors, /nosotros, /organizadores, /faq
+  pages/                  /, /agenda, /speakers, /sponsors, /nosotros, /organizadores, /faq,
+                          /cuenta, /cuenta/checkin, /verificar, /privacidad
 ```
 
 ## Editar contenido
@@ -57,6 +62,19 @@ regenerar `sanity.types.ts`.
 
 Cada página elige una familia de color (`yellow`, `blue`, `green` o `red`) en su documento del
 Studio, siguiendo la regla del brand guide de un solo acento por pieza.
+
+## Cuentas y certificados
+
+Las cuentas de asistentes viven en Supabase (carpeta [`../supabase`](../supabase), con su propio
+README): entrada con un código de 6 dígitos por correo, registro con nombre y apellido, QR para el
+check-in, certificados en PDF y verificación pública en `/verificar`. Los textos de esas páginas se
+editan en el Studio (Mi cuenta, Verificar certificado, Aviso de privacidad); los datos de las
+personas nunca pasan por Sanity ni por el build.
+
+Protección de datos (LOPDP, Ecuador): el registro muestra el aviso antes de enviar, pide un
+consentimiento por finalidad (casillas sin marcar), guarda la evidencia y deja ejercer los derechos
+desde la propia cuenta (descargar, corregir, retirar consentimientos, eliminar). Lo que queda por
+hacer fuera del código está al final de `../supabase/README.md`.
 
 ## Notas de marca
 

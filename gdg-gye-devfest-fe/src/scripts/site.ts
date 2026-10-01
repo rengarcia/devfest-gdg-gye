@@ -2,6 +2,8 @@
    Astro bundles this module once per site and, with <ClientRouter />, keeps it alive across client-side
    navigations. Anything that touches page content runs from init() on `astro:page-load` (which also fires
    on the first load); document-level listeners are registered once at module scope. */
+import { ACCOUNT_CHANGE_EVENT, hasStoredSession } from '../supabase/session';
+
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* Load intro — plays once per full page load, not on client-side navigations (skipped with reduced motion) */
@@ -69,12 +71,29 @@ matchMedia('(min-width: 1141px)').addEventListener('change', (e) => {
   if (e.matches) setNav(false);
 });
 
+/* Header register button. It is built the same for everyone, so for signed-in visitors it becomes the
+   account link (label and destination from data-account-*) on every page load, and again when the account
+   scripts sign in or out. Checks localStorage only: supabase-js stays out of this bundle. */
+function syncAccountCta() {
+  const signedIn = hasStoredSession();
+  document.querySelectorAll<HTMLAnchorElement>('[data-account-href]').forEach((a) => {
+    const text = a.querySelector<HTMLElement>('[data-account-text]');
+    if (!text) return;
+    a.dataset.registerHref ??= a.getAttribute('href') ?? '#';
+    text.dataset.registerLabel ??= text.textContent ?? '';
+    a.setAttribute('href', (signedIn ? a.dataset.accountHref : a.dataset.registerHref) ?? '#');
+    text.textContent = (signedIn ? a.dataset.accountLabel : text.dataset.registerLabel) ?? '';
+  });
+}
+document.addEventListener(ACCOUNT_CHANGE_EVENT, syncAccountCta);
+
 /* Per-page setup */
 let observers: IntersectionObserver[] = [];
 
 function init() {
   observers.forEach((o) => o.disconnect());
   observers = [];
+  syncAccountCta();
 
   /* Scroll reveals. Once revealed, the stagger delay is dropped so hover transitions on the same element
      (hover-lift) respond immediately. */

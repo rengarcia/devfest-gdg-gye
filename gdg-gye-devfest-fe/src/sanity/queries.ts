@@ -43,6 +43,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
     communityUrl,
     handle,
     socialUrl,
+    controllerName,
+    controllerId,
+    privacyEmail,
     navigation,
     registerCta,
     footer
@@ -102,6 +105,40 @@ export const ORGANIZERS_PAGE_QUERY = defineQuery(/* groq */ `
 
 export const FAQ_PAGE_QUERY = defineQuery(/* groq */ `
   *[_type == "faqPage" && _id == "faqPage"][0]{ seo, family, hero, cta }
+`);
+
+export const ACCOUNT_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "accountPage" && _id == "accountPage"][0]{
+    seo,
+    family,
+    hero,
+    signIn,
+    code,
+    register,
+    notice,
+    purposes[]{ key, label, description },
+    dashboard,
+    privacy,
+    reconsent,
+    errors,
+    staff,
+    "policyVersion": *[_type == "privacyPage" && _id == "privacyPage"][0].version
+  }
+`);
+
+export const VERIFY_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "verifyPage" && _id == "verifyPage"][0]{ seo, family, hero, form, result }
+`);
+
+export const PRIVACY_PAGE_QUERY = defineQuery(/* groq */ `
+  *[_type == "privacyPage" && _id == "privacyPage"][0]{
+    seo,
+    family,
+    hero,
+    version,
+    updatedAt,
+    sections[]{ heading, body }
+  }
 `);
 
 /* Collections ---------------------------------------------------------------------------------- */
