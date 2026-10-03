@@ -98,6 +98,62 @@ export const SITE_CHROME = {
 
 /* Pages ---------------------------------------------------------------------------------------- */
 
+/** Search and share copy for the pages whose first seeded version was too thin. */
+const SEO = {
+  home: {
+    title: '{{title}} · Conferencia tech gratis en ESPOL',
+    description:
+      '{{title}}: conferencia gratuita de tecnología el 5 de diciembre en ESPOL. Charlas y workshops de Web, Mobile, Cloud y AI con GDG Guayaquil.',
+  },
+  speakers: {
+    title: 'Speakers',
+    description:
+      'Conoce a los speakers de {{title}}: charlas y workshops de Web, Mobile, Cloud y AI el 5 de diciembre en ESPOL, Guayaquil.',
+  },
+  about: {
+    title: 'Nosotros',
+    description:
+      'DevFest es la conferencia anual de tecnología de los Google Developer Groups. Conoce a GDG Guayaquil y la historia de DevFest en Ecuador.',
+  },
+  organizers: {
+    title: 'Organizadores',
+    description:
+      'El equipo de voluntarios de GDG Guayaquil que organiza {{title}}, y cómo sumarte como voluntario del evento.',
+  },
+}
+
+/**
+ * Datasets seeded before `SEO` existed still hold the old copy. `seed:pages` swaps a value only
+ * while it is exactly the old seeded text, so anything edited in the Studio stays as it is.
+ */
+const SEO_UPGRADES: {id: string; field: 'title' | 'description'; from: string; to: string}[] = [
+  {id: 'homePage', field: 'title', from: 'Inicio', to: SEO.home.title},
+  {
+    id: 'homePage',
+    field: 'description',
+    from: 'DevFest Guayaquil 2026, 5 de diciembre en ESPOL. Charlas, workshops y comunidad.',
+    to: SEO.home.description,
+  },
+  {
+    id: 'speakersPage',
+    field: 'description',
+    from: 'Speakers confirmados de DevFest Guayaquil 2026.',
+    to: SEO.speakers.description,
+  },
+  {
+    id: 'aboutPage',
+    field: 'description',
+    from: 'Qué es DevFest y quién es GDG Guayaquil.',
+    to: SEO.about.description,
+  },
+  {
+    id: 'organizersPage',
+    field: 'description',
+    from: 'El equipo organizador de GDG Guayaquil.',
+    to: SEO.organizers.description,
+  },
+]
+
 interface PageAssets {
   /** Speaker ids for the three cards on the home page. */
   featuredSpeakers: string[]
@@ -113,11 +169,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'homePage',
       _type: 'homePage',
-      seo: {
-        title: 'Inicio',
-        description:
-          'DevFest Guayaquil 2026, 5 de diciembre en ESPOL. Charlas, workshops y comunidad.',
-      },
+      seo: SEO.home,
       family: 'yellow',
       hero: {
         chips: ['{{dateShort}}', 'ESPOL Campus', '{{capacity}} asistentes'],
@@ -179,7 +231,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'speakersPage',
       _type: 'speakersPage',
-      seo: {title: 'Speakers', description: 'Speakers confirmados de DevFest Guayaquil 2026.'},
+      seo: SEO.speakers,
       family: 'blue',
       hero: {
         _type: 'pageHero',
@@ -226,7 +278,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'aboutPage',
       _type: 'aboutPage',
-      seo: {title: 'Nosotros', description: 'Qué es DevFest y quién es GDG Guayaquil.'},
+      seo: SEO.about,
       family: 'yellow',
       hero: {
         _type: 'pageHero',
@@ -285,7 +337,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'organizersPage',
       _type: 'organizersPage',
-      seo: {title: 'Organizadores', description: 'El equipo organizador de GDG Guayaquil.'},
+      seo: SEO.organizers,
       family: 'red',
       hero: {
         _type: 'pageHero',
@@ -603,6 +655,23 @@ export async function seedPages(client: SanityClient, options: SeedPagesOptions 
     `  ${docs.length - existing.size} páginas creadas` +
       (existing.size ? `, ${existing.size} ya existían` : ''),
   )
+
+  // Published documents and open drafts alike, so publishing a draft later keeps the new copy.
+  let upgraded = 0
+  for (const {id, field, from, to} of SEO_UPGRADES) {
+    const ids = await client.fetch<string[]>(
+      `*[_id in [$id, $draft] && seo.${field} == $from]._id`,
+      {id, draft: `drafts.${id}`, from},
+    )
+    for (const docId of ids) {
+      await client
+        .patch(docId)
+        .set({[`seo.${field}`]: to})
+        .commit()
+      upgraded++
+    }
+  }
+  if (upgraded) console.log(`  ${upgraded} textos SEO actualizados`)
 
   // The chrome fields go on the published settings and on an open draft, if there is one, so
   // publishing that draft later does not wipe them.

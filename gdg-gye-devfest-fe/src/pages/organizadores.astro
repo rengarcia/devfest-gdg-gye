@@ -9,7 +9,12 @@ const [page, organizers] = await Promise.all([getOrganizersPage(), getOrganizers
 const { volunteering } = page;
 ---
 
-<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+<BaseLayout
+  title={page.seo.title}
+  description={page.seo.description}
+  image={page.seo.image}
+  family={page.family}
+>
   <PageHero {...page.hero} />
 
   <section class="section" style="padding-top:0">

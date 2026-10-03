@@ -84,6 +84,10 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
 - Brand rules (from the design-system readme): sentence case, `DevFest` spelling, one colour
   family per page, no shadows, no gradients, no emoji, glyphs are decoration only.
 - Fonts and Material Symbols are loaded via `<link>` in `src/layouts/BaseLayout.astro`.
+- SEO lives in `BaseLayout.astro` (title, description, canonical, Open Graph/X card, `noindex`,
+  optional `jsonLd`) on top of `site` in `astro.config.mjs`. Pages pass `page.seo.image`; JSON-LD
+  builders are in `src/data/jsonld.ts`. Account screens get `noindex` and stay out of the sitemap
+  (`PRIVATE_PATHS` in the config); do not Disallow them in `robots.txt`, or crawlers never see the tag.
 - Navigation goes through Astro's `<ClientRouter />` (in `BaseLayout.astro`): same-document view
   transitions, hover prefetch, no full reloads. The header keeps its own snapshot
   (`transition:animate="none"`). Links with `href="#"` are placeholders and are neutralised in

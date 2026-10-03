@@ -201,6 +201,14 @@ export type Seo = {
   _type: "seo";
   title: string;
   description: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
 };
 
 export type VerifyPage = {
@@ -542,6 +550,14 @@ export type SiteSettings = {
   communityUrl: string;
   handle: string;
   socialUrl?: string;
+  shareImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   controllerName: string;
   controllerId?: string;
   privacyEmail?: string;
@@ -678,7 +694,7 @@ export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityIma
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    controllerName,    controllerId,    privacyEmail,    navigation,    registerCta,    footer  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    shareImage,    controllerName,    controllerId,    privacyEmail,    navigation,    registerCta,    footer  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   name: string;
   year: number;
@@ -691,6 +707,14 @@ export type SITE_SETTINGS_QUERY_RESULT = {
   communityUrl: string;
   handle: string;
   socialUrl: string | null;
+  shareImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
   controllerName: string;
   controllerId: string | null;
   privacyEmail: string | null;
@@ -1133,7 +1157,7 @@ export type FAQ_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    controllerName,\n    controllerId,\n    privacyEmail,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
+    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    shareImage,\n    controllerName,\n    controllerId,\n    privacyEmail,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
     "\n  *[_type == \"homePage\" && _id == \"homePage\"][0]{\n    seo,\n    family,\n    hero,\n    stats,\n    speakers{\n      eyebrow,\n      title,\n      lead,\n      link,\n      featured[]->{ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n    },\n    tracks,\n    quote,\n    sponsors,\n    cta\n  }\n": HOME_PAGE_QUERY_RESULT;
     "\n  *[_type == \"agendaPage\" && _id == \"agendaPage\"][0]{ seo, family, hero, footnote, cta }\n": AGENDA_PAGE_QUERY_RESULT;
     "\n  *[_type == \"speakersPage\" && _id == \"speakersPage\"][0]{ seo, family, hero, cfp, cta }\n": SPEAKERS_PAGE_QUERY_RESULT;

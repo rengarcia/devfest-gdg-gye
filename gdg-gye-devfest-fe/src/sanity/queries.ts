@@ -43,6 +43,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
     communityUrl,
     handle,
     socialUrl,
+    shareImage,
     controllerName,
     controllerId,
     privacyEmail,

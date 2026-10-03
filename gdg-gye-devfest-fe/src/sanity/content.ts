@@ -96,10 +96,20 @@ export interface Cta {
   secondary: Link;
 }
 
+/** Link preview image (Open Graph / X card), 1200×630. */
+export interface ShareImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
 export interface Seo {
-  /** Page name, shown before " · DevFest Guayaquil 2026". */
+  /** Page name, shown before " · DevFest Guayaquil 2026" unless it already contains it. */
   title: string;
   description: string;
+  /** Overrides the site's default share image for this page. */
+  image?: ShareImage;
 }
 
 export interface PageHero {
@@ -134,7 +144,30 @@ export interface Quote {
 
 const toLink = (l: RawLink): Link => ({ label: l.label, href: l.href });
 
-const toSeo = (s: RawSeo): Seo => ({ title: s.title, description: s.description });
+type RawShareImage = NonNullable<RawSeo['image']>;
+
+/** Fixed 1200×630 crop (honouring the hotspot) as JPEG: link scrapers do not all take WebP/AVIF. */
+function toShareImage(image: RawShareImage | null | undefined): ShareImage | undefined {
+  if (!image?.asset) return undefined;
+  return {
+    src: urlFor(image as SanityImageSource)
+      .width(1200)
+      .height(630)
+      .fit('crop')
+      .format('jpg')
+      .quality(85)
+      .url(),
+    alt: image.alt ?? '',
+    width: 1200,
+    height: 630,
+  };
+}
+
+const toSeo = (s: RawSeo): Seo => ({
+  title: s.title,
+  description: s.description,
+  image: toShareImage(s.image),
+});
 
 const toPageHero = (h: RawPageHero): PageHero => ({
   eyebrow: h.eyebrow,
@@ -205,6 +238,10 @@ export interface SiteSettings {
   handle: string;
   /** Social profile, or '#' when not set. */
   socialHref: string;
+  /** Default link preview image, from the Studio or the static fallback in /public. */
+  shareImage: ShareImage;
+  /** Who runs the event, e.g. "GDG Guayaquil" (the data controller's name, without its id). */
+  organizer: string;
   /** Data controller under the LOPDP, e.g. "GDG Guayaquil" or "GDG Guayaquil (RUC …)". */
   controller: string;
   /** Where data-subject requests go; the contact email unless the Studio sets another. */
@@ -222,6 +259,13 @@ export interface SiteSettings {
     tagline: string;
   };
 }
+
+const DEFAULT_SHARE_IMAGE: ShareImage = {
+  src: '/og-default.jpg',
+  alt: 'DevFest 2026',
+  width: 1200,
+  height: 630,
+};
 
 function formatEventDate(iso: string) {
   const date = new Date(`${iso}T12:00:00Z`);
@@ -295,6 +339,8 @@ async function loadSiteSettings(): Promise<SiteSettings> {
     communityLabel: s.communityUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     handle: s.handle,
     socialHref: s.socialUrl ?? '#',
+    shareImage: toShareImage(s.shareImage) ?? DEFAULT_SHARE_IMAGE,
+    organizer: s.controllerName,
     controller: s.controllerId ? `${s.controllerName} (${s.controllerId})` : s.controllerName,
     privacyEmail: s.privacyEmail ?? s.email,
   };
@@ -786,6 +832,16 @@ export async function getSchedule(): Promise<TrackSchedule[]> {
     track,
     sessions: sessions.filter((s) => !s.track || s.track.slug === track.slug).map(toSessionRow),
   }));
+}
+
+/** First start and last end on the agenda (HH:MM, venue time), or undefined while it is empty. */
+export async function getEventHours(): Promise<{ start: string; end: string } | undefined> {
+  const sessions = await sanityClient.fetch(SESSIONS_QUERY);
+  if (!sessions.length) return undefined;
+  // HH:MM is zero-padded (the Studio validates it), so string order is time order.
+  const start = sessions.map((s) => s.startTime).reduce((a, b) => (b < a ? b : a));
+  const end = sessions.map((s) => s.endTime).reduce((a, b) => (b > a ? b : a));
+  return { start, end };
 }
 
 /* Organizers --------------------------------------------------------------------------------- */
