@@ -4,12 +4,19 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
+import { faqJsonLd } from '../data/jsonld';
 import { getFaq, getFaqPage } from '../sanity/content';
 
 const [page, faq] = await Promise.all([getFaqPage(), getFaq()]);
 ---
 
-<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+<BaseLayout
+  title={page.seo.title}
+  description={page.seo.description}
+  image={page.seo.image}
+  family={page.family}
+  jsonLd={faqJsonLd(faq)}
+>
   <PageHero {...page.hero} />
 
   <section class="section faq" style="padding-top:0">

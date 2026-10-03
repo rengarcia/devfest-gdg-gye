@@ -5,19 +5,29 @@ import '../styles/site.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import type { Family } from '../data/site';
-import { getSiteSettings } from '../sanity/content';
+import { jsonForScript } from '../data/json';
+import { getSiteSettings, type ShareImage } from '../sanity/content';
 
 interface Props {
-  /** Page name shown before " · DevFest Guayaquil 2026" */
+  /** Page name shown before " · DevFest Guayaquil 2026", or the whole title if it already has it. */
   title: string;
   description: string;
   /** Colour family for this page's accent/tint (per-asset accent, per the brand guide). */
   family?: Family;
-  /** Keeps the page out of search results (organizer-only screens). */
+  /** Keeps the page out of search results (account and organizer-only screens). */
   noindex?: boolean;
+  /** Link preview image; the site default when not set. */
+  image?: ShareImage;
+  /** schema.org structured data (see src/data/jsonld.ts). */
+  jsonLd?: object;
 }
-const { title, description, family = 'yellow', noindex = false } = Astro.props;
+const { title, description, family = 'yellow', noindex = false, image, jsonLd } = Astro.props;
 const settings = await getSiteSettings();
+const fullTitle = title.includes(settings.title) ? title : `${title} · ${settings.title}`;
+// Query strings (e.g. /verificar?c=...) are not part of the canonical URL.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const share = image ?? settings.shareImage;
+const shareSrc = new URL(share.src, Astro.site).href;
 ---
 
 <!doctype html>
@@ -25,9 +35,27 @@ const settings = await getSiteSettings();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title} · {settings.title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={settings.title} />
+    <meta property="og:locale" content="es_EC" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareSrc} />
+    <meta property="og:image:width" content={String(share.width)} />
+    <meta property="og:image:height" content={String(share.height)} />
+    {share.alt && <meta property="og:image:alt" content={share.alt} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareSrc} />
+    {share.alt && <meta name="twitter:image:alt" content={share.alt} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={jsonForScript(jsonLd)} />}
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

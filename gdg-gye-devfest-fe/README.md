@@ -25,6 +25,7 @@ public/assets/            Logos, fotos y glyphs del kit DevFest 2026 (PNG con al
 sanity.types.ts           Tipos generados desde el schema (`npm run typegen` en el Studio)
 src/
   data/site.ts            Constantes de código: familias de color
+  data/jsonld.ts          Datos estructurados schema.org (evento en la portada, FAQ)
   sanity/                 Cliente, consultas GROQ (`queries.ts`) y helpers que dan forma al
                           contenido para las páginas (`content.ts`)
   styles/tokens/          Tokens del design system (color, tipografía, espacio, forma, motion)
@@ -35,10 +36,11 @@ src/
   scripts/checkin.ts      /cuenta/checkin: QR, correo e importación de asistencia (staff)
   scripts/verify.ts       /verificar: comprobación pública de certificados
   supabase/               Cliente de Supabase, tipos generados y chequeo de sesión sin supabase-js
-  layouts/BaseLayout.astro  <head>, header, footer y script compartidos
+  layouts/BaseLayout.astro  <head> (SEO, Open Graph, canonical), header, footer y script compartidos
   components/             Lockup, header, footer, hero de página, tarjetas, CTA de registro
   pages/                  /, /agenda, /speakers, /sponsors, /nosotros, /organizadores, /faq,
-                          /cuenta, /cuenta/checkin, /verificar, /privacidad
+                          /cuenta, /cuenta/checkin, /verificar, /privacidad, robots.txt
+public/og-default.jpg     Imagen para redes por defecto (1200×630)
 ```
 
 ## Editar contenido
@@ -55,6 +57,19 @@ Todo el texto que cambia de una edición a otra se edita en el Studio de Sanity
   rellenan con la configuración del sitio.
 - **Tracks, sesiones, speakers, organizadores, niveles de patrocinio, sponsors y FAQ**: listas que
   las páginas recorren para generar las tarjetas, filas de agenda y tiles.
+
+### SEO
+
+- El dominio de producción está en `site` de `astro.config.mjs`; de él salen las URL canónicas, las
+  de Open Graph, el sitemap (`/sitemap-index.xml`, sin `/cuenta`) y `robots.txt`.
+- Título y descripción de cada página: campo SEO de su documento. El sitio añade
+  " · DevFest Guayaquil 2026" al título salvo que ya lo incluya (la portada usa
+  `{{title}} · ...`).
+- Imagen al compartir: la de la Configuración del sitio (Imagen para redes), o la del SEO de una
+  página para sobrescribirla; sin ninguna se usa `public/og-default.jpg`.
+- La portada publica el evento como datos estructurados (fecha, horario según la primera y la
+  última sesión de la agenda, sede, organizador, registro gratuito, speakers) y `/faq` sus
+  preguntas. `/cuenta` y `/cuenta/checkin` llevan `noindex`.
 
 El sitio es estático: después de publicar en el Studio hay que volver a hacer el build. Si cambias
 el schema o una consulta en `src/sanity/queries.ts`, ejecuta `npm run typegen` en el Studio para

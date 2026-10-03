@@ -10,7 +10,12 @@ const paid = tiers.filter((t) => t.kind === 'paid');
 const community = tiers.filter((t) => t.kind === 'community');
 ---
 
-<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+<BaseLayout
+  title={page.seo.title}
+  description={page.seo.description}
+  image={page.seo.image}
+  family={page.family}
+>
   <PageHero {...page.hero} />
 
   {

@@ -97,6 +97,23 @@ export const siteSettings = defineType({
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
+      name: 'shareImage',
+      title: 'Imagen para redes',
+      type: 'image',
+      fieldset: 'contact',
+      description:
+        'Previsualización por defecto al compartir cualquier página (WhatsApp, LinkedIn, X) y foto del evento para Google. Se recorta a 1200×630. Vacío: se usa el lockup del sitio.',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Texto alternativo',
+          type: 'string',
+          description: 'Describe la imagen.',
+        }),
+      ],
+    }),
+    defineField({
       name: 'controllerName',
       title: 'Responsable del tratamiento',
       type: 'string',

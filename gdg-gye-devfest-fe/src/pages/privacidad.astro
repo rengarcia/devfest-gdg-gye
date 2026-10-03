@@ -6,7 +6,12 @@ import { getPrivacyPage } from '../sanity/content';
 const page = await getPrivacyPage();
 ---
 
-<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+<BaseLayout
+  title={page.seo.title}
+  description={page.seo.description}
+  image={page.seo.image}
+  family={page.family}
+>
   <PageHero {...page.hero} />
 
   <section class="section" style="padding-top:0">

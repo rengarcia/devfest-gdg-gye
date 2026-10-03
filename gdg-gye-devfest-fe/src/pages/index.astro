@@ -6,10 +6,32 @@ import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
 import PullQuote from '../components/PullQuote.astro';
-import { getHomePage, getHomeSponsors, getTracks } from '../sanity/content';
+import { eventJsonLd } from '../data/jsonld';
+import {
+  getEventHours,
+  getHomePage,
+  getHomeSponsors,
+  getSiteSettings,
+  getSpeakers,
+  getTracks,
+} from '../sanity/content';
 
-const [page, tracks, sponsors] = await Promise.all([getHomePage(), getTracks(), getHomeSponsors()]);
+const [page, tracks, sponsors, settings, hours, allSpeakers] = await Promise.all([
+  getHomePage(),
+  getTracks(),
+  getHomeSponsors(),
+  getSiteSettings(),
+  getEventHours(),
+  getSpeakers(),
+]);
 const { hero, stats, speakers } = page;
+const jsonLd = eventJsonLd({
+  settings,
+  site: Astro.site!,
+  description: page.seo.description,
+  hours,
+  speakers: allSpeakers,
+});
 
 /** Where the (up to three) floating glyphs sit around the photo, as in the design. */
 const glyphSpots = [
@@ -19,7 +41,13 @@ const glyphSpots = [
 ];
 ---
 
-<BaseLayout title={page.seo.title} description={page.seo.description} family={page.family}>
+<BaseLayout
+  title={page.seo.title}
+  description={page.seo.description}
+  image={page.seo.image}
+  family={page.family}
+  {jsonLd}
+>
   <section class="section" style="padding-top:var(--space-9);position:relative;overflow:clip">
     <div
       class="wrap"
