@@ -76,7 +76,8 @@ async function uploadPhoto(client: SanityClient, name: string) {
 /**
  * Removes the placeholder organizers (published and drafts) and creates or replaces the real
  * ones under fixed ids (`organizer-<slug>`; a dot would make them private), so it is safe to
- * re-run. Organizers added in the Studio under other names are kept as they are.
+ * re-run. Organizers added in the Studio under other names are kept as they are, and so is a
+ * photo already set (or re-cropped) in the Studio: the bundled one only fills a missing photo.
  */
 export async function syncOrganizers(client: SanityClient) {
   const placeholders = await client.fetch<string[]>(
@@ -84,7 +85,14 @@ export async function syncOrganizers(client: SanityClient) {
     {names: PLACEHOLDER_NAMES},
     {perspective: 'raw'},
   )
-  const photos = await Promise.all(ORGANIZERS.map((o) => uploadPhoto(client, o.name)))
+  const existing = await client.fetch<{_id: string; photo?: object}[]>(
+    '*[_id in $ids && defined(photo.asset)]{_id, photo}',
+    {ids: ORGANIZERS.map((o) => `organizer-${slugOf(o.name)}`)},
+  )
+  const kept = new Map(existing.map((d) => [d._id, d.photo]))
+  const photos = await Promise.all(
+    ORGANIZERS.map((o) => kept.get(`organizer-${slugOf(o.name)}`) ?? uploadPhoto(client, o.name)),
+  )
   const tx = client.transaction()
   for (const id of placeholders) tx.delete(id)
   for (const [i, o] of ORGANIZERS.entries()) {
