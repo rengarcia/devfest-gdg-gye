@@ -12,7 +12,7 @@ desplegar el sitio para ver los cambios.
 | `npm run dev`             | Studio local en `localhost:3333`                                             |
 | `npm run seed`            | Siembra el contenido inicial (falla si el dataset ya tiene contenido)        |
 | `npm run seed:pages`      | Añade las páginas y el menú/registro/pie a un dataset que ya tiene contenido |
-| `npm run seed:organizers` | Sustituye los organizadores de ejemplo por el equipo de GDG Guayaquil        |
+| `npm run seed:organizers` | Sustituye los organizadores de ejemplo por el equipo de GDG Guayaquil (con fotos) |
 | `npm run typegen`         | Regenera `../gdg-gye-devfest-fe/sanity.types.ts` a partir del schema         |
 | `npm run schema:deploy`   | Sube el schema al Content Lake (MCP, validación remota)                      |
 | `npm run deploy`          | Publica el Studio en sanity.studio                                           |

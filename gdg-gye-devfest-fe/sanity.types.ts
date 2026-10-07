@@ -107,6 +107,14 @@ export type Organizer = {
   name: string;
   role: string;
   initials?: string;
+  photo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   family: "yellow" | "blue" | "green" | "red";
   order?: number;
 };
@@ -1133,12 +1141,20 @@ export type SESSIONS_QUERY_RESULT = Array<{
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: ORGANIZERS_QUERY
-// Query: *[_type == "organizer"] | order(coalesce(order, 9999) asc, name asc){    _id,    name,    role,    initials,    family  }
+// Query: *[_type == "organizer"] | order(coalesce(order, 9999) asc, name asc){    _id,    name,    role,    initials,    photo,    family  }
 export type ORGANIZERS_QUERY_RESULT = Array<{
   _id: string;
   name: string;
   role: string;
   initials: string | null;
+  photo: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
   family: "blue" | "green" | "red" | "yellow";
 }>;
 
@@ -1212,7 +1228,7 @@ declare global {
     "\n  *[_type == \"track\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n,\n    glyph,\n    blurb\n  }\n": TRACKS_QUERY_RESULT;
     "\n  *[_type == \"speaker\"] | order(coalesce(order, 9999) asc, name asc){ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n": SPEAKERS_QUERY_RESULT;
     "\n  *[_type == \"session\"] | order(startTime asc, coalesce(order, 9999) asc, title asc){\n    _id,\n    title,\n    kind,\n    startTime,\n    endTime,\n    room,\n    track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n    speaker->{ name, role }\n  }\n": SESSIONS_QUERY_RESULT;
-    "\n  *[_type == \"organizer\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    name,\n    role,\n    initials,\n    family\n  }\n": ORGANIZERS_QUERY_RESULT;
+    "\n  *[_type == \"organizer\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    name,\n    role,\n    initials,\n    photo,\n    family\n  }\n": ORGANIZERS_QUERY_RESULT;
     "\n  *[_type == \"sponsorTier\"] | order(coalesce(order, 9999) asc, name asc){\n    _id,\n    name,\n    kind,\n    headline,\n    description,\n    perks,\n    family,\n    \"sponsors\": *[_type == \"sponsor\" && tier._ref == ^._id]\n      | order(coalesce(order, 9999) asc, name asc){ \n  _id,\n  name,\n  url,\n  logo\n }\n  }\n": SPONSOR_TIERS_QUERY_RESULT;
     "\n  *[_type == \"sponsor\" && tier._ref in *[_type == \"sponsorTier\" && kind == \"paid\"]._id]\n    | order(tier->order asc, coalesce(order, 9999) asc, name asc)[0...4]{ \n  _id,\n  name,\n  url,\n  logo\n }\n": HOME_SPONSORS_QUERY_RESULT;
     "\n  *[_type == \"faq\"] | order(coalesce(order, 9999) asc){\n    _id,\n    question,\n    answer,\n    \"anchor\": anchor.current\n  }\n": FAQ_QUERY_RESULT;

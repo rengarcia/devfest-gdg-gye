@@ -3,7 +3,12 @@
  * (https://gdg.community.dev/gdg-guayaquil/, "Organizadores") and on the chapter's event pages.
  * Shared by `npm run seed` (fresh dataset) and `npm run seed:organizers` (replaces the
  * placeholder team the first seed shipped with).
+ *
+ * Photos come from the previous site (devfest-page, public/organizers) and live in
+ * ./assets/organizers/<slug>.webp; organizers without a file keep the initials card.
  */
+import {createReadStream, existsSync} from 'node:fs'
+import {resolve} from 'node:path'
 import type {SanityClient} from 'sanity'
 
 type Family = 'yellow' | 'blue' | 'green' | 'red'
@@ -52,6 +57,22 @@ const slugOf = (name: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 
+/** Resolved from the Studio folder, where the npm scripts run. */
+const PHOTOS_DIR = resolve(process.cwd(), 'scripts/assets/organizers')
+
+/**
+ * Uploads the organizer's photo, if there is one. Sanity keys assets by content hash, so
+ * re-running returns the same asset instead of a duplicate.
+ */
+async function uploadPhoto(client: SanityClient, name: string) {
+  const file = resolve(PHOTOS_DIR, `${slugOf(name)}.webp`)
+  if (!existsSync(file)) return undefined
+  const asset = await client.assets.upload('image', createReadStream(file), {
+    filename: `${slugOf(name)}.webp`,
+  })
+  return {_type: 'image', asset: {_type: 'reference', _ref: asset._id}, alt: name}
+}
+
 /**
  * Removes the placeholder organizers (published and drafts) and creates or replaces the real
  * ones under fixed ids (`organizer-<slug>`; a dot would make them private), so it is safe to
@@ -63,14 +84,21 @@ export async function syncOrganizers(client: SanityClient) {
     {names: PLACEHOLDER_NAMES},
     {perspective: 'raw'},
   )
+  const photos = await Promise.all(ORGANIZERS.map((o) => uploadPhoto(client, o.name)))
   const tx = client.transaction()
   for (const id of placeholders) tx.delete(id)
   for (const [i, o] of ORGANIZERS.entries()) {
-    tx.createOrReplace({_id: `organizer-${slugOf(o.name)}`, _type: 'organizer', ...o, order: i + 1})
+    tx.createOrReplace({
+      _id: `organizer-${slugOf(o.name)}`,
+      _type: 'organizer',
+      ...o,
+      ...(photos[i] && {photo: photos[i]}),
+      order: i + 1,
+    })
   }
   await tx.commit()
   console.log(
-    `  ${ORGANIZERS.length} organizadores` +
+    `  ${ORGANIZERS.length} organizadores (${photos.filter(Boolean).length} con foto)` +
       (placeholders.length ? `, ${placeholders.length} de ejemplo eliminados` : ''),
   )
 }

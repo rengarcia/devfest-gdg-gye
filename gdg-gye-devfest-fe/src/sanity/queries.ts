@@ -179,6 +179,7 @@ export const ORGANIZERS_QUERY = defineQuery(/* groq */ `
     name,
     role,
     initials,
+    photo,
     family
   }
 `);

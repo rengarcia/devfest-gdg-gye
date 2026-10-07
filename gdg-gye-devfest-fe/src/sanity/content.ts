@@ -922,6 +922,8 @@ export interface OrganizerCard {
   name: string;
   role: string;
   initials: string;
+  /** Square crop of the Studio photo; without it the card shows the initials. */
+  photo?: { src: string; alt: string };
   family: Family;
 }
 
@@ -932,6 +934,18 @@ export async function getOrganizers(): Promise<OrganizerCard[]> {
     name: o.name,
     role: o.role,
     initials: o.initials ?? initialsOf(o.name),
+    photo: o.photo?.asset
+      ? {
+          // The generated image type is structurally a SanityImageSource; the cast only bridges names.
+          src: urlFor(o.photo as SanityImageSource)
+            .width(600)
+            .height(600)
+            .fit('crop')
+            .auto('format')
+            .url(),
+          alt: o.photo.alt ?? o.name,
+        }
+      : undefined,
     family: o.family,
   }));
 }
