@@ -38,6 +38,11 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
 - Site chrome lives in `siteSettings`: `navigation` (header menu), `registerCta` (default register
   block, whose primary label is also the header button) and `footer` (link columns, contact heading,
   tagline). Nothing editorial is left in the components.
+- Section switches: `siteSettings.showAgenda`, `showSpeakers` and `showSponsors` (default off,
+  surfaced as `settings.sections`). While one is off, its page (`page.published` false) swaps the
+  hero's title and lead for the page's `comingSoon` copy and skips the content (the speakers page
+  keeps its Call for papers, anchored `#cfp`), and the home page hides that section and leaves it
+  out of the event JSON-LD.
 - Placeholders: any text from a page document or the site chrome may contain `{{capacity}}`,
   `{{dateShort}}`, `{{dateLong}}`, `{{year}}`, `{{venue}}`, `{{email}}`, `{{sponsorsEmail}}`,
   `{{handle}}`, `{{name}}`, `{{title}}`, `{{controller}}` or `{{privacyEmail}}`; `content.ts`

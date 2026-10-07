@@ -1,4 +1,6 @@
 ---
+import type { Link } from '../sanity/content';
+
 /** Inner-page hero: eyebrow + display title + lead, with up to three floating sticker glyphs. */
 interface Props {
   eyebrow: string;
@@ -6,8 +8,10 @@ interface Props {
   lead: string;
   /** glyph file names under /assets/glyphs, e.g. ['slash-a', 'hash-green', 'dot-blue'] */
   glyphs: string[];
+  /** Optional button under the lead. */
+  link?: Link;
 }
-const { eyebrow, title, lead, glyphs } = Astro.props;
+const { eyebrow, title, lead, glyphs, link } = Astro.props;
 const delays = ['200ms', '290ms', '380ms'];
 ---
 
@@ -19,7 +23,13 @@ const delays = ['200ms', '290ms', '380ms'];
         style="--d:80ms"
       >
         {title}
-      </h1><p class="lead sticker" style="--d:160ms">{lead}</p>
+      </h1><p class="lead sticker" style="--d:160ms">{lead}</p>{
+        link && (
+          <a class="btn btn--fill sticker" style="--d:240ms;justify-self:start" href={link.href}>
+            {link.label}
+          </a>
+        )
+      }
     </div>
     <div class="page-hero__glyphs" aria-hidden="true">
       {

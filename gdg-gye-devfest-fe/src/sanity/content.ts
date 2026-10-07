@@ -8,6 +8,7 @@
 import type { SanityImageSource } from '@sanity/image-url';
 import type { Family } from '../data/site';
 import type {
+  ComingSoon as RawComingSoon,
   Cta as RawCta,
   Figure as RawFigure,
   Link as RawLink,
@@ -135,6 +136,13 @@ export interface Figure {
   tag?: string;
 }
 
+/** Replaces the hero's title and lead while a section is turned off in the site settings. */
+export interface ComingSoon {
+  title: string;
+  lead: string;
+  link?: Link;
+}
+
 export interface Quote {
   /** Bold opening word(s). */
   highlight?: string;
@@ -246,6 +254,8 @@ export interface SiteSettings {
   controller: string;
   /** Where data-subject requests go; the contact email unless the Studio sets another. */
   privacyEmail: string;
+  /** Sections turned on in the Studio; while one is off its page says "coming soon". */
+  sections: { agenda: boolean; speakers: boolean; sponsors: boolean };
   /** Header menu, in order. */
   navigation: Link[];
   /** Default register block; a page can override parts of it. */
@@ -343,6 +353,11 @@ async function loadSiteSettings(): Promise<SiteSettings> {
     organizer: s.controllerName,
     controller: s.controllerId ? `${s.controllerName} (${s.controllerId})` : s.controllerName,
     privacyEmail: s.privacyEmail ?? s.email,
+    sections: {
+      agenda: s.showAgenda ?? false,
+      speakers: s.showSpeakers ?? false,
+      sponsors: s.showSponsors ?? false,
+    },
   };
   const chrome = fillDeep(
     { navigation: s.navigation, registerCta: s.registerCta, footer: s.footer },
@@ -408,6 +423,34 @@ async function loadPage<T extends RawPageHead>(
     );
   }
   return { page: fillDeep(raw, varsOf(settings)), settings };
+}
+
+/** A section page (agenda, speakers, sponsors) that can be switched off in the site settings. */
+interface SectionPage {
+  /** False while the section is off: show `comingSoon` instead of the content. */
+  published: boolean;
+  comingSoon: ComingSoon;
+}
+
+function sectionPage(
+  id: string,
+  published: boolean,
+  raw: RawComingSoon | null | undefined,
+): SectionPage {
+  // Pages seeded before the switch existed have no copy for it; only needed while it is off.
+  if (!raw && !published) {
+    throw new Error(
+      `La página "${id}" no tiene el texto "Próximamente". Ejecuta \`npm run seed:pages\` en studio-gdg-gye-devfest o complétalo desde el Studio.`,
+    );
+  }
+  return {
+    published,
+    comingSoon: {
+      title: raw?.title ?? '',
+      lead: raw?.lead ?? '',
+      link: raw?.link ? toLink(raw.link) : undefined,
+    },
+  };
 }
 
 function pageBase(p: RawPageBase, settings: SiteSettings): PageBase {
@@ -481,7 +524,7 @@ export async function getHomePage(): Promise<HomePage> {
   };
 }
 
-export interface AgendaPage extends PageBase {
+export interface AgendaPage extends PageBase, SectionPage {
   hero: PageHero;
   footnote: string;
 }
@@ -490,10 +533,15 @@ export async function getAgendaPage(): Promise<AgendaPage> {
   const { page: p, settings } = await loadPage('agendaPage', () =>
     sanityClient.fetch(AGENDA_PAGE_QUERY),
   );
-  return { ...pageBase(p, settings), hero: toPageHero(p.hero), footnote: p.footnote };
+  return {
+    ...pageBase(p, settings),
+    ...sectionPage('agendaPage', settings.sections.agenda, p.comingSoon),
+    hero: toPageHero(p.hero),
+    footnote: p.footnote,
+  };
 }
 
-export interface SpeakersPage extends PageBase {
+export interface SpeakersPage extends PageBase, SectionPage {
   hero: PageHero;
   cfp: {
     eyebrow: string;
@@ -512,6 +560,7 @@ export async function getSpeakersPage(): Promise<SpeakersPage> {
   );
   return {
     ...pageBase(p, settings),
+    ...sectionPage('speakersPage', settings.sections.speakers, p.comingSoon),
     hero: toPageHero(p.hero),
     cfp: {
       eyebrow: p.cfp.eyebrow,
@@ -525,7 +574,7 @@ export async function getSpeakersPage(): Promise<SpeakersPage> {
   };
 }
 
-export interface SponsorsPage extends PageBase {
+export interface SponsorsPage extends PageBase, SectionPage {
   hero: PageHero;
 }
 
@@ -533,7 +582,11 @@ export async function getSponsorsPage(): Promise<SponsorsPage> {
   const { page: p, settings } = await loadPage('sponsorsPage', () =>
     sanityClient.fetch(SPONSORS_PAGE_QUERY),
   );
-  return { ...pageBase(p, settings), hero: toPageHero(p.hero) };
+  return {
+    ...pageBase(p, settings),
+    ...sectionPage('sponsorsPage', settings.sections.sponsors, p.comingSoon),
+    hero: toPageHero(p.hero),
+  };
 }
 
 export interface AboutPage extends PageBase {
@@ -544,7 +597,14 @@ export interface AboutPage extends PageBase {
     title: string;
     items: { glyph: string; title: string; text: string }[];
   };
-  history: { quote: Quote; stats: Stat[] };
+  history: {
+    quote: Quote;
+    stats: Stat[];
+    eyebrow: string;
+    title: string;
+    /** Past events, one card each. */
+    editions: { year: number; name: string; stats: Stat[] }[];
+  };
   venue: { eyebrow: string; title: string; lead: string; link: Link; mapNote: string };
 }
 
@@ -566,7 +626,18 @@ export async function getAboutPage(): Promise<AboutPage> {
       title: p.principles.title,
       items: p.principles.items.map((i) => ({ glyph: i.glyph, title: i.title, text: i.text })),
     },
-    history: { quote: toQuote(p.history.quote), stats: p.history.stats.map(toStat) },
+    history: {
+      quote: toQuote(p.history.quote),
+      stats: p.history.stats.map(toStat),
+      // Older datasets lack these until `npm run seed:pages`; the section is hidden meanwhile.
+      eyebrow: p.history.eyebrow ?? '',
+      title: p.history.title ?? '',
+      editions: (p.history.editions ?? []).map((e) => ({
+        year: e.year,
+        name: e.name,
+        stats: e.stats.map(toStat),
+      })),
+    },
     venue: {
       eyebrow: p.venue.eyebrow,
       title: p.venue.title,
@@ -851,6 +922,8 @@ export interface OrganizerCard {
   name: string;
   role: string;
   initials: string;
+  /** Square crop of the Studio photo; without it the card shows the initials. */
+  photo?: { src: string; alt: string };
   family: Family;
 }
 
@@ -861,6 +934,18 @@ export async function getOrganizers(): Promise<OrganizerCard[]> {
     name: o.name,
     role: o.role,
     initials: o.initials ?? initialsOf(o.name),
+    photo: o.photo?.asset
+      ? {
+          // The generated image type is structurally a SanityImageSource; the cast only bridges names.
+          src: urlFor(o.photo as SanityImageSource)
+            .width(600)
+            .height(600)
+            .fit('crop')
+            .auto('format')
+            .url(),
+          alt: o.photo.alt ?? o.name,
+        }
+      : undefined,
     family: o.family,
   }));
 }

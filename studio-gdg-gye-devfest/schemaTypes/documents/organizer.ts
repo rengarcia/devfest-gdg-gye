@@ -29,11 +29,26 @@ export const organizer = defineType({
       description: 'Se muestran en la tarjeta. Si se deja vacío se calculan a partir del nombre.',
       validation: (rule) => rule.max(3),
     }),
+    defineField({
+      name: 'photo',
+      title: 'Foto',
+      type: 'image',
+      description: 'Se recorta en cuadrado. Mientras no haya foto, la tarjeta muestra las iniciales.',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Texto alternativo',
+          type: 'string',
+          validation: (rule) => rule.warning('Describe la foto para lectores de pantalla.'),
+        }),
+      ],
+    }),
     familyField,
     orderField,
   ],
   orderings: [orderByOrder],
   preview: {
-    select: {title: 'name', subtitle: 'role'},
+    select: {title: 'name', subtitle: 'role', media: 'photo'},
   },
 })

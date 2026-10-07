@@ -6,9 +6,10 @@
  *   npm run seed
  *
  * It refuses to run when any of the seeded types already has documents, so it never duplicates
- * content. Sanity assigns every _id except the siteSettings singleton.
+ * content. Sanity assigns every _id except the singletons and the organizers.
  */
 import {getCliClient} from 'sanity/cli'
+import {syncOrganizers} from './lib/organizers'
 import {PAGE_TYPES, SITE_CHROME, seedPages} from './lib/pages'
 
 const client = getCliClient({apiVersion: '2026-09-05'})
@@ -224,24 +225,6 @@ const TRACK_SESSIONS: SessionSeed[] = Object.entries(TALKS).flatMap(([track, tal
   talks.map(([title, speaker], i) => ({...SLOTS[i], title, track, speaker})),
 )
 
-interface OrganizerSeed {
-  name: string
-  role: string
-  initials: string
-  family: Family
-}
-
-const ORGANIZERS: OrganizerSeed[] = [
-  {family: 'yellow', initials: 'RS', name: 'Renato Salazar', role: 'Lead organizer'},
-  {family: 'green', initials: 'VC', name: 'Verónica Cruz', role: 'Co-organizer / Programa'},
-  {family: 'blue', initials: 'DM', name: 'Diego Montenegro', role: 'Sponsors y alianzas'},
-  {family: 'red', initials: 'AP', name: 'Ana Lucía Pinto', role: 'Comunicación y diseño'},
-  {family: 'green', initials: 'JV', name: 'Jorge Vélez', role: 'Logística y sede'},
-  {family: 'yellow', initials: 'CT', name: 'Camila Torres', role: 'Voluntarios'},
-  {family: 'blue', initials: 'SA', name: 'Sebastián Aguirre', role: 'Producción y AV'},
-  {family: 'red', initials: 'NB', name: 'Nicole Bravo', role: 'Speakers y CFP'},
-]
-
 interface TierSeed {
   name: string
   kind: 'paid' | 'community'
@@ -429,10 +412,7 @@ async function main() {
   }
   console.log(`  ${sessions} sesiones`)
 
-  for (const [i, o] of ORGANIZERS.entries()) {
-    await client.create({_type: 'organizer', ...o, order: i + 1})
-  }
-  console.log(`  ${ORGANIZERS.length} organizadores`)
+  await syncOrganizers(client)
 
   let sponsors = 0
   for (const [i, t] of TIERS.entries()) {

@@ -6,6 +6,7 @@ import {speaker} from './documents/speaker'
 import {sponsor} from './documents/sponsor'
 import {sponsorTier} from './documents/sponsorTier'
 import {track} from './documents/track'
+import {comingSoon} from './objects/comingSoon'
 import {cta} from './objects/cta'
 import {figure} from './objects/figure'
 import {link} from './objects/link'
@@ -24,6 +25,7 @@ export const schemaTypes = [
   figure,
   cta,
   pageHero,
+  comingSoon,
   // Singletons
   siteSettings,
   ...pageTypes,

@@ -122,35 +122,138 @@ const SEO = {
   },
 }
 
+/** Agenda, speakers and sponsors start hidden; they are turned on from the site settings. */
+const SECTION_SWITCHES = {showAgenda: false, showSpeakers: false, showSponsors: false}
+
+/** What those three pages say while their section is off (schemaTypes/objects/comingSoon.ts). */
+const COMING_SOON = {
+  agendaPage: {
+    _type: 'comingSoon',
+    title: 'La agenda se publica pronto',
+    lead: 'Estamos cerrando las charlas y los workshops de los cuatro tracks. Nos vemos el {{dateShort}} en {{venue}}; mientras tanto, reserva tu lugar.',
+  },
+  speakersPage: {
+    _type: 'comingSoon',
+    title: 'Pronto anunciamos a los speakers',
+    lead: 'Estamos revisando las propuestas del Call for papers. Publicaremos los nombres aquí y en {{handle}}.',
+    link: link('Proponer una charla', '#cfp'),
+  },
+  sponsorsPage: {
+    _type: 'comingSoon',
+    title: 'Pronto presentamos a los sponsors',
+    lead: '{{title}} es gratis para {{capacity}} asistentes gracias a las empresas que lo respaldan. Si la tuya quiere ser una de ellas, escríbenos a {{sponsorsEmail}}.',
+  },
+}
+
 /**
- * Datasets seeded before `SEO` existed still hold the old copy. `seed:pages` swaps a value only
+ * Past editions, from the "Nuestra trayectoria" section of https://www.gdgecuador.com/ (DevFest en
+ * retrospectiva), organised by the GDG chapters of Ecuador.
+ */
+const EDITIONS = [
+  {year: 2023, name: 'DevFest Ecuador 2023', attendees: '200', sessions: '8', speakers: '9'},
+  {year: 2024, name: 'DevFest Ecuador 2024', attendees: '400', sessions: '12', speakers: '13'},
+  {year: 2025, name: 'Build with AI Ecuador 2025', attendees: '350', sessions: '8', speakers: '8'},
+  {year: 2025, name: 'DevFest Ecuador 2025', attendees: '700', sessions: '30', speakers: '30'},
+]
+
+const HISTORY = {
+  quote: {
+    _type: 'quote',
+    highlight: 'Cuatro',
+    text: 'eventos desde 2023 junto a los GDG de Ecuador: de 200 asistentes en el primer DevFest a más de 700 en 2025.',
+  },
+  stats: () => [
+    stat('1650', 'asistentes en cuatro eventos', '+'),
+    stat('58', 'sesiones'),
+    stat('60', 'speakers'),
+  ],
+  eyebrow: 'Nuestra trayectoria',
+  title: 'DevFest en retrospectiva',
+  editions: () =>
+    EDITIONS.map((e) => ({
+      _type: 'edition',
+      _key: key(),
+      year: e.year,
+      name: e.name,
+      stats: [
+        stat(e.attendees, 'asistentes', '+'),
+        stat(e.sessions, 'sesiones'),
+        stat(e.speakers, 'speakers'),
+      ],
+    })),
+}
+
+const ABOUT_BODY =
+  'Desde 2023 lo organizamos junto a los demás GDG de Ecuador: el primer DevFest reunió a más de 200 personas y el de 2025 a más de 700. En {{year}} esperamos {{capacity}} en el campus de ESPOL.'
+
+const ORGANIZERS_LEAD =
+  'El equipo de GDG Guayaquil y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar.'
+
+interface CopyUpgrade {
+  id: string
+  /** Field to rewrite. */
+  path: string
+  from: string
+  to: unknown
+  /** GROQ expression compared with `from`, when it is not the field itself. */
+  match?: string
+}
+
+/**
+ * Datasets seeded earlier still hold the old placeholder copy. `seed:pages` swaps a value only
  * while it is exactly the old seeded text, so anything edited in the Studio stays as it is.
  */
-const SEO_UPGRADES: {id: string; field: 'title' | 'description'; from: string; to: string}[] = [
-  {id: 'homePage', field: 'title', from: 'Inicio', to: SEO.home.title},
+const COPY_UPGRADES: CopyUpgrade[] = [
+  {id: 'homePage', path: 'seo.title', from: 'Inicio', to: SEO.home.title},
   {
     id: 'homePage',
-    field: 'description',
+    path: 'seo.description',
     from: 'DevFest Guayaquil 2026, 5 de diciembre en ESPOL. Charlas, workshops y comunidad.',
     to: SEO.home.description,
   },
   {
     id: 'speakersPage',
-    field: 'description',
+    path: 'seo.description',
     from: 'Speakers confirmados de DevFest Guayaquil 2026.',
     to: SEO.speakers.description,
   },
   {
     id: 'aboutPage',
-    field: 'description',
+    path: 'seo.description',
     from: 'Qué es DevFest y quién es GDG Guayaquil.',
     to: SEO.about.description,
   },
   {
     id: 'organizersPage',
-    field: 'description',
+    path: 'seo.description',
     from: 'El equipo organizador de GDG Guayaquil.',
     to: SEO.organizers.description,
+  },
+  {
+    id: 'aboutPage',
+    path: 'intro.body',
+    from: 'En Guayaquil lo hacemos desde 2016. Empezamos con 80 personas en un aula; en {{year}} esperamos {{capacity}} en el campus de ESPOL.',
+    to: ABOUT_BODY,
+  },
+  {
+    id: 'aboutPage',
+    path: 'history.quote',
+    match: 'history.quote.text',
+    from: 'ediciones, más de 3.000 asistentes acumulados y 140 speakers que dieron su primera charla con nosotros.',
+    to: HISTORY.quote,
+  },
+  {
+    id: 'aboutPage',
+    path: 'history.stats',
+    match: 'array::join(history.stats[].label, "|")',
+    from: 'ediciones de DevFest|asistentes acumulados|speakers que debutaron aquí',
+    to: HISTORY.stats(),
+  },
+  {
+    id: 'organizersPage',
+    path: 'hero.lead',
+    from: 'Ocho organizadores y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar.',
+    to: ORGANIZERS_LEAD,
   },
 ]
 
@@ -227,6 +330,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
       },
       footnote:
         'La agenda puede cambiar. Los horarios finales se publican una semana antes del evento.',
+      comingSoon: COMING_SOON.agendaPage,
     },
     {
       _id: 'speakersPage',
@@ -253,6 +357,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
           'Speaker presentando en el escenario de un DevFest anterior',
         ),
       },
+      comingSoon: COMING_SOON.speakersPage,
     },
     {
       _id: 'sponsorsPage',
@@ -266,6 +371,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         lead: 'DevFest es gratis para {{capacity}} asistentes porque las empresas de la región lo respaldan. Así se ve ese apoyo.',
         glyphs: ['plus-blue', 'dot-red', 'half-circle-yellow'],
       },
+      comingSoon: COMING_SOON.sponsorsPage,
       cta: {
         _type: 'cta',
         eyebrow: 'Patrocina',
@@ -291,7 +397,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         figure: figure(stage, '2025', 'Audiencia en un DevFest anterior de GDG Guayaquil'),
         title: 'Qué es DevFest',
         lead: 'Es la conferencia anual que cada capítulo de Google Developer Groups organiza en su ciudad. Mismo nombre, misma marca, contenido 100% local: los speakers, los temas y el público son de aquí.',
-        body: 'En Guayaquil lo hacemos desde 2016. Empezamos con 80 personas en un aula; en {{year}} esperamos {{capacity}} en el campus de ESPOL.',
+        body: ABOUT_BODY,
       },
       principles: {
         eyebrow: 'Cómo trabajamos',
@@ -315,16 +421,11 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         ].map((p) => ({_type: 'principle', _key: key(), ...p})),
       },
       history: {
-        quote: {
-          _type: 'quote',
-          highlight: 'Diez',
-          text: 'ediciones, más de 3.000 asistentes acumulados y 140 speakers que dieron su primera charla con nosotros.',
-        },
-        stats: [
-          stat('10', 'ediciones de DevFest'),
-          stat('3000', 'asistentes acumulados', '+'),
-          stat('140', 'speakers que debutaron aquí'),
-        ],
+        quote: HISTORY.quote,
+        stats: HISTORY.stats(),
+        eyebrow: HISTORY.eyebrow,
+        title: HISTORY.title,
+        editions: HISTORY.editions(),
       },
       venue: {
         eyebrow: 'Sede',
@@ -343,7 +444,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         _type: 'pageHero',
         eyebrow: 'Organizadores',
         title: 'Las personas detrás de DevFest',
-        lead: 'Ocho organizadores y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar.',
+        lead: ORGANIZERS_LEAD,
         glyphs: ['at', 'dot-red', 'braces'],
       },
       volunteering: {
@@ -657,21 +758,45 @@ export async function seedPages(client: SanityClient, options: SeedPagesOptions 
   )
 
   // Published documents and open drafts alike, so publishing a draft later keeps the new copy.
+  const withDrafts = async (ids: string[]) =>
+    client.fetch<string[]>(
+      '*[_id in $ids]._id',
+      {ids: ids.flatMap((id) => [id, `drafts.${id}`])},
+      {perspective: 'raw'},
+    )
+
+  // Fields added to pages that older datasets already have.
+  for (const id of await withDrafts(Object.keys(COMING_SOON))) {
+    const page = id.replace(/^drafts\./, '') as keyof typeof COMING_SOON
+    await client.patch(id).setIfMissing({comingSoon: COMING_SOON[page]}).commit()
+  }
+  for (const id of await withDrafts(['aboutPage'])) {
+    await client
+      .patch(id)
+      .setIfMissing({
+        'history.eyebrow': HISTORY.eyebrow,
+        'history.title': HISTORY.title,
+        'history.editions': HISTORY.editions(),
+      })
+      .commit()
+  }
+
   let upgraded = 0
-  for (const {id, field, from, to} of SEO_UPGRADES) {
+  for (const {id, path, from, to, match = path} of COPY_UPGRADES) {
     const ids = await client.fetch<string[]>(
-      `*[_id in [$id, $draft] && seo.${field} == $from]._id`,
+      `*[_id in [$id, $draft] && ${match} == $from]._id`,
       {id, draft: `drafts.${id}`, from},
+      {perspective: 'raw'},
     )
     for (const docId of ids) {
       await client
         .patch(docId)
-        .set({[`seo.${field}`]: to})
+        .set({[path]: to})
         .commit()
       upgraded++
     }
   }
-  if (upgraded) console.log(`  ${upgraded} textos SEO actualizados`)
+  if (upgraded) console.log(`  ${upgraded} textos de ejemplo actualizados`)
 
   // The chrome fields go on the published settings and on an open draft, if there is one, so
   // publishing that draft later does not wipe them.
@@ -682,6 +807,7 @@ export async function seedPages(client: SanityClient, options: SeedPagesOptions 
     await client
       .patch(id)
       .setIfMissing(SITE_CHROME)
+      .setIfMissing(SECTION_SWITCHES)
       // Fields added to objects that older datasets already have.
       .setIfMissing({'registerCta.accountLabel': SITE_CHROME.registerCta.accountLabel})
       .unset(['featuredSpeakers'])
@@ -698,6 +824,6 @@ export async function seedPages(client: SanityClient, options: SeedPagesOptions 
     }
   }
   console.log(
-    '  configuración del sitio: menú, bloque de registro, pie de página y datos personales',
+    '  configuración del sitio: menú, bloque de registro, pie de página, datos personales y secciones publicadas',
   )
 }

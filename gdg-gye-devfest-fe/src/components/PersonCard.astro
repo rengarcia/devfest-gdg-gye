@@ -1,17 +1,18 @@
 ---
 import type { Family } from '../data/site';
 
-/** Notch card with initials on a tinted square. Speakers get a track chip + talk; organizers get the GDG mark. */
+/** Notch card with a photo, or initials on a tinted square. Speakers get a track chip + talk; organizers get the GDG mark. */
 interface Props {
   family: Family;
   initials: string;
+  photo?: { src: string; alt: string };
   name: string;
   role: string;
   talk?: string;
   tag?: string;
   delay?: number;
 }
-const { family, initials, name, role, talk, tag, delay = 0 } = Astro.props;
+const { family, initials, photo, name, role, talk, tag, delay = 0 } = Astro.props;
 ---
 
 <article
@@ -19,9 +20,17 @@ const { family, initials, name, role, talk, tag, delay = 0 } = Astro.props;
   data-family={family}
   style={`--d:${delay}ms`}
 >
-  <div class="notch__media" aria-hidden="true">
-    <span class="person__initials">{initials}</span>
-  </div>
+  {
+    photo ? (
+      <div class="notch__media">
+        <img class="notch__img" src={photo.src} alt={photo.alt} loading="lazy" />
+      </div>
+    ) : (
+      <div class="notch__media" aria-hidden="true">
+        <span class="person__initials">{initials}</span>
+      </div>
+    )
+  }
   {
     tag ? (
       <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">

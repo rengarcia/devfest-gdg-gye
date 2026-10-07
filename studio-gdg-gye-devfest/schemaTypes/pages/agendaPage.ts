@@ -1,5 +1,6 @@
 import {defineField} from 'sanity'
 import {CalendarIcon} from '@sanity/icons/Calendar'
+import {comingSoonField} from '../objects/comingSoon'
 import {definePage} from '../shared/pageType'
 
 export const agendaPage = definePage({
@@ -13,6 +14,7 @@ export const agendaPage = definePage({
       type: 'pageHero',
       validation: (rule) => rule.required(),
     }),
+    comingSoonField,
     defineField({
       name: 'footnote',
       title: 'Nota al pie',

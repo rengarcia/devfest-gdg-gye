@@ -10,6 +10,13 @@ export const siteSettings = defineType({
   icon: CogIcon,
   fieldsets: [
     {name: 'event', title: 'Evento', options: {collapsible: true, collapsed: false}},
+    {
+      name: 'sections',
+      title: 'Secciones publicadas',
+      description:
+        'Mientras una sección está apagada, su página muestra el aviso "Próximamente" (se edita en la página) y la portada la esconde. Enciéndela cuando su contenido esté listo.',
+      options: {collapsible: true, collapsed: false},
+    },
     {name: 'contact', title: 'Contacto y enlaces', options: {collapsible: true, collapsed: false}},
     {name: 'privacy', title: 'Datos personales', options: {collapsible: true, collapsed: false}},
   ],
@@ -49,6 +56,31 @@ export const siteSettings = defineType({
       type: 'number',
       fieldset: 'event',
       validation: (rule) => rule.required().integer().positive(),
+    }),
+    defineField({
+      name: 'showAgenda',
+      title: 'Agenda',
+      type: 'boolean',
+      fieldset: 'sections',
+      description: 'Encendido: /agenda muestra las sesiones por track.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'showSpeakers',
+      title: 'Speakers',
+      type: 'boolean',
+      fieldset: 'sections',
+      description:
+        'Encendido: /speakers muestra las tarjetas y la portada los speakers destacados. El Call for papers se ve siempre.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'showSponsors',
+      title: 'Sponsors',
+      type: 'boolean',
+      fieldset: 'sections',
+      description: 'Encendido: /sponsors muestra los niveles y la portada los primeros logos.',
+      initialValue: false,
     }),
     defineField({
       name: 'registerUrl',
