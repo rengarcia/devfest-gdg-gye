@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
 import '../styles/ds.css';
 import '../styles/site.css';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -68,6 +69,7 @@ const shareSrc = new URL(share.src, Astro.site).href;
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <ClientRouter />
+    <Analytics />
   </head>
   <body class="page" data-family={family}>
     <a class="skip-link" href="#main">Saltar al contenido</a>
