@@ -1,5 +1,6 @@
 import {defineField} from 'sanity'
 import {MicrophoneIcon} from '@sanity/icons/Microphone'
+import {comingSoonField} from '../objects/comingSoon'
 import {definePage} from '../shared/pageType'
 import {eyebrowField, leadField, titleField} from '../shared/textFields'
 
@@ -14,6 +15,7 @@ export const speakersPage = definePage({
       type: 'pageHero',
       validation: (rule) => rule.required(),
     }),
+    comingSoonField,
     defineField({
       name: 'cfp',
       title: 'Call for papers',

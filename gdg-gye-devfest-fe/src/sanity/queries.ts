@@ -47,6 +47,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(/* groq */ `
     controllerName,
     controllerId,
     privacyEmail,
+    showAgenda,
+    showSpeakers,
+    showSponsors,
     navigation,
     registerCta,
     footer
@@ -76,15 +79,15 @@ export const HOME_PAGE_QUERY = defineQuery(/* groq */ `
 `);
 
 export const AGENDA_PAGE_QUERY = defineQuery(/* groq */ `
-  *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, cta }
+  *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, comingSoon, cta }
 `);
 
 export const SPEAKERS_PAGE_QUERY = defineQuery(/* groq */ `
-  *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, cta }
+  *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, comingSoon, cta }
 `);
 
 export const SPONSORS_PAGE_QUERY = defineQuery(/* groq */ `
-  *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, cta }
+  *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, comingSoon, cta }
 `);
 
 export const ABOUT_PAGE_QUERY = defineQuery(/* groq */ `

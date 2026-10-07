@@ -413,6 +413,17 @@ export type AboutPage = {
     stats: Array<{
       _key: string;
     } & Stat>;
+    eyebrow: string;
+    title: string;
+    editions: Array<{
+      year: number;
+      name: string;
+      stats: Array<{
+        _key: string;
+      } & Stat>;
+      _type: "edition";
+      _key: string;
+    }>;
   };
   venue: {
     eyebrow: string;
@@ -453,6 +464,7 @@ export type SponsorsPage = {
   seo: Seo;
   family: "yellow" | "blue" | "green" | "red";
   hero: PageHero;
+  comingSoon: ComingSoon;
   cta?: Cta;
 };
 
@@ -465,6 +477,7 @@ export type SpeakersPage = {
   seo: Seo;
   family: "yellow" | "blue" | "green" | "red";
   hero: PageHero;
+  comingSoon: ComingSoon;
   cfp: {
     eyebrow: string;
     title: string;
@@ -486,8 +499,16 @@ export type AgendaPage = {
   seo: Seo;
   family: "yellow" | "blue" | "green" | "red";
   hero: PageHero;
+  comingSoon: ComingSoon;
   footnote: string;
   cta?: Cta;
+};
+
+export type ComingSoon = {
+  _type: "comingSoon";
+  title: string;
+  lead: string;
+  link?: Link;
 };
 
 export type HomePage = {
@@ -544,6 +565,9 @@ export type SiteSettings = {
   date: string;
   venue: string;
   capacity: number;
+  showAgenda?: boolean;
+  showSpeakers?: boolean;
+  showSponsors?: boolean;
   registerUrl?: string;
   email: string;
   sponsorsEmail: string;
@@ -690,11 +714,11 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | PrivacyPage | PageHero | Seo | VerifyPage | AccountPage | FaqPage | Cta | OrganizersPage | Link | AboutPage | Quote | Figure | SponsorsPage | SpeakersPage | AgendaPage | HomePage | SiteSettings | Stat | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes = Faq | Slug | SponsorTierReference | SanityImageAssetReference | Sponsor | SanityImageCrop | SanityImageHotspot | SponsorTier | Organizer | TrackReference | SpeakerReference | Session | Speaker | Track | PrivacyPage | PageHero | Seo | VerifyPage | AccountPage | FaqPage | Cta | OrganizersPage | Link | AboutPage | Quote | Figure | SponsorsPage | SpeakersPage | AgendaPage | ComingSoon | HomePage | SiteSettings | Stat | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    shareImage,    controllerName,    controllerId,    privacyEmail,    navigation,    registerCta,    footer  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    name,    year,    date,    venue,    capacity,    registerUrl,    email,    sponsorsEmail,    communityUrl,    handle,    socialUrl,    shareImage,    controllerName,    controllerId,    privacyEmail,    showAgenda,    showSpeakers,    showSponsors,    navigation,    registerCta,    footer  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   name: string;
   year: number;
@@ -718,6 +742,9 @@ export type SITE_SETTINGS_QUERY_RESULT = {
   controllerName: string;
   controllerId: string | null;
   privacyEmail: string | null;
+  showAgenda: boolean | null;
+  showSpeakers: boolean | null;
+  showSponsors: boolean | null;
   navigation: Array<{
     _key: string;
   } & Link>;
@@ -797,18 +824,19 @@ export type HOME_PAGE_QUERY_RESULT = {
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: AGENDA_PAGE_QUERY
-// Query: *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, cta }
+// Query: *[_type == "agendaPage" && _id == "agendaPage"][0]{ seo, family, hero, footnote, comingSoon, cta }
 export type AGENDA_PAGE_QUERY_RESULT = {
   seo: Seo;
   family: "blue" | "green" | "red" | "yellow";
   hero: PageHero;
   footnote: string;
+  comingSoon: ComingSoon;
   cta: Cta | null;
 } | null;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SPEAKERS_PAGE_QUERY
-// Query: *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, cta }
+// Query: *[_type == "speakersPage" && _id == "speakersPage"][0]{ seo, family, hero, cfp, comingSoon, cta }
 export type SPEAKERS_PAGE_QUERY_RESULT = {
   seo: Seo;
   family: "blue" | "green" | "red" | "yellow";
@@ -822,16 +850,18 @@ export type SPEAKERS_PAGE_QUERY_RESULT = {
     note?: string;
     figure: Figure;
   };
+  comingSoon: ComingSoon;
   cta: Cta | null;
 } | null;
 
 // Source: ../gdg-gye-devfest-fe/src/sanity/queries.ts
 // Variable: SPONSORS_PAGE_QUERY
-// Query: *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, cta }
+// Query: *[_type == "sponsorsPage" && _id == "sponsorsPage"][0]{ seo, family, hero, comingSoon, cta }
 export type SPONSORS_PAGE_QUERY_RESULT = {
   seo: Seo;
   family: "blue" | "green" | "red" | "yellow";
   hero: PageHero;
+  comingSoon: ComingSoon;
   cta: Cta | null;
 } | null;
 
@@ -864,6 +894,17 @@ export type ABOUT_PAGE_QUERY_RESULT = {
     stats: Array<{
       _key: string;
     } & Stat>;
+    eyebrow: string;
+    title: string;
+    editions: Array<{
+      year: number;
+      name: string;
+      stats: Array<{
+        _key: string;
+      } & Stat>;
+      _type: "edition";
+      _key: string;
+    }>;
   };
   venue: {
     eyebrow: string;
@@ -1157,11 +1198,11 @@ export type FAQ_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    shareImage,\n    controllerName,\n    controllerId,\n    privacyEmail,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
+    "\n  *[_type == \"siteSettings\" && _id == \"siteSettings\"][0]{\n    name,\n    year,\n    date,\n    venue,\n    capacity,\n    registerUrl,\n    email,\n    sponsorsEmail,\n    communityUrl,\n    handle,\n    socialUrl,\n    shareImage,\n    controllerName,\n    controllerId,\n    privacyEmail,\n    showAgenda,\n    showSpeakers,\n    showSponsors,\n    navigation,\n    registerCta,\n    footer\n  }\n": SITE_SETTINGS_QUERY_RESULT;
     "\n  *[_type == \"homePage\" && _id == \"homePage\"][0]{\n    seo,\n    family,\n    hero,\n    stats,\n    speakers{\n      eyebrow,\n      title,\n      lead,\n      link,\n      featured[]->{ \n  _id,\n  name,\n  role,\n  initials,\n  family,\n  track->{ \n  name,\n  \"slug\": slug.current,\n  room,\n  family\n },\n  \"talk\": *[_type == \"session\" && speaker._ref == ^._id] | order(startTime asc)[0].title\n }\n    },\n    tracks,\n    quote,\n    sponsors,\n    cta\n  }\n": HOME_PAGE_QUERY_RESULT;
-    "\n  *[_type == \"agendaPage\" && _id == \"agendaPage\"][0]{ seo, family, hero, footnote, cta }\n": AGENDA_PAGE_QUERY_RESULT;
-    "\n  *[_type == \"speakersPage\" && _id == \"speakersPage\"][0]{ seo, family, hero, cfp, cta }\n": SPEAKERS_PAGE_QUERY_RESULT;
-    "\n  *[_type == \"sponsorsPage\" && _id == \"sponsorsPage\"][0]{ seo, family, hero, cta }\n": SPONSORS_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"agendaPage\" && _id == \"agendaPage\"][0]{ seo, family, hero, footnote, comingSoon, cta }\n": AGENDA_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"speakersPage\" && _id == \"speakersPage\"][0]{ seo, family, hero, cfp, comingSoon, cta }\n": SPEAKERS_PAGE_QUERY_RESULT;
+    "\n  *[_type == \"sponsorsPage\" && _id == \"sponsorsPage\"][0]{ seo, family, hero, comingSoon, cta }\n": SPONSORS_PAGE_QUERY_RESULT;
     "\n  *[_type == \"aboutPage\" && _id == \"aboutPage\"][0]{\n    seo,\n    family,\n    hero,\n    intro,\n    principles,\n    history,\n    venue,\n    cta\n  }\n": ABOUT_PAGE_QUERY_RESULT;
     "\n  *[_type == \"organizersPage\" && _id == \"organizersPage\"][0]{ seo, family, hero, volunteering, cta }\n": ORGANIZERS_PAGE_QUERY_RESULT;
     "\n  *[_type == \"faqPage\" && _id == \"faqPage\"][0]{ seo, family, hero, cta }\n": FAQ_PAGE_QUERY_RESULT;

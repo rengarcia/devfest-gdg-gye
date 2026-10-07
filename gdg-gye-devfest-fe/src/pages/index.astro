@@ -25,12 +25,14 @@ const [page, tracks, sponsors, settings, hours, allSpeakers] = await Promise.all
   getSpeakers(),
 ]);
 const { hero, stats, speakers } = page;
+const { sections } = settings;
 const jsonLd = eventJsonLd({
   settings,
   site: Astro.site!,
   description: page.seo.description,
-  hours,
-  speakers: allSpeakers,
+  // Unpublished sections stay out of search results too.
+  hours: sections.agenda ? hours : undefined,
+  speakers: sections.speakers ? allSpeakers : [],
 });
 
 /** Where the (up to three) floating glyphs sit around the photo, as in the design. */
@@ -109,35 +111,39 @@ const glyphSpots = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section__head reveal">
-        <p class="eyebrow">{speakers.eyebrow}</p><h2 class="display display--lg">
-          {speakers.title}
-        </h2><p class="lead">{speakers.lead}</p>
-      </div>
-      <div class="grid grid--3">
-        {
-          speakers.featured.map((s, i) => (
-            <PersonCard
-              family={s.family}
-              initials={s.initials}
-              tag={s.track}
-              talk={s.talk}
-              name={s.name}
-              role={s.role}
-              delay={i * 80}
-            />
-          ))
-        }
-      </div>
-      <div class="reveal" style="margin-top:var(--space-6)">
-        <a class="btn" href={speakers.link.href}
-          >{speakers.link.label} <Icon name="arrow_forward" class="btn__icon" /></a
-        >
-      </div>
-    </div>
-  </section>
+  {
+    sections.speakers && (
+      <section class="section">
+        <div class="wrap">
+          <div class="section__head reveal">
+            <>
+              <p class="eyebrow">{speakers.eyebrow}</p>
+              <h2 class="display display--lg">{speakers.title}</h2>
+              <p class="lead">{speakers.lead}</p>
+            </>
+          </div>
+          <div class="grid grid--3">
+            {speakers.featured.map((s, i) => (
+              <PersonCard
+                family={s.family}
+                initials={s.initials}
+                tag={s.track}
+                talk={s.talk}
+                name={s.name}
+                role={s.role}
+                delay={i * 80}
+              />
+            ))}
+          </div>
+          <div class="reveal" style="margin-top:var(--space-6)">
+            <a class="btn" href={speakers.link.href}>
+              {speakers.link.label} <Icon name="arrow_forward" class="btn__icon" />
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <section class="section" style="padding-top:0">
     <div class="wrap">
@@ -183,21 +189,28 @@ const glyphSpots = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section__head reveal">
-        <p class="eyebrow">{page.sponsors.eyebrow}</p><h2 class="display display--md">
-          {page.sponsors.title}
-        </h2>
-      </div>
-      <div class="grid grid--4" data-stagger>
-        {sponsors.map((s) => <LogoTile sponsor={s} href="/sponsors" />)}
-      </div>
-      <p class="reveal" style="margin-top:var(--space-5)">
-        <a href={page.sponsors.link.href}>{page.sponsors.link.label}</a>
-      </p>
-    </div>
-  </section>
+  {
+    sections.sponsors && (
+      <section class="section">
+        <div class="wrap">
+          <div class="section__head reveal">
+            <>
+              <p class="eyebrow">{page.sponsors.eyebrow}</p>
+              <h2 class="display display--md">{page.sponsors.title}</h2>
+            </>
+          </div>
+          <div class="grid grid--4" data-stagger>
+            {sponsors.map((s) => (
+              <LogoTile sponsor={s} href="/sponsors" />
+            ))}
+          </div>
+          <p class="reveal" style="margin-top:var(--space-5)">
+            <a href={page.sponsors.link.href}>{page.sponsors.link.label}</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
   <Dots />
   <RegistroCta cta={page.cta} />
 </BaseLayout>

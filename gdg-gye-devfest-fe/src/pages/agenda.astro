@@ -6,7 +6,9 @@ import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
 import { getAgendaPage, getSchedule } from '../sanity/content';
 
-const [page, schedule] = await Promise.all([getAgendaPage(), getSchedule()]);
+const page = await getAgendaPage();
+const schedule = page.published ? await getSchedule() : [];
+const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
 ---
 
 <BaseLayout
@@ -15,54 +17,54 @@ const [page, schedule] = await Promise.all([getAgendaPage(), getSchedule()]);
   image={page.seo.image}
   family={page.family}
 >
-  <PageHero {...page.hero} />
+  <PageHero {...hero} />
 
-  <section class="section" style="padding-top:0">
-    <div class="wrap" data-family={page.family} id="agenda-root">
-      <div role="tablist" aria-label="Tracks" class="tabs reveal">
-        {
-          schedule.map(({ track }, i) => (
-            <button
-              role="tab"
-              class="tabs__tab"
-              id={`tab-${track.slug}`}
-              aria-controls={`panel-${track.slug}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              tabindex={i === 0 ? 0 : -1}
-              data-family={track.family}
-            >
-              {track.name}
-            </button>
-          ))
-        }
-      </div>
-      {
-        schedule.map(({ track, sessions }, i) => (
-          <div
-            role="tabpanel"
-            id={`panel-${track.slug}`}
-            aria-labelledby={`tab-${track.slug}`}
-            hidden={i !== 0}
-            style="margin-top:var(--space-6)"
-          >
-            <div class="card" style="padding-block:var(--space-2)">
-              <ul style="list-style:none;margin:0;padding:0">
-                {sessions.map((s) => (
-                  <SessionRow session={s} />
-                ))}
-              </ul>
-            </div>
+  {
+    page.published && (
+      <section class="section" style="padding-top:0">
+        <div class="wrap" data-family={page.family} id="agenda-root">
+          <div role="tablist" aria-label="Tracks" class="tabs reveal">
+            {schedule.map(({ track }, i) => (
+              <button
+                role="tab"
+                class="tabs__tab"
+                id={`tab-${track.slug}`}
+                aria-controls={`panel-${track.slug}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                data-family={track.family}
+              >
+                {track.name}
+              </button>
+            ))}
           </div>
-        ))
-      }
-      <p
-        class="mono mono--muted reveal"
-        style="margin-top:var(--space-5);font-size:var(--text-mono-sm)"
-      >
-        {page.footnote}
-      </p>
-    </div>
-  </section>
+          {schedule.map(({ track, sessions }, i) => (
+            <div
+              role="tabpanel"
+              id={`panel-${track.slug}`}
+              aria-labelledby={`tab-${track.slug}`}
+              hidden={i !== 0}
+              style="margin-top:var(--space-6)"
+            >
+              <div class="card" style="padding-block:var(--space-2)">
+                <ul style="list-style:none;margin:0;padding:0">
+                  {sessions.map((s) => (
+                    <SessionRow session={s} />
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+          <p
+            class="mono mono--muted reveal"
+            style="margin-top:var(--space-5);font-size:var(--text-mono-sm)"
+          >
+            {page.footnote}
+          </p>
+        </div>
+      </section>
+    )
+  }
   <Dots />
   <RegistroCta cta={page.cta} />
 </BaseLayout>

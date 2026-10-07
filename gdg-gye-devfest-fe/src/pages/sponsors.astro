@@ -5,7 +5,9 @@ import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import { getSponsorTiers, getSponsorsPage } from '../sanity/content';
 
-const [page, tiers] = await Promise.all([getSponsorsPage(), getSponsorTiers()]);
+const page = await getSponsorsPage();
+const tiers = page.published ? await getSponsorTiers() : [];
+const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
 const paid = tiers.filter((t) => t.kind === 'paid');
 const community = tiers.filter((t) => t.kind === 'community');
 ---
@@ -16,7 +18,7 @@ const community = tiers.filter((t) => t.kind === 'community');
   image={page.seo.image}
   family={page.family}
 >
-  <PageHero {...page.hero} />
+  <PageHero {...hero} />
 
   {
     /* The top tier gets bigger tiles in a two-column grid, as in the design. */

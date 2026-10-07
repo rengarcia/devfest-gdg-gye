@@ -1,5 +1,6 @@
 import {defineField} from 'sanity'
 import {CaseIcon} from '@sanity/icons/Case'
+import {comingSoonField} from '../objects/comingSoon'
 import {definePage} from '../shared/pageType'
 
 export const sponsorsPage = definePage({
@@ -14,5 +15,6 @@ export const sponsorsPage = definePage({
       description: 'Las secciones por nivel salen de los documentos Nivel de patrocinio y Sponsor.',
       validation: (rule) => rule.required(),
     }),
+    comingSoonField,
   ],
 })

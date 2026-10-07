@@ -5,7 +5,9 @@ import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import { getSpeakers, getSpeakersPage } from '../sanity/content';
 
-const [page, speakers] = await Promise.all([getSpeakersPage(), getSpeakers()]);
+const page = await getSpeakersPage();
+const speakers = page.published ? await getSpeakers() : [];
+const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
 const { cfp } = page;
 ---
 
@@ -15,29 +17,31 @@ const { cfp } = page;
   image={page.seo.image}
   family={page.family}
 >
-  <PageHero {...page.hero} />
+  <PageHero {...hero} />
 
-  <section class="section" style="padding-top:0">
-    <div class="wrap">
-      <div class="grid grid--3">
-        {
-          speakers.map((s, i) => (
-            <PersonCard
-              family={s.family}
-              initials={s.initials}
-              tag={s.track}
-              talk={s.talk}
-              name={s.name}
-              role={s.role}
-              delay={(i % 3) * 80}
-            />
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  {
+    page.published && (
+      <section class="section" style="padding-top:0">
+        <div class="wrap">
+          <div class="grid grid--3">
+            {speakers.map((s, i) => (
+              <PersonCard
+                family={s.family}
+                initials={s.initials}
+                tag={s.track}
+                talk={s.talk}
+                name={s.name}
+                role={s.role}
+                delay={(i % 3) * 80}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
-  <section class="section section--tint">
+  <section class="section section--tint" id="cfp">
     <div
       class="wrap"
       style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8);align-items:center"

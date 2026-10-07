@@ -82,6 +82,40 @@ const { intro, principles, history, venue } = page;
           ))
         }
       </div>
+      {
+        history.editions.length > 0 && (
+          <div style="margin-top:var(--space-9)">
+            <div class="section__head reveal">
+              <p class="eyebrow">{history.eyebrow}</p>
+              <h2 class="display display--md">{history.title}</h2>
+            </div>
+            <div class="grid grid--4" data-stagger>
+              {history.editions.map((e) => (
+                <article
+                  class="card card--sm card--tint reveal"
+                  style="display:grid;gap:var(--space-4);align-content:start"
+                >
+                  <span class="chip" style="justify-self:start">
+                    {e.year}
+                  </span>
+                  <h3 class="display display--sm">{e.name}</h3>
+                  <div style="display:grid;gap:var(--space-3)">
+                    {e.stats.map((s) => (
+                      <div class="stat">
+                        <b class="stat__value" style="font-size:var(--text-display-sm)">
+                          {s.value}
+                          {s.suffix}
+                        </b>
+                        <span class="stat__label">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </div>
   </section>
 
