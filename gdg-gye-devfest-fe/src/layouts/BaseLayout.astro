@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/ds.css';
 import '../styles/site.css';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -70,6 +71,7 @@ const shareSrc = new URL(share.src, Astro.site).href;
     />
     <ClientRouter />
     <Analytics />
+    <SpeedInsights />
   </head>
   <body class="page" data-family={family}>
     <a class="skip-link" href="#main">Saltar al contenido</a>
