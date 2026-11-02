@@ -14,7 +14,15 @@ const { sponsor, href = sponsor.href, big = false } = Astro.props;
 <a class:list={['logo-tile', 'hover-lift', 'reveal', { 'logo-tile--big': big }]} href={href}>
   {
     sponsor.logo ? (
-      <img class="logo-tile__img" src={sponsor.logo.src} alt={sponsor.logo.alt} loading="lazy" />
+      <img
+        class="logo-tile__img"
+        src={sponsor.logo.src}
+        alt={sponsor.logo.alt}
+        width={sponsor.logo.width}
+        height={sponsor.logo.height}
+        loading="lazy"
+        decoding="async"
+      />
     ) : (
       sponsor.name
     )

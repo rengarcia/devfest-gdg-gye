@@ -4,10 +4,18 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { faqJsonLd } from '../data/jsonld';
-import { getFaq, getFaqPage } from '../sanity/content';
+import { faqEntities, pageJsonLd } from '../data/jsonld';
+import { getFaq, getFaqPage, getSiteSettings } from '../sanity/content';
 
-const [page, faq] = await Promise.all([getFaqPage(), getFaq()]);
+const [page, faq, settings] = await Promise.all([getFaqPage(), getFaq(), getSiteSettings()]);
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+  type: 'FAQPage',
+  extra: faqEntities(faq),
+});
 ---
 
 <BaseLayout
@@ -15,7 +23,7 @@ const [page, faq] = await Promise.all([getFaqPage(), getFaq()]);
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
-  jsonLd={faqJsonLd(faq)}
+  {jsonLd}
 >
   <PageHero {...page.hero} />
 

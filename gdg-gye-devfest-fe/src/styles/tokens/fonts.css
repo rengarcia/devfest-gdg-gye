@@ -2,6 +2,114 @@
    The DevFest 2026 assets are set in Google Sans Display / Google Sans Text /
    Google Sans Mono, which are not publicly licensed. DM Sans is the closest
    open geometric-grotesque match; Roboto Mono stands in for Google Sans Mono.
-   The Google Fonts <link> tags live in src/layouts/BaseLayout.astro so the
-   browser discovers them before the CSS bundle is parsed. Swap both there if
-   you receive the licensed families. */
+   Swap the files below if you receive the licensed families.
+
+   SELF-HOSTED (public/assets/fonts): the woff2 files are the ones Google Fonts serves
+   for these requests, downloaded so the page needs no cross-origin, render-blocking
+   stylesheet. The two latin files and the icon font are preloaded in
+   src/layouts/BaseLayout.astro (keep those <link rel="preload"> tags in sync).
+     DM Sans      css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400
+     Roboto Mono  css2?family=Roboto+Mono:wght@400..500
+   latin covers Spanish; latin-ext is only downloaded if a page uses one of its characters.
+
+   MATERIAL SYMBOLS: a subset holding only the icons the site renders. Adding an <Icon name>
+   (or a name set from a script, like `close` in site.ts) means regenerating the file:
+     css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0
+       &icon_names=add,arrow_forward,close,download,logout,map,menu,qr_code_scanner&display=block
+   (names alphabetical, comma-separated), then download the woff2 URL in that CSS (fetch it with
+   a browser user agent) as public/assets/fonts/material-symbols-rounded-v<n+1>.woff2 and point the
+   src below and the preload in BaseLayout.astro at it. Never overwrite the current file: Vercel
+   serves /assets as `immutable` for a year, so returning visitors would keep the old icons.
+   `font-display: block` keeps the ligature names from flashing as text. */
+
+/* DM Sans (variable: opsz 9–40, wght 400–700) */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/dm-sans-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/dm-sans-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dm-sans-italic-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dm-sans-italic-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/* Roboto Mono (variable: wght 400–500) */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/assets/fonts/roboto-mono-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/assets/fonts/roboto-mono-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/* Material Symbols Rounded (opsz 24, wght 400, FILL 0, GRAD 0; subset, see above) */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/assets/fonts/material-symbols-rounded-v1.woff2') format('woff2');
+}
+/* The font's own class, as Google Fonts ships it (site.css overrides font-size per context). */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}

@@ -48,6 +48,7 @@ const PRIVACY_LINK = link('Aviso de privacidad', '/privacidad')
 
 export const SITE_CHROME = {
   registerUrl: '/cuenta',
+  socialUrl: 'https://www.linkedin.com/company/gdgguayaquil/',
   controllerName: 'GDG Guayaquil',
   navigation: [
     link('Inicio', '/'),
@@ -101,14 +102,24 @@ export const SITE_CHROME = {
 /** Search and share copy for the pages whose first seeded version was too thin. */
 const SEO = {
   home: {
-    title: '{{title}} · Conferencia tech gratis en ESPOL',
+    title: '{{title}} · Conferencia tech gratis en Ecuador',
     description:
-      '{{title}}: conferencia gratuita de tecnología el 5 de diciembre en ESPOL. Charlas y workshops de Web, Mobile, Cloud y AI con GDG Guayaquil.',
+      '{{title}}: conferencia tech gratuita en Guayaquil, Ecuador. 5 de diciembre en ESPOL, con charlas y workshops de Web, Mobile, Cloud y AI.',
+  },
+  agenda: {
+    title: 'Agenda',
+    description:
+      'Agenda de {{title}}: charlas y workshops de Web, Mobile, Cloud y AI el 5 de diciembre en ESPOL, Guayaquil, Ecuador. Horarios de los cuatro tracks.',
   },
   speakers: {
     title: 'Speakers',
     description:
-      'Conoce a los speakers de {{title}}: charlas y workshops de Web, Mobile, Cloud y AI el 5 de diciembre en ESPOL, Guayaquil.',
+      'Conoce a los speakers de {{title}}: charlas y workshops de Web, Mobile, Cloud y AI el 5 de diciembre en ESPOL, Guayaquil, Ecuador.',
+  },
+  sponsors: {
+    title: 'Sponsors',
+    description:
+      'Paquetes de patrocinio de {{title}}: llega a {{capacity}} developers en la conferencia tech gratuita de Guayaquil, Ecuador, el 5 de diciembre en ESPOL.',
   },
   about: {
     title: 'Nosotros',
@@ -120,6 +131,11 @@ const SEO = {
     description:
       'El equipo de voluntarios de GDG Guayaquil que organiza {{title}}, y cómo sumarte como voluntario del evento.',
   },
+  faq: {
+    title: 'FAQ',
+    description:
+      'Preguntas frecuentes sobre {{title}} en ESPOL, Guayaquil, Ecuador: entrada gratuita, cómo llegar, comida, accesibilidad y código de conducta.',
+  },
 }
 
 /** Agenda, speakers and sponsors start hidden; they are turned on from the site settings. */
@@ -129,18 +145,18 @@ const SECTION_SWITCHES = {showAgenda: false, showSpeakers: false, showSponsors: 
 const COMING_SOON = {
   agendaPage: {
     _type: 'comingSoon',
-    title: 'La agenda se publica pronto',
+    title: 'La agenda de {{title}} se publica pronto',
     lead: 'Estamos cerrando las charlas y los workshops de los cuatro tracks. Nos vemos el {{dateShort}} en {{venue}}; mientras tanto, reserva tu lugar.',
   },
   speakersPage: {
     _type: 'comingSoon',
-    title: 'Pronto anunciamos a los speakers',
+    title: 'Pronto anunciamos a los speakers de {{title}}',
     lead: 'Estamos revisando las propuestas del Call for papers. Publicaremos los nombres aquí y en {{handle}}.',
     link: link('Proponer una charla', '#cfp'),
   },
   sponsorsPage: {
     _type: 'comingSoon',
-    title: 'Pronto presentamos a los sponsors',
+    title: 'Pronto presentamos a los sponsors de {{title}}',
     lead: '{{title}} es gratis para {{capacity}} asistentes gracias a las empresas que lo respaldan. Si la tuya quiere ser una de ellas, escríbenos a {{sponsorsEmail}}.',
   },
 }
@@ -184,7 +200,13 @@ const HISTORY = {
 }
 
 const ABOUT_BODY =
-  'Desde 2023 lo organizamos junto a los demás GDG de Ecuador: el primer DevFest reunió a más de 200 personas y el de 2025 a más de 700. En {{year}} esperamos {{capacity}} en el campus de ESPOL.'
+  'Desde 2023 lo organizamos junto a los demás GDG de Ecuador: el primer DevFest reunió a más de 200 personas y el de 2025 a más de 700. GDG Guayaquil coorganizó DevFest Ecuador 2024 en la UEES, en Samborondón. En {{year}} esperamos {{capacity}} en el campus de ESPOL.'
+
+const STAGE_ALT = 'Speaker durante una charla en DevFest Umuahia'
+
+// Directions linked from the official DevFest Guayaquil 2026 listing on gdg.community.dev.
+const VENUE_MAP_URL =
+  'https://www.google.com/maps/search/?api=1&query=Auditorio+FIEC+Avenida+Principal+de+la+ESPOL+Guayaquil%2C+Guayas+090902'
 
 const ORGANIZERS_LEAD =
   'El equipo de GDG Guayaquil y unos 40 voluntarios el día del evento. Todos con trabajo de tiempo completo, todos sin cobrar.'
@@ -204,7 +226,64 @@ interface CopyUpgrade {
  * while it is exactly the old seeded text, so anything edited in the Studio stays as it is.
  */
 const COPY_UPGRADES: CopyUpgrade[] = [
+  {
+    id: 'homePage',
+    path: 'hero.figure.image.alt',
+    match:
+      'select(hero.figure.image.asset->originalFilename == "speaker-stage.jpg" => coalesce(hero.figure.image.alt, ""), null)',
+    from: '',
+    to: STAGE_ALT,
+  },
+  {
+    id: 'aboutPage',
+    path: 'intro.figure.image.alt',
+    from: 'Audiencia en un DevFest anterior de GDG Guayaquil',
+    to: STAGE_ALT,
+  },
+  {
+    id: 'agendaPage',
+    path: 'comingSoon.title',
+    from: 'La agenda se publica pronto',
+    to: COMING_SOON.agendaPage.title,
+  },
+  {
+    id: 'speakersPage',
+    path: 'comingSoon.title',
+    from: 'Pronto anunciamos a los speakers',
+    to: COMING_SOON.speakersPage.title,
+  },
+  {
+    id: 'sponsorsPage',
+    path: 'comingSoon.title',
+    from: 'Pronto presentamos a los sponsors',
+    to: COMING_SOON.sponsorsPage.title,
+  },
+  {
+    id: 'sponsorsPage',
+    path: 'cta.primary.href',
+    from: '#',
+    to: 'mailto:{{sponsorsEmail}}',
+  },
+  {
+    id: 'aboutPage',
+    path: 'venue.link.href',
+    from: '#',
+    to: VENUE_MAP_URL,
+  },
+  {
+    id: 'siteSettings',
+    path: 'socialUrl',
+    match: 'coalesce(socialUrl, "")',
+    from: '',
+    to: SITE_CHROME.socialUrl,
+  },
   {id: 'homePage', path: 'seo.title', from: 'Inicio', to: SEO.home.title},
+  {
+    id: 'homePage',
+    path: 'seo.title',
+    from: '{{title}} · Conferencia tech gratis en ESPOL',
+    to: SEO.home.title,
+  },
   {
     id: 'homePage',
     path: 'seo.description',
@@ -212,10 +291,40 @@ const COPY_UPGRADES: CopyUpgrade[] = [
     to: SEO.home.description,
   },
   {
+    id: 'homePage',
+    path: 'seo.description',
+    from: '{{title}}: conferencia gratuita de tecnología el 5 de diciembre en ESPOL. Charlas y workshops de Web, Mobile, Cloud y AI con GDG Guayaquil.',
+    to: SEO.home.description,
+  },
+  {
+    id: 'agendaPage',
+    path: 'seo.description',
+    from: 'Agenda de DevFest Guayaquil 2026: tracks Web, Mobile, Cloud y AI.',
+    to: SEO.agenda.description,
+  },
+  {
     id: 'speakersPage',
     path: 'seo.description',
     from: 'Speakers confirmados de DevFest Guayaquil 2026.',
     to: SEO.speakers.description,
+  },
+  {
+    id: 'speakersPage',
+    path: 'seo.description',
+    from: 'Conoce a los speakers de {{title}}: charlas y workshops de Web, Mobile, Cloud y AI el 5 de diciembre en ESPOL, Guayaquil.',
+    to: SEO.speakers.description,
+  },
+  {
+    id: 'sponsorsPage',
+    path: 'seo.description',
+    from: 'Paquetes de patrocinio de DevFest Guayaquil 2026.',
+    to: SEO.sponsors.description,
+  },
+  {
+    id: 'faqPage',
+    path: 'seo.description',
+    from: 'Preguntas frecuentes sobre DevFest Guayaquil 2026.',
+    to: SEO.faq.description,
   },
   {
     id: 'aboutPage',
@@ -233,6 +342,12 @@ const COPY_UPGRADES: CopyUpgrade[] = [
     id: 'aboutPage',
     path: 'intro.body',
     from: 'En Guayaquil lo hacemos desde 2016. Empezamos con 80 personas en un aula; en {{year}} esperamos {{capacity}} en el campus de ESPOL.',
+    to: ABOUT_BODY,
+  },
+  {
+    id: 'aboutPage',
+    path: 'intro.body',
+    from: 'Desde 2023 lo organizamos junto a los demás GDG de Ecuador: el primer DevFest reunió a más de 200 personas y el de 2025 a más de 700. En {{year}} esperamos {{capacity}} en el campus de ESPOL.',
     to: ABOUT_BODY,
   },
   {
@@ -280,7 +395,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         lead: 'Charlas, workshops y networking con la gente que construye tecnología en Ecuador. Gratis, organizado por voluntarios de GDG Guayaquil.',
         primary: link('Regístrate', '#registro'),
         secondary: link('Ver agenda', '/agenda'),
-        figure: figure(stage, '{{year}}'),
+        figure: figure(stage, '{{year}}', STAGE_ALT),
         glyphs: ['asterisk', 'plus-blue', 'half-circle-yellow'],
       },
       stats: [
@@ -316,10 +431,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'agendaPage',
       _type: 'agendaPage',
-      seo: {
-        title: 'Agenda',
-        description: 'Agenda de DevFest Guayaquil 2026: tracks Web, Mobile, Cloud y AI.',
-      },
+      seo: SEO.agenda,
       family: 'green',
       hero: {
         _type: 'pageHero',
@@ -362,7 +474,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'sponsorsPage',
       _type: 'sponsorsPage',
-      seo: {title: 'Sponsors', description: 'Paquetes de patrocinio de DevFest Guayaquil 2026.'},
+      seo: SEO.sponsors,
       family: 'blue',
       hero: {
         _type: 'pageHero',
@@ -377,7 +489,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         eyebrow: 'Patrocina',
         title: 'Pon tu marca frente a {{capacity}} developers',
         lead: 'Te enviamos el prospecto con precios y disponibilidad en menos de 48 horas.',
-        primary: link('Pedir el prospecto', '#'),
+        primary: link('Pedir el prospecto', 'mailto:{{sponsorsEmail}}'),
         secondary: link('{{sponsorsEmail}}', 'mailto:{{sponsorsEmail}}'),
       },
     },
@@ -394,7 +506,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         glyphs: ['globe', 'heart', 'asterisk'],
       },
       intro: {
-        figure: figure(stage, '2025', 'Audiencia en un DevFest anterior de GDG Guayaquil'),
+        figure: figure(stage, '2025', STAGE_ALT),
         title: 'Qué es DevFest',
         lead: 'Es la conferencia anual que cada capítulo de Google Developer Groups organiza en su ciudad. Mismo nombre, misma marca, contenido 100% local: los speakers, los temas y el público son de aquí.',
         body: ABOUT_BODY,
@@ -431,7 +543,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
         eyebrow: 'Sede',
         title: 'ESPOL, Campus Gustavo Galindo',
         lead: 'Km 30.5 Vía Perimetral, Guayaquil. Auditorios A y B, aulas del bloque 15 y el laboratorio 3. Estacionamiento gratuito y parada de Metrovía a 5 minutos.',
-        link: link('Cómo llegar', '#'),
+        link: link('Cómo llegar', VENUE_MAP_URL),
         mapNote: 'Mapa del campus (por publicar)',
       },
     },
@@ -464,7 +576,7 @@ function pageDocuments({featuredSpeakers, stage, portrait}: PageAssets): PageDoc
     {
       _id: 'faqPage',
       _type: 'faqPage',
-      seo: {title: 'FAQ', description: 'Preguntas frecuentes sobre DevFest Guayaquil 2026.'},
+      seo: SEO.faq,
       family: 'green',
       hero: {
         _type: 'pageHero',

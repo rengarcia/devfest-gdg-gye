@@ -94,10 +94,11 @@ hacer fuera del código está al final de `../supabase/README.md`.
 ## Notas de marca
 
 - Tipografía: el kit oficial usa Google Sans Display / Text / Mono, que no tienen licencia
-  pública. Se sustituyen por **DM Sans** y **Roboto Mono** desde Google Fonts
-  (`src/layouts/BaseLayout.astro`). Si se reciben las fuentes licenciadas, cámbialas ahí y en
-  `src/styles/tokens/typography.css`.
-- Iconos funcionales (menú, flechas, mapa): Material Symbols Rounded, también desde Google Fonts.
+  pública. Se sustituyen por **DM Sans** y **Roboto Mono**, alojadas en `public/assets/fonts`
+  (`@font-face` en `src/styles/tokens/fonts.css`, precargadas en `src/layouts/BaseLayout.astro`).
+  Si se reciben las fuentes licenciadas, cámbialas ahí y en `src/styles/tokens/typography.css`.
+- Iconos funcionales (menú, flechas, mapa): Material Symbols Rounded, un subconjunto con solo los
+  iconos que usa el sitio; para añadir uno hay que regenerarlo (ver `fonts.css`).
 - Los glyphs de `public/assets/glyphs/` son arte del kit DevFest 2026; no se recolorean ni se
   redibujan. Las fotos `speaker-*.jpg` son PNG con extensión `.jpg`, tal como venían en el
   proyecto de diseño.

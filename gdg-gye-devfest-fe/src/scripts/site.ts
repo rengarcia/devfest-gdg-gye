@@ -14,7 +14,7 @@ if (!reduced) {
   el.setAttribute('role', 'status');
   el.setAttribute('aria-label', 'Cargando DevFest Guayaquil');
   el.innerHTML =
-    '<div class="intro__lockup" aria-hidden="true"><img class="intro__brace" src="/assets/glyphs/brace-left.png" alt=""><b class="intro__name">DevFest</b><img class="intro__brace" src="/assets/glyphs/brace-right.png" alt=""><span class="intro__city">Guayaquil</span></div><div class="intro__dots" aria-hidden="true"><span class="intro__dot"></span><span class="intro__dot"></span><span class="intro__dot"></span></div>';
+    '<div class="intro__lockup" aria-hidden="true"><img class="intro__brace" src="/assets/glyphs/brace-left.png" alt="" width="126" height="310"><b class="intro__name">DevFest</b><img class="intro__brace" src="/assets/glyphs/brace-right.png" alt="" width="126" height="310"><span class="intro__city">Guayaquil</span></div><div class="intro__dots" aria-hidden="true"><span class="intro__dot"></span><span class="intro__dot"></span><span class="intro__dot"></span></div>';
   document.body.prepend(el);
   const finish = () => {
     el.classList.add('intro--done');

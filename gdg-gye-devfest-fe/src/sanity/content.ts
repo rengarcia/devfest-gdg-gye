@@ -23,7 +23,7 @@ import type {
   SPEAKERS_QUERY_RESULT,
 } from '../../sanity.types';
 import { sanityClient } from './client';
-import { urlFor } from './image';
+import { fittedImage, squareImage, urlFor, type ResponsiveImage } from './image';
 import {
   ABOUT_PAGE_QUERY,
   ACCOUNT_PAGE_QUERY,
@@ -129,8 +129,7 @@ export interface Stat {
   count?: number;
 }
 
-export interface Figure {
-  src: string;
+export interface Figure extends ResponsiveImage {
   alt: string;
   /** Chip in the corner of the photo. */
   tag?: string;
@@ -204,13 +203,7 @@ const toQuote = (q: RawQuote): Quote => ({
 function toFigure(f: RawFigure): Figure | undefined {
   if (!f.image?.asset) return undefined;
   return {
-    // The generated image type is structurally a SanityImageSource; the cast only bridges names.
-    src: urlFor(f.image as SanityImageSource)
-      .width(1000)
-      .height(1000)
-      .fit('crop')
-      .auto('format')
-      .url(),
+    ...squareImage(f.image, 1000),
     alt: f.image.alt ?? '',
     tag: f.tag ?? undefined,
   };
@@ -923,7 +916,7 @@ export interface OrganizerCard {
   role: string;
   initials: string;
   /** Square crop of the Studio photo; without it the card shows the initials. */
-  photo?: { src: string; alt: string };
+  photo?: ResponsiveImage & { alt: string };
   family: Family;
 }
 
@@ -936,13 +929,7 @@ export async function getOrganizers(): Promise<OrganizerCard[]> {
     initials: o.initials ?? initialsOf(o.name),
     photo: o.photo?.asset
       ? {
-          // The generated image type is structurally a SanityImageSource; the cast only bridges names.
-          src: urlFor(o.photo as SanityImageSource)
-            .width(600)
-            .height(600)
-            .fit('crop')
-            .auto('format')
-            .url(),
+          ...squareImage(o.photo, 600),
           alt: o.photo.alt ?? o.name,
         }
       : undefined,
@@ -958,7 +945,7 @@ export interface SponsorTile {
   /** Sponsor site, or '#' when not set. */
   href: string;
   /** Present once a logo has been uploaded; the tile shows the name until then. */
-  logo?: { src: string; alt: string };
+  logo?: ResponsiveImage & { alt: string };
 }
 
 export interface SponsorTierSection {
@@ -981,13 +968,7 @@ function toSponsorTile(s: RawSponsor): SponsorTile {
     href: s.url ?? '#',
     logo: s.logo?.asset
       ? {
-          // The generated image type is structurally a SanityImageSource; the cast only bridges names.
-          src: urlFor(s.logo as SanityImageSource)
-            .width(480)
-            .height(240)
-            .fit('max')
-            .auto('format')
-            .url(),
+          ...fittedImage(s.logo, 480, 240),
           alt: s.logo.alt ?? s.name,
         }
       : undefined,

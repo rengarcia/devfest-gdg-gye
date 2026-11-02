@@ -3,13 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import LogoTile from '../components/LogoTile.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getSponsorTiers, getSponsorsPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getSponsorTiers, getSponsorsPage, getSiteSettings } from '../sanity/content';
 
 const page = await getSponsorsPage();
 const tiers = page.published ? await getSponsorTiers() : [];
 const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
 const paid = tiers.filter((t) => t.kind === 'paid');
 const community = tiers.filter((t) => t.kind === 'community');
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -17,6 +25,7 @@ const community = tiers.filter((t) => t.kind === 'community');
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...hero} />
 

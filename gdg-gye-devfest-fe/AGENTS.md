@@ -88,7 +88,10 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
   match on them (e.g. `[style*="grid-template-columns"]`), so keep them verbatim when copying a section.
 - Brand rules (from the design-system readme): sentence case, `DevFest` spelling, one colour
   family per page, no shadows, no gradients, no emoji, glyphs are decoration only.
-- Fonts and Material Symbols are loaded via `<link>` in `src/layouts/BaseLayout.astro`.
+- Fonts are self-hosted in `public/assets/fonts` (`@font-face` in `src/styles/tokens/fonts.css`,
+  preloaded in `src/layouts/BaseLayout.astro`). Material Symbols is a subset with only the icons the
+  site renders: a new `<Icon name>` (or a name set from a script) shows as plain text until you
+  regenerate the file as described in `fonts.css`.
 - SEO lives in `BaseLayout.astro` (title, description, canonical, Open Graph/X card, `noindex`,
   optional `jsonLd`) on top of `site` in `astro.config.mjs`. Pages pass `page.seo.image`; JSON-LD
   builders are in `src/data/jsonld.ts`. Account screens get `noindex` and stay out of the sitemap

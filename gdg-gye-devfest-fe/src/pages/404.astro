@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getSiteSettings } from '../sanity/content';
+
+/**
+ * Not-found page (served by the host for any unknown URL). Kept out of search results and the
+ * sitemap. The heading and lead are UI strings, not content; the links are the Studio's header menu.
+ */
+const settings = await getSiteSettings();
+const home = settings.navigation.find((l) => l.href === '/') ?? { label: 'Inicio', href: '/' };
+const links = settings.navigation.filter((l) => l.href !== '/');
+---
+
+<BaseLayout
+  title="Página no encontrada"
+  description={`Esta página no existe en el sitio de ${settings.title}.`}
+  noindex
+>
+  <PageHero
+    eyebrow="Error 404"
+    title="No encontramos esta página"
+    lead={`Puede que el enlace esté roto o que la página se haya movido. Vuelve al inicio o sigue por otra sección de ${settings.title}.`}
+    glyphs={['slash-a', 'hash-green', 'dot-blue']}
+    link={home}
+  />
+
+  <section class="section" style="padding-top:0">
+    <nav class="wrap" aria-label="Secciones del sitio">
+      <ul class="chips" role="list" style="list-style:none;margin:0;padding:0">
+        {
+          links.map((l) => (
+            <li>
+              <a class="btn" href={l.href}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </section>
+</BaseLayout>

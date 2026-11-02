@@ -32,6 +32,8 @@ html {
 img {
   display: block;
   max-width: 100%;
+  /* width/height attributes only reserve the aspect ratio; CSS sets the rendered size. */
+  height: auto;
 }
 /* `hidden` wins over block display rules (btn, form, card…): the account pages toggle views with it. */
 [hidden] {
@@ -98,6 +100,11 @@ img {
   background: var(--accent);
   border: var(--stroke-thin);
   flex: none;
+}
+/* The event name opening a display heading (home h1): keeps the eyebrow look inside the h1. */
+.eyebrow--heading {
+  font-weight: var(--weight-regular);
+  margin-bottom: var(--space-3);
 }
 .lead {
   font-size: var(--text-body-lg);

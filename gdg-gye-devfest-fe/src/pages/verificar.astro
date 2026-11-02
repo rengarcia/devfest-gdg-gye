@@ -1,10 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import { getVerifyPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getVerifyPage, getSiteSettings } from '../sanity/content';
 
 const page = await getVerifyPage();
 const { form, result } = page;
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -12,6 +20,7 @@ const { form, result } = page;
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...page.hero} />
 

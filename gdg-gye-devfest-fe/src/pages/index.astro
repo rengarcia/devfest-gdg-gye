@@ -29,7 +29,8 @@ const { sections } = settings;
 const jsonLd = eventJsonLd({
   settings,
   site: Astro.site!,
-  description: page.seo.description,
+  // What the day is about; the meta description repeats the date and venue, which Google asks to avoid.
+  description: hero.lead,
   // Unpublished sections stay out of search results too.
   hours: sections.agenda ? hours : undefined,
   speakers: sections.speakers ? allSpeakers : [],
@@ -63,7 +64,10 @@ const glyphSpots = [
             ))
           }
         </div>
-        <h1 class="display display--xl sticker" style="--d:90ms">{hero.title}</h1>
+        <h1 class="display display--xl sticker" style="--d:90ms">
+          <span class="eyebrow eyebrow--heading">{settings.title}</span>{' '}
+          {hero.title}
+        </h1>
         <p class="lead sticker" style="--d:180ms">{hero.lead}</p>
         <div class="sticker" style="--d:260ms;display:flex;gap:var(--space-3);flex-wrap:wrap">
           <a class="btn btn--fill" href={hero.primary.href}
@@ -74,7 +78,20 @@ const glyphSpots = [
       <div style="position:relative;min-height:440px" aria-hidden="true">
         <div class="notch sticker" style="--d:120ms;position:absolute;left:8%;top:6%;width:62%">
           <div class="notch__media">
-            {hero.figure && <img class="notch__img" src={hero.figure.src} alt={hero.figure.alt} />}
+            {
+              hero.figure && (
+                <img
+                  class="notch__img"
+                  src={hero.figure.src}
+                  srcset={hero.figure.srcset}
+                  sizes="(max-width: 860px) 60vw, (max-width: 1320px) 28vw, 340px"
+                  width={hero.figure.width}
+                  height={hero.figure.height}
+                  fetchpriority="high"
+                  alt={hero.figure.alt}
+                />
+              )
+            }
           </div>{
             hero.figure?.tag && (
               <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">
@@ -162,7 +179,13 @@ const glyphSpots = [
               style="display:grid;gap:var(--space-4);text-decoration:none;background:var(--tint)"
             >
               <>
-                <img src={`/assets/glyphs/${t.glyph}.png`} alt="" style="height:56px;width:auto" />
+                <img
+                  src={`/assets/glyphs/${t.glyph}.png`}
+                  alt=""
+                  style="height:56px;width:auto"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <h3 class="display display--sm">{t.name}</h3>
                 <p>{t.blurb}</p>
                 <span class="chip" style="justify-self:start">
@@ -183,6 +206,10 @@ const glyphSpots = [
           src="/assets/glyphs/quote-open.png"
           alt=""
           style="height:44px;width:auto;margin:0 auto var(--space-5)"
+          width="49"
+          height="73"
+          loading="lazy"
+          decoding="async"
         />
         <PullQuote quote={page.quote} />
       </div>

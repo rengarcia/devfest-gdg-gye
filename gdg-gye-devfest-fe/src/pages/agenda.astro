@@ -4,11 +4,19 @@ import PageHero from '../components/PageHero.astro';
 import SessionRow from '../components/SessionRow.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import Dots from '../components/Dots.astro';
-import { getAgendaPage, getSchedule } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getAgendaPage, getSchedule, getSiteSettings } from '../sanity/content';
 
 const page = await getAgendaPage();
 const schedule = page.published ? await getSchedule() : [];
 const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -16,6 +24,7 @@ const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...hero} />
 

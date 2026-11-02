@@ -1,9 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import { getPrivacyPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getPrivacyPage, getSiteSettings } from '../sanity/content';
 
 const page = await getPrivacyPage();
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -11,6 +19,7 @@ const page = await getPrivacyPage();
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...page.hero} />
 

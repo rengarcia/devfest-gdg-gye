@@ -4,10 +4,19 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import RegistroCta from '../components/RegistroCta.astro';
 import PullQuote from '../components/PullQuote.astro';
-import { getAboutPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getAboutPage, getSiteSettings } from '../sanity/content';
 
 const page = await getAboutPage();
 const { intro, principles, history, venue } = page;
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+  type: 'AboutPage',
+});
 ---
 
 <BaseLayout
@@ -15,6 +24,7 @@ const { intro, principles, history, venue } = page;
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...page.hero} />
 
@@ -25,7 +35,20 @@ const { intro, principles, history, venue } = page;
     >
       <div class="notch reveal">
         <div class="notch__media">
-          {intro.figure && <img class="notch__img" src={intro.figure.src} alt={intro.figure.alt} />}
+          {
+            intro.figure && (
+              <img
+                class="notch__img"
+                src={intro.figure.src}
+                srcset={intro.figure.srcset}
+                sizes="(max-width: 860px) 92vw, (max-width: 1320px) 46vw, 616px"
+                width={intro.figure.width}
+                height={intro.figure.height}
+                decoding="async"
+                alt={intro.figure.alt}
+              />
+            )
+          }
         </div>{
           intro.figure?.tag && (
             <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">
@@ -54,7 +77,13 @@ const { intro, principles, history, venue } = page;
           principles.items.map((p) => (
             <div class="card reveal" style="display:grid;gap:var(--space-4);align-content:start">
               <>
-                <img src={`/assets/glyphs/${p.glyph}.png`} alt="" style="height:40px;width:auto" />
+                <img
+                  src={`/assets/glyphs/${p.glyph}.png`}
+                  alt=""
+                  style="height:40px;width:auto"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <h3 class="display display--sm">{p.title}</h3>
                 <p>{p.text}</p>
               </>

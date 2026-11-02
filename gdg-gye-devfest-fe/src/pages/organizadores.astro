@@ -3,10 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getOrganizers, getOrganizersPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getOrganizers, getOrganizersPage, getSiteSettings } from '../sanity/content';
 
 const [page, organizers] = await Promise.all([getOrganizersPage(), getOrganizers()]);
 const { volunteering } = page;
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -14,6 +22,7 @@ const { volunteering } = page;
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...page.hero} />
 

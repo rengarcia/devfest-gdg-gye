@@ -3,12 +3,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import PersonCard from '../components/PersonCard.astro';
 import RegistroCta from '../components/RegistroCta.astro';
-import { getSpeakers, getSpeakersPage } from '../sanity/content';
+import { pageJsonLd } from '../data/jsonld';
+import { getSpeakers, getSpeakersPage, getSiteSettings } from '../sanity/content';
 
 const page = await getSpeakersPage();
 const speakers = page.published ? await getSpeakers() : [];
 const hero = page.published ? page.hero : { ...page.hero, ...page.comingSoon };
 const { cfp } = page;
+const settings = await getSiteSettings();
+const jsonLd = pageJsonLd({
+  settings,
+  site: Astro.site!,
+  path: Astro.url.pathname,
+  seo: page.seo,
+});
 ---
 
 <BaseLayout
@@ -16,6 +24,7 @@ const { cfp } = page;
   description={page.seo.description}
   image={page.seo.image}
   family={page.family}
+  {jsonLd}
 >
   <PageHero {...hero} />
 
@@ -66,7 +75,20 @@ const { cfp } = page;
       </div>
       <div class="notch reveal" style="--d:120ms">
         <div class="notch__media">
-          {cfp.figure && <img class="notch__img" src={cfp.figure.src} alt={cfp.figure.alt} />}
+          {
+            cfp.figure && (
+              <img
+                class="notch__img"
+                src={cfp.figure.src}
+                srcset={cfp.figure.srcset}
+                sizes="(max-width: 860px) 92vw, (max-width: 1320px) 46vw, 616px"
+                width={cfp.figure.width}
+                height={cfp.figure.height}
+                decoding="async"
+                alt={cfp.figure.alt}
+              />
+            )
+          }
         </div>{
           cfp.figure?.tag && (
             <span class="chip notch__tag" style="font-size:var(--text-mono-xs)">

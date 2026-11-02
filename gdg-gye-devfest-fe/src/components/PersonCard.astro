@@ -1,11 +1,12 @@
 ---
 import type { Family } from '../data/site';
+import type { ResponsiveImage } from '../sanity/image';
 
 /** Notch card with a photo, or initials on a tinted square. Speakers get a track chip + talk; organizers get the GDG mark. */
 interface Props {
   family: Family;
   initials: string;
-  photo?: { src: string; alt: string };
+  photo?: ResponsiveImage & { alt: string };
   name: string;
   role: string;
   talk?: string;
@@ -23,7 +24,17 @@ const { family, initials, photo, name, role, talk, tag, delay = 0 } = Astro.prop
   {
     photo ? (
       <div class="notch__media">
-        <img class="notch__img" src={photo.src} alt={photo.alt} loading="lazy" />
+        <img
+          class="notch__img"
+          src={photo.src}
+          srcset={photo.srcset}
+          sizes="(max-width: 540px) 100vw, 340px"
+          width={photo.width}
+          height={photo.height}
+          alt={photo.alt}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     ) : (
       <div class="notch__media" aria-hidden="true">
@@ -37,7 +48,16 @@ const { family, initials, photo, name, role, talk, tag, delay = 0 } = Astro.prop
         {tag}
       </span>
     ) : (
-      <img class="notch__tag" src="/assets/gdg-logo.png" alt="" style="width:56px" />
+      <img
+        class="notch__tag"
+        src="/assets/gdg-logo.png"
+        alt=""
+        style="width:56px"
+        width="296"
+        height="176"
+        loading="lazy"
+        decoding="async"
+      />
     )
   }
   <div class="person__body">
