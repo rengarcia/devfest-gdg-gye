@@ -22,6 +22,24 @@ const VENUE_ADDRESS = {
   addressCountry: 'EC',
 };
 
+/**
+ * The chapter's public profiles, listed as `sameAs` so search engines tie this site to the GDG
+ * Guayaquil they already know (the Studio only stores the LinkedIn one, `socialUrl`).
+ */
+const CHAPTER_PROFILES = [
+  'https://www.instagram.com/gdgguayaquil',
+  'https://www.facebook.com/gdgGuayaquil',
+  'https://x.com/gdgguayaquil',
+  'https://www.linkedin.com/company/gdgguayaquil/',
+];
+
+/** Other names people search the chapter by. */
+const CHAPTER_ALTERNATE_NAMES = ['Google Developer Group Guayaquil', 'GDG Guayaquil Ecuador'];
+
+/** This edition's listing on the GDG community platform, where registration also opens. */
+const EVENT_LISTING =
+  'https://gdg.community.dev/events/details/google-gdg-guayaquil-presents-devfest-guayaquil-2026/';
+
 const absolute = (href: string, site: URL) => new URL(href, site).href;
 
 const ids = (site: URL) => ({
@@ -55,14 +73,23 @@ function website(settings: SiteSettings, site: URL): JsonLd {
 function organization(settings: SiteSettings, site: URL): JsonLd {
   const url = settings.communityUrl;
   // Other profiles of the chapter; the community page is already `url`.
-  const sameAs = [settings.socialHref].filter((href) => isUrl(href) && href !== url);
+  const sameAs = [...new Set([settings.socialHref, ...CHAPTER_PROFILES])].filter(
+    (href) => isUrl(href) && href !== url,
+  );
   return {
     '@type': 'Organization',
     '@id': ids(site).organizer,
     name: settings.organizer,
+    alternateName: CHAPTER_ALTERNATE_NAMES,
     url,
     logo: absolute('/assets/gdg-logo.png', site),
     email: settings.email,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Guayaquil',
+      addressRegion: 'Guayas',
+      addressCountry: 'EC',
+    },
     ...(sameAs.length > 0 && { sameAs }),
   };
 }
@@ -88,6 +115,7 @@ export function eventJsonLd({ settings, site, description, hours, speakers }: Ev
     name: settings.title,
     description,
     url: absolute('/', site),
+    sameAs: EVENT_LISTING,
     image: [absolute(settings.shareImage.src, site)],
     // Date-only (all-day) until the agenda is published, as Google asks when the hours are unknown.
     startDate: hours ? at(hours.start) : settings.date,
