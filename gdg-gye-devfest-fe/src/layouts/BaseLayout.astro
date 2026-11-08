@@ -30,6 +30,9 @@ const fullTitle = title.includes(settings.title) ? title : `${title} · ${settin
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const share = image ?? settings.shareImage;
 const shareSrc = new URL(share.src, Astro.site).href;
+// Search Console / Bing Webmaster Tools ownership tokens, set in Vercel when verifying by meta tag.
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION;
 ---
 
 <!doctype html>
@@ -41,6 +44,8 @@ const shareSrc = new URL(share.src, Astro.site).href;
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={settings.title} />
     <meta property="og:locale" content="es_EC" />

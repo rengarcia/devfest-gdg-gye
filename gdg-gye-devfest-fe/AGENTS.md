@@ -96,6 +96,10 @@ so `.env` needs `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` (copy `.e
   optional `jsonLd`) on top of `site` in `astro.config.mjs`. Pages pass `page.seo.image`; JSON-LD
   builders are in `src/data/jsonld.ts`. Account screens get `noindex` and stay out of the sitemap
   (`PRIVATE_PATHS` in the config); do not Disallow them in `robots.txt`, or crawlers never see the tag.
+  The chapter's social profiles, alternate names and the event's gdg.community.dev listing are
+  constants at the top of `jsonld.ts` (update `EVENT_LISTING` each edition). Search Console and Bing
+  meta-tag tokens come from the optional `PUBLIC_GOOGLE_SITE_VERIFICATION` and
+  `PUBLIC_BING_SITE_VERIFICATION` env vars.
 - Navigation goes through Astro's `<ClientRouter />` (in `BaseLayout.astro`): same-document view
   transitions, hover prefetch, no full reloads. The header keeps its own snapshot
   (`transition:animate="none"`). Links with `href="#"` are placeholders and are neutralised in

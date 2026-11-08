@@ -102,9 +102,9 @@ export const SITE_CHROME = {
 /** Search and share copy for the pages whose first seeded version was too thin. */
 const SEO = {
   home: {
-    title: '{{title}} · Conferencia tech gratis en Ecuador',
+    title: '{{title}} · DevFest Ecuador en ESPOL, gratis',
     description:
-      '{{title}}: conferencia tech gratuita en Guayaquil, Ecuador. 5 de diciembre en ESPOL, con charlas y workshops de Web, Mobile, Cloud y AI.',
+      '{{title}}, el DevFest de Ecuador en Guayaquil: conferencia tech gratuita de GDG Guayaquil el 5 de diciembre en ESPOL. Web, Mobile, Cloud y AI.',
   },
   agenda: {
     title: 'Agenda',
@@ -124,7 +124,7 @@ const SEO = {
   about: {
     title: 'Nosotros',
     description:
-      'DevFest es la conferencia anual de tecnología de los Google Developer Groups. Conoce a GDG Guayaquil y la historia de DevFest en Ecuador.',
+      'DevFest es la conferencia anual de los Google Developer Groups. Conoce a GDG Guayaquil y la historia de DevFest Ecuador desde 2023.',
   },
   organizers: {
     title: 'Organizadores',
@@ -278,6 +278,25 @@ const COPY_UPGRADES: CopyUpgrade[] = [
     to: SITE_CHROME.socialUrl,
   },
   {id: 'homePage', path: 'seo.title', from: 'Inicio', to: SEO.home.title},
+  // November 2026 SEO pass: name "DevFest Ecuador" (the 2023–2025 editions) on the home and /nosotros.
+  {
+    id: 'homePage',
+    path: 'seo.title',
+    from: '{{title}} · Conferencia tech gratis en Ecuador',
+    to: SEO.home.title,
+  },
+  {
+    id: 'homePage',
+    path: 'seo.description',
+    from: '{{title}}: conferencia tech gratuita en Guayaquil, Ecuador. 5 de diciembre en ESPOL, con charlas y workshops de Web, Mobile, Cloud y AI.',
+    to: SEO.home.description,
+  },
+  {
+    id: 'aboutPage',
+    path: 'seo.description',
+    from: 'DevFest es la conferencia anual de tecnología de los Google Developer Groups. Conoce a GDG Guayaquil y la historia de DevFest en Ecuador.',
+    to: SEO.about.description,
+  },
   {
     id: 'homePage',
     path: 'seo.title',

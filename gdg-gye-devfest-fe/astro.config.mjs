@@ -14,8 +14,7 @@ export default defineConfig({
   trailingSlash: 'never',
   integrations: [
     sitemap({
-      // The site is rebuilt whenever content is published, so the build date tracks content changes.
-      lastmod: new Date(),
+      // No `lastmod`: a build date stamped on every URL changes on every deploy, so Google ignores it.
       filter: (page) => {
         const { pathname } = new URL(page);
         return !PRIVATE_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
